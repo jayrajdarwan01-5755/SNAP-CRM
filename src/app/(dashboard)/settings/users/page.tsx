@@ -1,34 +1,106 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { User } from "@/types/user";
 
 export default function UsersPage() {
 
-  const [users] = useState([
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchText, setSearchText] = useState("");
 
-    {
-      UserId: 1,
-      Username: "admin",
-      Role: "Administrator",
-      Status: "Active",
-    },
+  useEffect(() => {
+    loadUsers();
+  }, []);
 
-    {
-      UserId: 2,
-      Username: "john.doe",
-      Role: "Manager",
-      Status: "Active",
-    },
+  const loadUsers = async () => {
 
-    {
-      UserId: 3,
-      Username: "jane.smith",
-      Role: "HR",
-      Status: "Inactive",
-    },
+    try {
 
-  ]);
+      setLoading(true);
+
+      const response = await fetch("/api/users");
+
+      const data: User[] = await response.json();
+
+      setUsers(data);
+
+    } catch (error) {
+
+      console.log(error);
+
+    } finally {
+
+      setLoading(false);
+
+    }
+
+  };
+
+  const handleDelete = async (UserId: number) => {
+
+    const confirmDelete = confirm(
+      "Are you sure you want to delete this user?"
+    );
+
+    if (!confirmDelete) return;
+
+    const response = await fetch("/api/users", {
+
+      method: "DELETE",
+
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+      body: JSON.stringify({
+        UserId,
+      }),
+
+    });
+
+    if (response.ok) {
+
+      setUsers((prev) =>
+        prev.filter(
+          (user) => user.UserId !== UserId
+        )
+      );
+
+    }
+
+  };
+
+  const handleClearFilter = () => {
+
+    setSearchText("");
+
+  };
+
+  const filteredUsers = users.filter((user) => {
+
+    return (
+
+      user.Username
+        .toLowerCase()
+        .includes(searchText.toLowerCase())
+
+      ||
+
+      user.Role
+        .toLowerCase()
+        .includes(searchText.toLowerCase())
+
+      ||
+
+      user.Status
+        .toLowerCase()
+        .includes(searchText.toLowerCase())
+
+    );
+
+  });
 
   return (
 
@@ -50,69 +122,51 @@ export default function UsersPage() {
 
         </div>
 
+        <div className="flex gap-3">
 
- <div className="flex gap-3">
+          <Link
+            href="/settings"
+            className="bg-gray-600 hover:bg-gray-700 text-white px-5 py-2 rounded-lg"
+          >
+            ← Back
+          </Link>
 
-    <Link
-      href="/settings"
-      className="
-      bg-gray-600
-      hover:bg-gray-700
-      text-white
-      px-5
-      py-2
-      rounded-lg
-      "
-    >
-      ← Back
-    </Link>
+          <Link
+            href="/settings/users/add"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg"
+          >
+            + Add User
+          </Link>
 
-        <Link
-          href="/settings/users/add"
-          className="
-          bg-blue-600
-          hover:bg-blue-700
-          text-white
-          px-5
-          py-2
-          rounded-lg
-          "
-        >
-          + Add User
-        </Link>
         </div>
+
       </div>
 
       {/* Search */}
 
       <div className="bg-white border rounded-xl shadow p-6">
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
           <input
             type="text"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
             placeholder="Search Username"
-            className="
-            w-full
-            border
-            border-gray-300
-            bg-white
-            text-gray-900
-            rounded-lg
-            px-4
-            py-2
-            "
+            className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg px-4 py-2"
           />
 
           <button
-            className="
-            bg-green-600
-            hover:bg-green-700
-            text-white
-            rounded-lg
-            "
+            className="bg-green-600 hover:bg-green-700 text-white rounded-lg"
           >
             Search
+          </button>
+
+          <button
+            onClick={handleClearFilter}
+            className="bg-gray-600 hover:bg-gray-700 text-white rounded-lg"
+          >
+            Clear
           </button>
 
         </div>
@@ -151,90 +205,99 @@ export default function UsersPage() {
 
           <tbody>
 
-            {users.map((user) => (
+            {
+              loading ? (
 
-              <tr
-                key={user.UserId}
-                className="border-t hover:bg-gray-50"
-              >
+                <tr>
 
-                <td className="px-4 py-4 text-gray-900">
-                  {user.Username}
-                </td>
-
-                <td className="px-4 py-4 text-gray-700">
-                  {user.Role}
-                </td>
-
-                <td className="px-4 py-4">
-
-                  <span
-                    className={
-                      user.Status === "Active"
-                        ? "bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
-                        : "bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm"
-                    }
+                  <td
+                    colSpan={4}
+                    className="text-center py-10 text-gray-600"
                   >
-                    {user.Status}
-                  </span>
+                    Loading users...
+                  </td>
 
-                </td>
+                </tr>
 
-                <td className="px-4 py-4">
+              ) :
 
-                  <div className="flex justify-center gap-2">
-                    
-                                     <Link
-                      href={`/settings/users/${user.UserId}`}
-                      className="
-                      bg-green-600
-                      hover:bg-green-700
-                      text-white
-                      px-3
-                      py-1
-                      rounded
-                      text-sm
-                      "
+              filteredUsers.length === 0 ? (
+
+                <tr>
+
+                  <td
+                    colSpan={4}
+                    className="text-center py-10 text-gray-600"
+                  >
+                    No users found
+                  </td>
+
+                </tr>
+
+              ) :
+                            filteredUsers.map((user) => (
+
+                <tr
+                  key={user.UserId}
+                  className="border-t hover:bg-gray-50"
+                >
+
+                  <td className="px-4 py-4 text-gray-900">
+                    {user.Username}
+                  </td>
+
+                  <td className="px-4 py-4 text-gray-700">
+                    {user.Role}
+                  </td>
+
+                  <td className="px-4 py-4">
+
+                    <span
+                      className={
+                        user.Status === "Active"
+                          ? "bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
+                          : "bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm"
+                      }
                     >
-                      View
-                    </Link>
+                      {user.Status}
+                    </span>
 
-                    <Link
-                      href={`/settings/users/edit/${user.UserId}`}
-                      className="
-                      bg-blue-600
-                      hover:bg-blue-700
-                      text-white
-                      px-3
-                      py-1
-                      rounded
-                      text-sm
-                      "
-                    >
-                      Edit
-                    </Link>
+                  </td>
 
-                    <button
-                      className="
-                      bg-orange-600
-                      hover:bg-orange-700
-                      text-white
-                      px-3
-                      py-1
-                      rounded
-                      text-sm
-                      "
-                    >
-                      Reset Password
-                    </button>
+                  <td className="px-4 py-4">
 
-                  </div>
+                    <div className="flex justify-center gap-2">
 
-                </td>
+                      <Link
+                        href={`/settings/users/${user.UserId}`}
+                        className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm"
+                      >
+                        View
+                      </Link>
 
-              </tr>
+                      <Link
+                        href={`/settings/users/edit/${user.UserId}`}
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
+                      >
+                        Edit
+                      </Link>
 
-            ))}
+                      <button
+                        onClick={() => handleDelete(user.UserId)}
+                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm"
+                      >
+                        Delete
+                      </button>
+
+                    </div>
+
+                  </td>
+
+                </tr>
+
+              ))
+
+            }
 
           </tbody>
 
@@ -247,6 +310,3 @@ export default function UsersPage() {
   );
 
 }
-                  
-
-                  

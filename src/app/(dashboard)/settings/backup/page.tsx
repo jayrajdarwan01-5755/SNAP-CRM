@@ -1,42 +1,229 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
+
 export default function BackupPage() {
+
 
   const [backupName, setBackupName] = useState(
     "SNAP_CRM_Backup"
   );
 
-  const [lastBackup] = useState(
-    "22-Jul-2026 06:30 PM"
-  );
 
-  const [status] = useState(
-    "Completed"
-  );
+  const [lastBackup, setLastBackup] = useState("");
+
+  const [status, setStatus] = useState("");
+
+  const [message, setMessage] = useState("");
 
 
-  const handleCreateBackup = () => {
 
-    alert("Backup Created Successfully");
+  // ==========================
+  // LOAD BACKUP DETAILS
+  // ==========================
+
+  useEffect(() => {
+
+    loadBackup();
+
+  }, []);
+
+
+
+  const loadBackup = async () => {
+
+    try {
+
+      const response = await fetch(
+        "/api/backup"
+      );
+
+
+      const result = await response.json();
+
+
+      const data = result.data;
+
+
+      setBackupName(
+        data.backupName
+      );
+
+
+      setLastBackup(
+        data.lastBackup
+      );
+
+
+      setStatus(
+        data.status
+      );
+
+
+    }
+    catch(error){
+
+      console.error(
+        "Backup Load Error",
+        error
+      );
+
+    }
 
   };
 
 
-  const handleRestoreBackup = () => {
 
-    alert("Backup Restored Successfully");
+
+
+  // ==========================
+  // CREATE BACKUP
+  // ==========================
+
+  const handleCreateBackup = async () => {
+
+
+    try {
+
+
+      const response = await fetch(
+        "/api/backup",
+        {
+          method:"POST",
+
+          headers:{
+            "Content-Type":"application/json",
+          },
+
+          body:JSON.stringify({
+
+            action:"create",
+
+          }),
+
+        }
+      );
+
+
+
+      const result = await response.json();
+
+
+
+      setLastBackup(
+        result.data.lastBackup
+      );
+
+
+      setStatus(
+        result.data.status
+      );
+
+
+      setMessage(
+        result.message
+      );
+
+
+    }
+    catch(error){
+
+      console.error(
+        "Create Backup Error",
+        error
+      );
+
+
+      setMessage(
+        "Backup creation failed"
+      );
+
+    }
+
 
   };
+
+
+
+
+
+  // ==========================
+  // RESTORE BACKUP
+  // ==========================
+
+  const handleRestoreBackup = async () => {
+
+
+    try {
+
+
+      const response = await fetch(
+        "/api/backup",
+        {
+          method:"POST",
+
+          headers:{
+            "Content-Type":"application/json",
+          },
+
+          body:JSON.stringify({
+
+            action:"restore",
+
+          }),
+
+        }
+      );
+
+
+      const result = await response.json();
+
+
+
+      setStatus(
+        result.data.status
+      );
+
+
+      setMessage(
+        result.message
+      );
+
+
+    }
+    catch(error){
+
+
+      console.error(
+        "Restore Backup Error",
+        error
+      );
+
+
+      setMessage(
+        "Restore failed"
+      );
+
+
+    }
+
+
+  };
+
+
+
 
 
   const handleDownloadBackup = () => {
 
-    alert("Backup Download Started");
+    setMessage(
+      "Backup Download Started"
+    );
 
   };
+
 
 
   return (
@@ -55,11 +242,14 @@ export default function BackupPage() {
             Backup
           </h1>
 
+
           <p className="text-gray-600 mt-2">
             Manage system backups
           </p>
 
+
         </div>
+
 
 
         <Link
@@ -83,10 +273,7 @@ export default function BackupPage() {
 
 
       </div>
-
-
-
-
+      
       {/* Backup Card */}
 
       <div className="bg-white border rounded-xl shadow p-6">
@@ -95,14 +282,13 @@ export default function BackupPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
 
+
           {/* Backup Name */}
 
           <div>
 
             <label className="block text-sm font-semibold text-gray-900 mb-2">
-
               Backup Name
-
             </label>
 
 
@@ -132,14 +318,13 @@ export default function BackupPage() {
 
 
 
+
           {/* Last Backup */}
 
           <div>
 
             <label className="block text-sm font-semibold text-gray-900 mb-2">
-
               Last Backup
-
             </label>
 
 
@@ -169,14 +354,13 @@ export default function BackupPage() {
 
 
 
+
           {/* Backup Status */}
 
           <div>
 
             <label className="block text-sm font-semibold text-gray-900 mb-2">
-
               Backup Status
-
             </label>
 
 
@@ -203,11 +387,39 @@ export default function BackupPage() {
             />
 
           </div>
-                    {/* Action Buttons */}
+
+
+
+
+
+          {/* Message */}
+
+          {
+            message && (
+
+              <div className="md:col-span-2">
+
+                <div className="text-green-600 font-semibold">
+                  {message}
+                </div>
+
+              </div>
+
+            )
+          }
+
+
+
+
+
+          {/* Action Buttons */}
 
           <div className="md:col-span-2">
 
+
             <div className="flex flex-wrap gap-3 mt-4">
+
+
 
               <button
 
@@ -227,6 +439,8 @@ export default function BackupPage() {
                 Create Backup
 
               </button>
+
+
 
 
 
@@ -251,6 +465,8 @@ export default function BackupPage() {
 
 
 
+
+
               <button
 
                 onClick={handleDownloadBackup}
@@ -270,15 +486,20 @@ export default function BackupPage() {
 
               </button>
 
+
+
             </div>
 
+
           </div>
+
 
 
         </div>
 
 
       </div>
+
 
 
     </div>

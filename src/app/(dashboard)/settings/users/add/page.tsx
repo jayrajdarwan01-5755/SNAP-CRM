@@ -8,18 +8,46 @@ export default function AddUserPage() {
   const router = useRouter();
 
   const [username, setUsername] = useState("");
-
   const [role, setRole] = useState("");
-
   const [status, setStatus] = useState("Active");
-
   const [password, setPassword] = useState("");
-
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const [loading, setLoading] = useState(false);
 
+  const handleSave = async () => {
 
-  const handleSave = () => {
+    if (!username.trim()) {
+
+      alert("Username is required");
+
+      return;
+
+    }
+
+    if (!role) {
+
+      alert("Role is required");
+
+      return;
+
+    }
+
+    if (!password) {
+
+      alert("Password is required");
+
+      return;
+
+    }
+
+    if (!confirmPassword) {
+
+      alert("Confirm Password is required");
+
+      return;
+
+    }
 
     if (password !== confirmPassword) {
 
@@ -29,23 +57,65 @@ export default function AddUserPage() {
 
     }
 
+    try {
 
-    alert("User Added Successfully");
+      setLoading(true);
 
-    router.push("/settings/users");
+      const response = await fetch("/api/users", {
+
+        method: "POST",
+
+        headers: {
+
+          "Content-Type": "application/json",
+
+        },
+
+        body: JSON.stringify({
+
+          Username: username,
+          Role: role,
+          Status: status,
+          Password: password,
+
+        }),
+
+      });
+
+      if (!response.ok) {
+
+        throw new Error("Failed to add user");
+
+      }
+
+      alert("User Added Successfully");
+
+      router.push("/settings/users");
+
+    }
+
+    catch (error) {
+
+      console.log(error);
+
+      alert("Failed to add user");
+
+    }
+
+    finally {
+
+      setLoading(false);
+
+    }
 
   };
-
 
   return (
 
     <div className="space-y-6">
-
-
-      {/* Header */}
+              {/* Header */}
 
       <div className="flex justify-between items-center">
-
 
         <div>
 
@@ -58,7 +128,6 @@ export default function AddUserPage() {
           </p>
 
         </div>
-
 
         <button
           onClick={() => router.back()}
@@ -74,20 +143,13 @@ export default function AddUserPage() {
           Back
         </button>
 
-
       </div>
-
-
-
 
       {/* Form */}
 
       <div className="bg-white border rounded-xl shadow p-6">
 
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-
 
           {/* Username */}
 
@@ -101,7 +163,7 @@ export default function AddUserPage() {
               type="text"
               placeholder="Enter Username"
               value={username}
-              onChange={(e)=>setUsername(e.target.value)}
+              onChange={(e) => setUsername(e.target.value)}
               className="
               w-full
               border
@@ -116,9 +178,6 @@ export default function AddUserPage() {
 
           </div>
 
-
-
-
           {/* Role */}
 
           <div>
@@ -127,13 +186,9 @@ export default function AddUserPage() {
               Role
             </label>
 
-
             <select
-
               value={role}
-
-              onChange={(e)=>setRole(e.target.value)}
-
+              onChange={(e) => setRole(e.target.value)}
               className="
               w-full
               border
@@ -144,12 +199,9 @@ export default function AddUserPage() {
               px-4
               py-2
               "
-
             >
 
-              <option value="">
-                Select Role
-              </option>
+              <option value="">Select Role</option>
 
               <option value="Administrator">
                 Administrator
@@ -163,14 +215,9 @@ export default function AddUserPage() {
                 Employee
               </option>
 
-
             </select>
 
-
           </div>
-
-
-
 
           {/* Status */}
 
@@ -180,13 +227,9 @@ export default function AddUserPage() {
               Status
             </label>
 
-
             <select
-
               value={status}
-
-              onChange={(e)=>setStatus(e.target.value)}
-
+              onChange={(e) => setStatus(e.target.value)}
               className="
               w-full
               border
@@ -197,25 +240,15 @@ export default function AddUserPage() {
               px-4
               py-2
               "
-
             >
 
-              <option value="Active">
-                Active
-              </option>
+              <option value="Active">Active</option>
 
-              <option value="Inactive">
-                Inactive
-              </option>
-
+              <option value="Inactive">Inactive</option>
 
             </select>
 
-
           </div>
-
-
-
 
           {/* Password */}
 
@@ -225,12 +258,11 @@ export default function AddUserPage() {
               Password
             </label>
 
-
             <input
               type="password"
               placeholder="Enter Password"
               value={password}
-              onChange={(e)=>setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               className="
               w-full
               border
@@ -244,7 +276,8 @@ export default function AddUserPage() {
             />
 
           </div>
-                    {/* Confirm Password */}
+
+          {/* Confirm Password */}
 
           <div>
 
@@ -256,7 +289,7 @@ export default function AddUserPage() {
               type="password"
               placeholder="Confirm Password"
               value={confirmPassword}
-              onChange={(e)=>setConfirmPassword(e.target.value)}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               className="
               w-full
               border
@@ -271,44 +304,35 @@ export default function AddUserPage() {
 
           </div>
 
-
         </div>
-
-
 
         {/* Save Button */}
 
         <div className="flex justify-end mt-8">
 
-
           <button
-
             onClick={handleSave}
-
+            disabled={loading}
             className="
             bg-blue-600
             hover:bg-blue-700
+            disabled:bg-gray-400
             text-white
             px-6
             py-2
             rounded-lg
             "
-
           >
 
-            Save User
+            {loading ? "Saving..." : "Save User"}
 
           </button>
 
-
         </div>
-
 
       </div>
 
-
     </div>
-
 
   );
 

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { Employee } from "@/types/employee";
 
-let employees: Employee[] = [
+export let employees: Employee[] = [
   {
     EmployeeId: 1,
     EmployeeCode: "EMP001",
@@ -10,8 +10,8 @@ let employees: Employee[] = [
     Email: "john@gmail.com",
     Phone: "9876543210",
     Gender: "Male",
-    DOB: "10-05-1995",
-    JoiningDate: "15-01-2026",
+    DOB: "1995-05-10",
+    JoiningDate: "2026-01-15",
     Department: "HR",
     Designation: "HR Manager",
     Salary: 50000,
@@ -25,8 +25,8 @@ let employees: Employee[] = [
     Email: "alice@gmail.com",
     Phone: "9876543211",
     Gender: "Female",
-    DOB: "20-08-1998",
-    JoiningDate: "01-02-2026",
+    DOB: "1998-08-20",
+    JoiningDate: "2026-02-01",
     Department: "Sales",
     Designation: "Sales Executive",
     Salary: 35000,
@@ -34,16 +34,41 @@ let employees: Employee[] = [
   },
 ];
 
+// ========================
 // GET ALL EMPLOYEES
-export async function GET() {
+// ========================
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+
+  const id = searchParams.get("id");
+
+  if (id) {
+    const employee = employees.find(
+      (emp) => emp.EmployeeId === Number(id)
+    );
+
+    if (!employee) {
+      return NextResponse.json(
+        { message: "Employee not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(employee);
+  }
+
   return NextResponse.json(employees);
 }
 
+// ========================
 // ADD EMPLOYEE
+// ========================
+
 export async function POST(request: Request) {
   const body: Employee = await request.json();
 
-  const newEmployee = {
+  const newEmployee: Employee = {
     ...body,
     EmployeeId: Date.now(),
   };
@@ -53,28 +78,41 @@ export async function POST(request: Request) {
   return NextResponse.json(newEmployee);
 }
 
+// ========================
 // UPDATE EMPLOYEE
+// ========================
+
 export async function PUT(request: Request) {
   const body: Employee = await request.json();
 
-  employees = employees.map((employee) =>
-    employee.EmployeeId === body.EmployeeId
-      ? body
-      : employee
+  const index = employees.findIndex(
+    (emp) => emp.EmployeeId === body.EmployeeId
   );
+
+  if (index === -1) {
+    return NextResponse.json(
+      { message: "Employee not found" },
+      { status: 404 }
+    );
+  }
+
+  employees[index] = body;
 
   return NextResponse.json({
     message: "Employee updated successfully",
+    employee: employees[index],
   });
 }
 
+// ========================
 // DELETE EMPLOYEE
+// ========================
+
 export async function DELETE(request: Request) {
   const body = await request.json();
 
   employees = employees.filter(
-    (employee) =>
-      employee.EmployeeId !== body.EmployeeId
+    (emp) => emp.EmployeeId !== body.EmployeeId
   );
 
   return NextResponse.json({

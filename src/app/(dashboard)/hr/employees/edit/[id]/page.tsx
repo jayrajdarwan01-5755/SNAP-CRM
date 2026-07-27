@@ -1,57 +1,127 @@
 "use client";
 
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+
 
 export default function EditEmployeePage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+
+  const { id } = use(params);
 
   const router = useRouter();
 
+  const [loading, setLoading] = useState(true);
+
   const [employee, setEmployee] = useState({
-    employeeCode: "EMP001",
-    firstName: "John",
-    lastName: "Smith",
-    email: "john@gmail.com",
-    phone: "9876543210",
-    gender: "Male",
-    dob: "1995-05-10",
-    joiningDate: "2026-01-15",
-    department: "HR",
-    designation: "HR Manager",
-    salary: "50000",
+    employeeId: 0,
+    employeeCode: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    gender: "",
+    dob: "",
+    joiningDate: "",
+    department: "",
+    designation: "",
+    salary: "",
     status: "Active",
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  useEffect(() => {
+    loadEmployee();
+  }, []);
 
+  const loadEmployee = async () => {
+    try {
+      const response = await fetch(
+        `/api/employees?id=${id}`
+      );
+
+      const data = await response.json();
+
+      setEmployee({
+        employeeId: data.EmployeeId,
+        employeeCode: data.EmployeeCode,
+        firstName: data.FirstName,
+        lastName: data.LastName,
+        email: data.Email,
+        phone: data.Phone,
+        gender: data.Gender,
+        dob: data.DOB,
+        joiningDate: data.JoiningDate,
+        department: data.Department,
+        designation: data.Designation,
+        salary: data.Salary.toString(),
+        status: data.Status,
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement
+    >
+  ) => {
     setEmployee({
       ...employee,
       [e.target.name]: e.target.value,
     });
-
   };
 
-  const handleUpdate = (e: React.FormEvent) => {
-
+  const handleUpdate = async (
+    e: React.FormEvent
+  ) => {
     e.preventDefault();
 
-    console.log(employee);
+    const response = await fetch("/api/employees", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        EmployeeId: employee.employeeId,
+        EmployeeCode: employee.employeeCode,
+        FirstName: employee.firstName,
+        LastName: employee.lastName,
+        Email: employee.email,
+        Phone: employee.phone,
+        Gender: employee.gender,
+        DOB: employee.dob,
+        JoiningDate: employee.joiningDate,
+        Department: employee.department,
+        Designation: employee.designation,
+        Salary: Number(employee.salary),
+        Status: employee.status,
+      }),
+    });
 
-    alert("Employee Updated Successfully");
-
-    router.push("/hr/employees");
-
+    if (response.ok) {
+      alert("Employee Updated Successfully");
+      router.push("/hr/employees");
+    } else {
+      alert("Failed to update employee");
+    }
   };
 
-  return (
+  if (loading) {
+    return (
+      <div className="p-10 text-center text-gray-700">
+        Loading Employee...
+      </div>
+    );
+  }
 
-    <div className="space-y-6">
+  return (
+        <div className="space-y-6">
 
       {/* Header */}
 
@@ -180,11 +250,11 @@ export default function EditEmployeePage({
                     onChange={handleChange}
                     className="w-full border rounded-lg px-4 py-2 text-gray-900"
                   >
+                    <option value="">Select Gender</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                     <option value="Other">Other</option>
                   </select>
-
                 </div>
 
                 <div>
@@ -204,7 +274,8 @@ export default function EditEmployeePage({
               </div>
 
             </div>
-                        {/* Job Information */}
+
+            {/* Job Information */}
 
             <div className="bg-gray-50 border rounded-xl p-6">
 
@@ -239,6 +310,7 @@ export default function EditEmployeePage({
                     onChange={handleChange}
                     className="w-full border rounded-lg px-4 py-2 text-gray-900"
                   >
+                    <option value="">Select Department</option>
                     <option value="HR">HR</option>
                     <option value="Sales">Sales</option>
                     <option value="IT">IT</option>
@@ -295,8 +367,6 @@ export default function EditEmployeePage({
 
           </div>
 
-          {/* Buttons */}
-
           <div className="flex gap-3 pt-4">
 
             <button
@@ -321,7 +391,5 @@ export default function EditEmployeePage({
       </div>
 
     </div>
-
   );
-
 }

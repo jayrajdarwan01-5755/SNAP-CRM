@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { EmailSettings } from "@/types/emailSettings";
 
 export default function EmailSettingsPage() {
 
@@ -15,15 +16,117 @@ export default function EmailSettingsPage() {
 
   const [senderName, setSenderName] = useState("");
 
-  const [encryption, setEncryption] = useState("TLS");
+  const [encryption, setEncryption] = useState<"TLS" | "SSL" | "None">("TLS");
 
+  const [loading, setLoading] = useState(true);
 
-  const handleSave = () => {
+  const [saving, setSaving] = useState(false);
 
-    alert("Email Settings Saved Successfully");
+  useEffect(() => {
+
+    loadSettings();
+
+  }, []);
+
+  const loadSettings = async () => {
+
+    try {
+
+      setLoading(true);
+
+      const response = await fetch("/api/email");
+
+      const data: EmailSettings = await response.json();
+
+      setSmtpHost(data.SMTPHost);
+
+      setSmtpPort(data.SMTPPort);
+
+      setEmail(data.Email);
+
+      setPassword(data.Password);
+
+      setSenderName(data.SenderName);
+
+      setEncryption(data.Encryption);
+
+    }
+
+    catch (error) {
+
+      console.log(error);
+
+      alert("Failed to load Email Settings");
+
+    }
+
+    finally {
+
+      setLoading(false);
+
+    }
 
   };
 
+  const handleSave = async () => {
+
+    try {
+
+      setSaving(true);
+
+      const response = await fetch("/api/email", {
+
+        method: "PUT",
+
+        headers: {
+
+          "Content-Type": "application/json",
+
+        },
+
+        body: JSON.stringify({
+
+          SMTPHost: smtpHost,
+
+          SMTPPort: smtpPort,
+
+          Email: email,
+
+          Password: password,
+
+          SenderName: senderName,
+
+          Encryption: encryption,
+
+        }),
+
+      });
+
+      if (!response.ok) {
+
+        throw new Error("Failed to save settings");
+
+      }
+
+      alert("Email Settings Saved Successfully");
+
+    }
+
+    catch (error) {
+
+      console.log(error);
+
+      alert("Something went wrong");
+
+    }
+
+    finally {
+
+      setSaving(false);
+
+    }
+
+  };
 
   const handleTest = () => {
 
@@ -31,34 +134,46 @@ export default function EmailSettingsPage() {
 
   };
 
+  if (loading) {
+
+    return (
+
+      <div className="p-6 text-center">
+
+        Loading...
+
+      </div>
+
+    );
+
+  }
 
   return (
 
     <div className="space-y-6">
 
-
       {/* Header */}
 
       <div className="flex justify-between items-center">
 
-
         <div>
 
           <h1 className="text-3xl font-bold text-gray-900">
+
             Email Settings
+
           </h1>
 
           <p className="text-gray-600 mt-2">
+
             Configure SMTP email settings
+
           </p>
 
         </div>
 
-
         <Link
-
           href="/settings"
-
           className="
           bg-gray-600
           hover:bg-gray-700
@@ -67,45 +182,34 @@ export default function EmailSettingsPage() {
           py-2
           rounded-lg
           "
-
         >
 
           ← Back
 
         </Link>
 
-
       </div>
-
-
-
 
       {/* Form */}
 
       <div className="bg-white border rounded-xl shadow p-6">
 
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-
-          {/* SMTP Host */}
+                      {/* SMTP Host */}
 
           <div>
 
             <label className="block text-sm font-semibold text-gray-900 mb-2">
+
               SMTP Host
+
             </label>
 
             <input
-
               type="text"
-
-              placeholder="smtp.gmail.com"
-
               value={smtpHost}
-
-              onChange={(e)=>setSmtpHost(e.target.value)}
-
+              onChange={(e) => setSmtpHost(e.target.value)}
+              placeholder="smtp.gmail.com"
               className="
               w-full
               border
@@ -116,32 +220,25 @@ export default function EmailSettingsPage() {
               px-4
               py-2
               "
-
             />
 
           </div>
-
-
-
 
           {/* SMTP Port */}
 
           <div>
 
             <label className="block text-sm font-semibold text-gray-900 mb-2">
+
               SMTP Port
+
             </label>
 
             <input
-
               type="number"
-
-              placeholder="587"
-
               value={smtpPort}
-
-              onChange={(e)=>setSmtpPort(e.target.value)}
-
+              onChange={(e) => setSmtpPort(e.target.value)}
+              placeholder="587"
               className="
               w-full
               border
@@ -152,32 +249,25 @@ export default function EmailSettingsPage() {
               px-4
               py-2
               "
-
             />
 
           </div>
 
-
-
-
-          {/* Email Address */}
+          {/* Email */}
 
           <div>
 
             <label className="block text-sm font-semibold text-gray-900 mb-2">
+
               Email Address
+
             </label>
 
             <input
-
               type="email"
-
-              placeholder="example@gmail.com"
-
               value={email}
-
-              onChange={(e)=>setEmail(e.target.value)}
-
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="example@gmail.com"
               className="
               w-full
               border
@@ -188,32 +278,25 @@ export default function EmailSettingsPage() {
               px-4
               py-2
               "
-
             />
 
           </div>
-
-
-
 
           {/* Password */}
 
           <div>
 
             <label className="block text-sm font-semibold text-gray-900 mb-2">
+
               Password
+
             </label>
 
             <input
-
               type="password"
-
-              placeholder="Enter Password"
-
               value={password}
-
-              onChange={(e)=>setPassword(e.target.value)}
-
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter Password"
               className="
               w-full
               border
@@ -224,28 +307,25 @@ export default function EmailSettingsPage() {
               px-4
               py-2
               "
-
             />
 
           </div>
-                    {/* Sender Name */}
+
+          {/* Sender Name */}
 
           <div>
 
             <label className="block text-sm font-semibold text-gray-900 mb-2">
+
               Sender Name
+
             </label>
 
             <input
-
               type="text"
-
-              placeholder="SNAP CRM"
-
               value={senderName}
-
               onChange={(e) => setSenderName(e.target.value)}
-
+              placeholder="SNAP CRM"
               className="
               w-full
               border
@@ -256,28 +336,27 @@ export default function EmailSettingsPage() {
               px-4
               py-2
               "
-
             />
 
           </div>
-
-
-
 
           {/* Encryption */}
 
           <div>
 
             <label className="block text-sm font-semibold text-gray-900 mb-2">
+
               Encryption
+
             </label>
 
             <select
-
               value={encryption}
-
-              onChange={(e) => setEncryption(e.target.value)}
-
+              onChange={(e) =>
+                setEncryption(
+                  e.target.value as "TLS" | "SSL" | "None"
+                )
+              }
               className="
               w-full
               border
@@ -288,39 +367,38 @@ export default function EmailSettingsPage() {
               px-4
               py-2
               "
-
             >
 
               <option value="TLS">
+
                 TLS
+
               </option>
 
               <option value="SSL">
+
                 SSL
+
               </option>
 
               <option value="None">
+
                 None
+
               </option>
 
             </select>
 
           </div>
 
-
         </div>
-
-
 
         {/* Buttons */}
 
         <div className="flex justify-end gap-3 mt-8">
 
-
           <button
-
             onClick={handleTest}
-
             className="
             bg-green-600
             hover:bg-green-700
@@ -329,40 +407,33 @@ export default function EmailSettingsPage() {
             py-2
             rounded-lg
             "
-
           >
 
             Test Email
 
           </button>
 
-
-
           <button
-
             onClick={handleSave}
-
+            disabled={saving}
             className="
             bg-blue-600
             hover:bg-blue-700
+            disabled:bg-gray-400
             text-white
             px-6
             py-2
             rounded-lg
             "
-
           >
 
-            Save Settings
+            {saving ? "Saving..." : "Save Settings"}
 
           </button>
 
-
         </div>
 
-
       </div>
-
 
     </div>
 

@@ -12,6 +12,7 @@ export default function SuppliersPage() {
 
   const [loading, setLoading] = useState(true);
 
+  const [searchText, setSearchText] = useState("");
 
 
   useEffect(() => {
@@ -23,6 +24,31 @@ export default function SuppliersPage() {
   }, []);
 
 
+const handleClearFilter = () => {
+
+  setSearchText("");
+
+};
+
+const filteredSuppliers = suppliers.filter((supplier) =>
+
+  supplier.SupplierName
+    .toLowerCase()
+    .includes(searchText.toLowerCase())
+
+  ||
+
+  supplier.Email
+    .toLowerCase()
+    .includes(searchText.toLowerCase())
+
+  ||
+
+  supplier.Phone
+    .toLowerCase()
+    .includes(searchText.toLowerCase())
+
+);
 
 
   const loadSuppliers = async () => {
@@ -210,48 +236,49 @@ export default function SuppliersPage() {
       <div className="bg-white border rounded-xl shadow p-6">
 
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
+  <input
+    type="text"
+    value={searchText}
+    onChange={(e) => setSearchText(e.target.value)}
+    placeholder="Search Supplier"
+    className="
+    w-full
+    border
+    border-gray-300
+    bg-white
+    text-gray-900
+    rounded-lg
+    px-4
+    py-2
+    "
+  />
 
-          <input
+  <button
+    className="
+    bg-green-600
+    hover:bg-green-700
+    text-white
+    rounded-lg
+    "
+  >
+    Search
+  </button>
 
-            type="text"
+  <button
+    onClick={handleClearFilter}
+    className="
+    bg-gray-600
+    hover:bg-gray-700
+    text-white
+    rounded-lg
+    "
+  >
+    Clear
+  </button>
 
-            placeholder="Search Supplier"
-
-            className="
-            w-full
-            border
-            border-gray-300
-            bg-white
-            text-gray-900
-            rounded-lg
-            px-4
-            py-2
-            "
-
-          />
-
-
-
-          <button
-
-            className="
-            bg-green-600
-            hover:bg-green-700
-            text-white
-            rounded-lg
-            "
-
-          >
-
-            Search
-
-          </button>
-
-
-
-        </div>
+</div>
 
 
       </div>
@@ -333,8 +360,7 @@ export default function SuppliersPage() {
             :
 
 
-            suppliers.length === 0 ? (
-
+         filteredSuppliers.length === 0 ? (
 
               <tr>
 
@@ -362,8 +388,7 @@ export default function SuppliersPage() {
             :
 
 
-            suppliers.map((supplier)=>(
-
+      filteredSuppliers.map((supplier) => (
 
               <tr
 

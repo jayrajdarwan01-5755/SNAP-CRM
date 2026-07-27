@@ -1,44 +1,82 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { User } from "@/types/user";
 
 export default function ViewUserPage() {
 
   const router = useRouter();
 
+  const params = useParams();
 
-  const user = {
+  const [user, setUser] = useState<User | null>(null);
 
-    UserId: 1,
-    Username: "admin",
-    Role: "Administrator",
-    Status: "Active",
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+
+    loadUser();
+
+  }, []);
+
+  const loadUser = async () => {
+
+    try {
+
+      setLoading(true);
+
+      const response = await fetch("/api/users");
+
+      const data: User[] = await response.json();
+
+      const selectedUser = data.find(
+
+        (item) => item.UserId === Number(params.id)
+
+      );
+
+      if (selectedUser) {
+
+        setUser(selectedUser);
+
+      }
+
+    } catch (error) {
+
+      console.log(error);
+
+    } finally {
+
+      setLoading(false);
+
+    }
 
   };
-
 
   return (
 
     <div className="space-y-6">
 
-
       {/* Header */}
 
       <div className="flex justify-between items-center">
 
-
         <div>
 
           <h1 className="text-3xl font-bold text-gray-900">
+
             User Details
+
           </h1>
 
           <p className="text-gray-600 mt-2">
+
             View user information
+
           </p>
 
         </div>
-
 
         <button
 
@@ -59,90 +97,110 @@ export default function ViewUserPage() {
 
         </button>
 
-
       </div>
-
-
-
-
-      {/* User Information */}
-
 
       <div className="bg-white border rounded-xl shadow p-6">
+                {
 
+          loading ? (
 
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            <div className="text-center py-10 text-gray-600">
 
-          User Information
+              Loading user...
 
-        </h2>
+            </div>
 
+          ) : !user ? (
 
+            <div className="text-center py-10 text-red-600">
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              User not found
 
+            </div>
 
-          {/* Username */}
+          ) : (
 
-          <div>
+            <>
 
-            <p className="text-sm text-gray-500">
-              Username
-            </p>
+              <h2 className="text-xl font-semibold text-gray-900 mb-6">
 
-            <p className="font-semibold text-gray-900">
-              {user.Username}
-            </p>
+                User Information
 
-          </div>
+              </h2>
 
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
+                {/* Username */}
 
-          {/* Role */}
+                <div>
 
-          <div>
+                  <p className="text-sm text-gray-500">
 
-            <p className="text-sm text-gray-500">
-              Role
-            </p>
+                    Username
 
-            <p className="font-semibold text-gray-900">
-              {user.Role}
-            </p>
+                  </p>
 
-          </div>
+                  <p className="font-semibold text-gray-900">
 
+                    {user.Username}
 
+                  </p>
 
-          {/* Status */}
+                </div>
 
-          <div>
+                {/* Role */}
 
-            <p className="text-sm text-gray-500">
-              Status
-            </p>
+                <div>
 
-            <p
-              className={
-                user.Status === "Active"
-                  ? "font-semibold text-green-600"
-                  : "font-semibold text-red-600"
-              }
-            >
+                  <p className="text-sm text-gray-500">
 
-              {user.Status}
+                    Role
 
-            </p>
+                  </p>
 
-          </div>
-                  </div>
+                  <p className="font-semibold text-gray-900">
 
+                    {user.Role}
+
+                  </p>
+
+                </div>
+
+                {/* Status */}
+
+                <div>
+
+                  <p className="text-sm text-gray-500">
+
+                    Status
+
+                  </p>
+
+                  <p
+                    className={
+                      user.Status === "Active"
+                        ? "font-semibold text-green-600"
+                        : "font-semibold text-red-600"
+                    }
+                  >
+
+                    {user.Status}
+
+                  </p>
+
+                </div>
+
+              </div>
+
+            </>
+
+          )
+
+        }
 
       </div>
 
-
     </div>
-
 
   );
 

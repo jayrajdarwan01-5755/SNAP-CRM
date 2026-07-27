@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import { useTheme } from "@/context/ThemeContext";
 import {
   LayoutDashboard,
   Users,
@@ -17,6 +18,8 @@ import {
 export default function Sidebar() {
   const pathname = usePathname();
 
+  const { themeSettings } = useTheme();
+
   const [hrOpen, setHrOpen] = useState(false);
   const [salesOpen, setSalesOpen] = useState(false);
   const [inventoryOpen, setInventoryOpen] = useState(false);
@@ -24,21 +27,32 @@ export default function Sidebar() {
   const menuClass = (path: string) =>
     `flex items-center gap-3 px-4 py-3 rounded-lg transition ${
       pathname === path
-        ? "bg-blue-600 text-white"
-        : "text-gray-300 hover:bg-slate-800 hover:text-white"
+        ? "text-white"
+        : "text-gray-300 hover:text-white"
     }`;
 
   const subMenuClass = (path: string) =>
     `block ml-10 px-3 py-2 rounded-md transition ${
       pathname === path
-        ? "bg-blue-600 text-white"
-        : "text-gray-300 hover:bg-slate-800 hover:text-white"
+        ? "text-white"
+        : "text-gray-300 hover:text-white"
     }`;
 
   return (
-    <aside className="w-64 min-h-screen bg-slate-900 border-r border-slate-800">
+    <aside
+      className="w-64 min-h-screen border-r"
+      style={{
+        backgroundColor: themeSettings.sidebarColor,
+        borderColor: "#334155",
+      }}
+    >
       {/* Logo */}
-      <div className="h-16 flex items-center px-6 border-b border-slate-800">
+      <div
+        className="h-16 flex items-center px-6 border-b"
+        style={{
+          borderColor: "#334155",
+        }}
+      >
         <h1 className="text-2xl font-bold text-white">
           SNAP CRM
         </h1>
@@ -47,16 +61,25 @@ export default function Sidebar() {
       <nav className="p-4 space-y-2">
 
         {/* Dashboard */}
-        <Link href="/dashboard" className={menuClass("/dashboard")}>
+        <Link
+          href="/dashboard"
+          className={menuClass("/dashboard")}
+          style={{
+            backgroundColor:
+              pathname === "/dashboard"
+                ? themeSettings.primaryColor
+                : "transparent",
+          }}
+        >
           <LayoutDashboard size={20} />
           <span>Dashboard</span>
         </Link>
 
-        {/* ================= HR ================= */}
+        {/* HR */}
 
         <button
           onClick={() => setHrOpen(!hrOpen)}
-          className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-gray-300 hover:bg-slate-800 hover:text-white transition"
+          className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-gray-300 hover:text-white transition"
         >
           <div className="flex items-center gap-3">
             <Users size={20} />
@@ -72,9 +95,16 @@ export default function Sidebar() {
 
         {hrOpen && (
           <div className="space-y-1">
+
             <Link
               href="/hr/employees"
               className={subMenuClass("/hr/employees")}
+              style={{
+                backgroundColor:
+                  pathname === "/hr/employees"
+                    ? themeSettings.primaryColor
+                    : "transparent",
+              }}
             >
               Employees
             </Link>
@@ -82,6 +112,12 @@ export default function Sidebar() {
             <Link
               href="/hr/leave"
               className={subMenuClass("/hr/leave")}
+              style={{
+                backgroundColor:
+                  pathname === "/hr/leave"
+                    ? themeSettings.primaryColor
+                    : "transparent",
+              }}
             >
               Leave
             </Link>
@@ -89,17 +125,24 @@ export default function Sidebar() {
             <Link
               href="/hr/payroll"
               className={subMenuClass("/hr/payroll")}
+              style={{
+                backgroundColor:
+                  pathname === "/hr/payroll"
+                    ? themeSettings.primaryColor
+                    : "transparent",
+              }}
             >
               Payroll
             </Link>
+
           </div>
         )}
 
-        {/* ================= SALES ================= */}
+        {/* SALES */}
 
         <button
           onClick={() => setSalesOpen(!salesOpen)}
-          className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-gray-300 hover:bg-slate-800 hover:text-white transition"
+          className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-gray-300 hover:text-white transition"
         >
           <div className="flex items-center gap-3">
             <Briefcase size={20} />
@@ -115,9 +158,16 @@ export default function Sidebar() {
 
         {salesOpen && (
           <div className="space-y-1">
+
             <Link
               href="/sales/leads"
               className={subMenuClass("/sales/leads")}
+              style={{
+                backgroundColor:
+                  pathname === "/sales/leads"
+                    ? themeSettings.primaryColor
+                    : "transparent",
+              }}
             >
               Leads
             </Link>
@@ -125,6 +175,12 @@ export default function Sidebar() {
             <Link
               href="/sales/opportunities"
               className={subMenuClass("/sales/opportunities")}
+              style={{
+                backgroundColor:
+                  pathname === "/sales/opportunities"
+                    ? themeSettings.primaryColor
+                    : "transparent",
+              }}
             >
               Opportunities
             </Link>
@@ -132,17 +188,24 @@ export default function Sidebar() {
             <Link
               href="/sales/customers"
               className={subMenuClass("/sales/customers")}
+              style={{
+                backgroundColor:
+                  pathname === "/sales/customers"
+                    ? themeSettings.primaryColor
+                    : "transparent",
+              }}
             >
               Customers
             </Link>
+
           </div>
         )}
 
-        {/* ================= INVENTORY ================= */}
+        {/* INVENTORY */}
 
         <button
           onClick={() => setInventoryOpen(!inventoryOpen)}
-          className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-gray-300 hover:bg-slate-800 hover:text-white transition"
+          className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-gray-300 hover:text-white transition"
         >
           <div className="flex items-center gap-3">
             <Package size={20} />
@@ -158,9 +221,16 @@ export default function Sidebar() {
 
         {inventoryOpen && (
           <div className="space-y-1">
+
             <Link
               href="/inventory/products"
               className={subMenuClass("/inventory/products")}
+              style={{
+                backgroundColor:
+                  pathname === "/inventory/products"
+                    ? themeSettings.primaryColor
+                    : "transparent",
+              }}
             >
               Products
             </Link>
@@ -168,6 +238,12 @@ export default function Sidebar() {
             <Link
               href="/inventory/categories"
               className={subMenuClass("/inventory/categories")}
+              style={{
+                backgroundColor:
+                  pathname === "/inventory/categories"
+                    ? themeSettings.primaryColor
+                    : "transparent",
+              }}
             >
               Categories
             </Link>
@@ -175,22 +251,47 @@ export default function Sidebar() {
             <Link
               href="/inventory/suppliers"
               className={subMenuClass("/inventory/suppliers")}
+              style={{
+                backgroundColor:
+                  pathname === "/inventory/suppliers"
+                    ? themeSettings.primaryColor
+                    : "transparent",
+              }}
             >
               Suppliers
             </Link>
+
           </div>
         )}
 
         {/* Reports */}
 
-        <Link href="/reports" className={menuClass("/reports")}>
+        <Link
+          href="/reports"
+          className={menuClass("/reports")}
+          style={{
+            backgroundColor:
+              pathname === "/reports"
+                ? themeSettings.primaryColor
+                : "transparent",
+          }}
+        >
           <FileBarChart2 size={20} />
           <span>Reports</span>
         </Link>
 
         {/* Settings */}
 
-        <Link href="/settings" className={menuClass("/settings")}>
+        <Link
+          href="/settings"
+          className={menuClass("/settings")}
+          style={{
+            backgroundColor:
+              pathname === "/settings"
+                ? themeSettings.primaryColor
+                : "transparent",
+          }}
+        >
           <Settings size={20} />
           <span>Settings</span>
         </Link>
