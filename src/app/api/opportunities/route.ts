@@ -1,56 +1,72 @@
 import { NextResponse } from "next/server";
-import { Opportunity } from "@/types/opportunity";
-
-
-let opportunities: Opportunity[] = [
-
-  {
-    OpportunityId: 1,
-    Customer: "ABC Technologies",
-    OpportunityName: "CRM Software Deal",
-    Amount: 250000,
-    Stage: "Proposal",
-    Probability: "70%",
-    CloseDate: "2026-08-30",
-  },
-
-
-  {
-    OpportunityId: 2,
-    Customer: "XYZ Solutions",
-    OpportunityName: "ERP Implementation",
-    Amount: 500000,
-    Stage: "Negotiation",
-    Probability: "80%",
-    CloseDate: "2026-09-15",
-  },
-
-
-  {
-    OpportunityId: 3,
-    Customer: "Tech World",
-    OpportunityName: "Cloud Service Contract",
-    Amount: 150000,
-    Stage: "Prospecting",
-    Probability: "40%",
-    CloseDate: "2026-10-20",
-  },
-
-];
-
-
+import { supabase } from "@/lib/supabase";
 
 
 // GET ALL OPPORTUNITIES
 
 export async function GET() {
 
+  try {
 
-  return NextResponse.json(opportunities);
+    const { data, error } = await supabase
+      .from("opportunities")
+      .select("*")
+      .order("opportunityid", { ascending: true });
 
+
+    if (error) {
+
+      return NextResponse.json(
+        {
+          message: "Failed to fetch opportunities",
+          error: error.message,
+        },
+        {
+          status: 500,
+        }
+      );
+
+    }
+
+
+    const opportunities = data.map((item) => ({
+
+      OpportunityId: item.opportunityid,
+
+      Customer: item.customer,
+
+      OpportunityName: item.opportunityname,
+
+      Amount: item.amount,
+
+      Stage: item.stage,
+
+      Probability: item.probability,
+
+      CloseDate: item.closedate,
+
+    }));
+
+
+    return NextResponse.json(opportunities);
+
+
+
+  } catch (error) {
+
+
+    return NextResponse.json(
+      {
+        message: "Server error",
+      },
+      {
+        status: 500,
+      }
+    );
+
+  }
 
 }
-
 
 
 
@@ -60,103 +76,276 @@ export async function GET() {
 export async function POST(request: Request) {
 
 
-  const body: Opportunity = await request.json();
+  try {
+
+
+    const body = await request.json();
 
 
 
-  const newOpportunity = {
+    const { data, error } = await supabase
+      .from("opportunities")
+      .insert([
 
-    ...body,
+        {
 
-    OpportunityId: Date.now(),
+          customer: body.Customer,
 
-  };
+          opportunityname: body.OpportunityName,
+
+          amount: body.Amount,
+
+          stage: body.Stage,
+
+          probability: body.Probability,
+
+          closedate: body.CloseDate,
+
+        }
+
+      ])
+      .select();
 
 
 
-  opportunities.push(newOpportunity);
+
+    if (error) {
+
+
+      return NextResponse.json(
+
+        {
+
+          message: "Failed to add opportunity",
+
+          error: error.message,
+
+        },
+
+        {
+
+          status: 500,
+
+        }
+
+      );
+
+
+    }
 
 
 
-  return NextResponse.json(newOpportunity);
+
+    const opportunity = data[0];
+
+
+
+    return NextResponse.json({
+
+      OpportunityId: opportunity.opportunityid,
+
+      Customer: opportunity.customer,
+
+      OpportunityName: opportunity.opportunityname,
+
+      Amount: opportunity.amount,
+
+      Stage: opportunity.stage,
+
+      Probability: opportunity.probability,
+
+      CloseDate: opportunity.closedate,
+
+    });
+
+
+
+  } catch (error) {
+
+
+    return NextResponse.json(
+
+      {
+
+        message:"Server error",
+
+      },
+
+      {
+
+        status:500,
+
+      }
+
+    );
+
+
+  }
 
 
 }
-
-
-
-
-
-
 // UPDATE OPPORTUNITY
 
 export async function PUT(request: Request) {
 
+  try {
 
-  const body: Opportunity = await request.json();
-
-
-
-  opportunities = opportunities.map((opportunity)=>
-
-
-    opportunity.OpportunityId === body.OpportunityId
-
-    ?
-
-    body
-
-    :
-
-    opportunity
-
-
-  );
+    const body = await request.json();
 
 
 
+    const { data, error } = await supabase
+      .from("opportunities")
+      .update({
 
-  return NextResponse.json({
+        customer: body.Customer,
 
-    message:"Opportunity updated successfully"
+        opportunityname: body.OpportunityName,
 
-  });
+        amount: body.Amount,
 
+        stage: body.Stage,
+
+        probability: body.Probability,
+
+        closedate: body.CloseDate,
+
+      })
+      .eq("opportunityid", body.OpportunityId)
+      .select();
+
+
+
+    if (error) {
+
+      return NextResponse.json(
+
+        {
+          message: "Failed to update opportunity",
+          error: error.message,
+        },
+
+        {
+          status: 500,
+        }
+
+      );
+
+    }
+
+
+
+    const opportunity = data[0];
+
+
+
+    return NextResponse.json({
+
+      message: "Opportunity updated successfully",
+
+      data: {
+
+        OpportunityId: opportunity.opportunityid,
+
+        Customer: opportunity.customer,
+
+        OpportunityName: opportunity.opportunityname,
+
+        Amount: opportunity.amount,
+
+        Stage: opportunity.stage,
+
+        Probability: opportunity.probability,
+
+        CloseDate: opportunity.closedate,
+
+      }
+
+    });
+
+
+
+  } catch (error) {
+
+
+    return NextResponse.json(
+
+      {
+        message: "Server error",
+      },
+
+      {
+        status: 500,
+      }
+
+    );
+
+  }
 
 }
-
-
-
-
-
-
 
 // DELETE OPPORTUNITY
 
 export async function DELETE(request: Request) {
 
+  try {
 
-  const body = await request.json();
-
-
-
-  opportunities = opportunities.filter(
-
-    (opportunity)=>
-
-    opportunity.OpportunityId !== body.OpportunityId
-
-
-  );
+    const body = await request.json();
 
 
 
+    const { error } = await supabase
+      .from("opportunities")
+      .delete()
+      .eq("opportunityid", body.OpportunityId);
 
-  return NextResponse.json({
 
-    message:"Opportunity deleted successfully"
 
-  });
+    if (error) {
 
+
+      return NextResponse.json(
+
+        {
+          message: "Failed to delete opportunity",
+          error: error.message,
+        },
+
+        {
+          status: 500,
+        }
+
+      );
+
+
+    }
+
+
+
+    return NextResponse.json({
+
+      message: "Opportunity deleted successfully",
+
+    });
+
+
+
+  } catch (error) {
+
+
+    return NextResponse.json(
+
+      {
+        message: "Server error",
+      },
+
+      {
+        status: 500,
+      }
+
+    );
+
+
+  }
 
 }

@@ -13,6 +13,9 @@ interface ThemeSettings {
   primaryColor: string;
   sidebarColor: string;
   fontSize: string;
+
+  textColor: string;
+  backgroundColor: string;
 }
 
 interface ThemeContextType {
@@ -33,12 +36,15 @@ export function ThemeProvider({
   children: ReactNode;
 }) {
   const [themeSettings, setThemeSettings] =
-    useState<ThemeSettings>({
-      theme: "light",
-      primaryColor: "#2563eb",
-      sidebarColor: "#111827",
-      fontSize: "medium",
-    });
+   useState<ThemeSettings>({
+  theme: "light",
+  primaryColor: "#2563eb",
+  sidebarColor: "#111827",
+  fontSize: "medium",
+
+  textColor: "#111827",
+  backgroundColor: "#ffffff",
+});
 
   const loadTheme = async () => {
     try {
@@ -47,14 +53,24 @@ export function ThemeProvider({
 
       const data = result.data ?? result;
 
-      setThemeSettings({
-        theme: data.theme ?? "light",
-        primaryColor:
-          data.primaryColor ?? "#2563eb",
-        sidebarColor:
-          data.sidebarColor ?? "#111827",
-        fontSize: data.fontSize ?? "medium",
-      });
+     setThemeSettings({
+  theme: data.theme ?? "light",
+
+  primaryColor:
+    data.primaryColor ?? "#2563eb",
+
+  sidebarColor:
+    data.sidebarColor ?? "#111827",
+
+  fontSize:
+    data.fontSize ?? "medium",
+
+  textColor:
+    data.textColor ?? "#111827",
+
+  backgroundColor:
+    data.backgroundColor ?? "#ffffff",
+});
     } catch (error) {
       console.error("Theme Load Error:", error);
     }

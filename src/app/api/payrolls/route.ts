@@ -1,173 +1,367 @@
 import { NextResponse } from "next/server";
-import { Payroll } from "@/types/payroll";
+import { supabaseServer } from "@/lib/supabaseServer";
 
 
-let payrolls: Payroll[] = [
-
-  {
-    PayrollId: 1,
-    EmployeeId: 101,
-    EmployeeName: "John Smith",
-    Month: "July",
-    Basic: 40000,
-    Allowance: 5000,
-    Deduction: 2000,
-    NetSalary: 43000,
-  },
-
-
-  {
-    PayrollId: 2,
-    EmployeeId: 102,
-    EmployeeName: "Alice Brown",
-    Month: "July",
-    Basic: 50000,
-    Allowance: 6000,
-    Deduction: 3000,
-    NetSalary: 53000,
-  },
-
-
-  {
-    PayrollId: 3,
-    EmployeeId: 103,
-    EmployeeName: "Robert Wilson",
-    Month: "July",
-    Basic: 35000,
-    Allowance: 4000,
-    Deduction: 1500,
-    NetSalary: 37500,
-  }
-
-];
-
-
-
-
-
-// GET ALL PAYROLL
+// ========================
+// GET PAYROLLS
+// ========================
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
 
-  const id = searchParams.get("id");
+  try {
 
-  if (id) {
-    const payroll = payrolls.find(
-      (p) => p.PayrollId === Number(id)
-    );
+    const { searchParams } = new URL(request.url);
 
-    if (!payroll) {
-      return NextResponse.json(
-        { message: "Payroll not found" },
-        { status: 404 }
-      );
+    const id = searchParams.get("id");
+
+
+    // ========================
+    // GET SINGLE PAYROLL
+    // ========================
+
+    if (id) {
+
+      const { data, error } = await supabaseServer
+        .from("payrolls")
+        .select("*")
+        .eq("id", Number(id))
+        .single();
+
+      if (error) {
+
+        return NextResponse.json(
+          {
+            message: error.message,
+          },
+          {
+            status: 404,
+          }
+        );
+
+      }
+
+      return NextResponse.json({
+
+        PayrollId: data.id,
+
+        EmployeeId: data.employeeid,
+
+        EmployeeName: data.employeename,
+
+        Month: data.month,
+
+        Basic: Number(data.basic),
+
+        Allowance: Number(data.allowance),
+
+        Deduction: Number(data.deduction),
+
+        NetSalary: Number(data.netsalary),
+
+      });
+
     }
 
-    return NextResponse.json(payroll);
+
+    // ========================
+    // GET ALL PAYROLLS
+    // ========================
+
+    const { data, error } = await supabaseServer
+      .from("payrolls")
+      .select("*")
+      .order("id", { ascending: true });
+
+    if (error) {
+
+      return NextResponse.json(
+        {
+          message: error.message,
+        },
+        {
+          status: 500,
+        }
+      );
+
+    }
+
+    const payrolls = data.map((payroll) => ({
+
+      PayrollId: payroll.id,
+
+      EmployeeId: payroll.employeeid,
+
+      EmployeeName: payroll.employeename,
+
+      Month: payroll.month,
+
+      Basic: Number(payroll.basic),
+
+      Allowance: Number(payroll.allowance),
+
+      Deduction: Number(payroll.deduction),
+
+      NetSalary: Number(payroll.netsalary),
+
+    }));
+
+
+    return NextResponse.json(payrolls);
+
   }
 
-  return NextResponse.json(payrolls);
+  catch (error) {
+
+    return NextResponse.json(
+
+      {
+        message: "Failed to fetch payrolls",
+        error,
+      },
+
+      {
+        status: 500,
+      }
+
+    );
+
+  }
+
 }
 
 
 
-
-
+// ========================
 // ADD PAYROLL
+// ========================
 
-export async function POST(
-  request:Request
-){
+export async function POST(request: Request) {
 
-  const body:Payroll = await request.json();
+  try {
 
+    const body = await request.json();
 
-  const newPayroll:Payroll = {
+    const { data, error } = await supabaseServer
+      .from("payrolls")
+      .insert([
+        {
+          employeeid: body.EmployeeId,
+          employeename: body.EmployeeName,
+          month: body.Month,
+          basic: body.Basic,
+          allowance: body.Allowance,
+          deduction: body.Deduction,
+          netsalary: body.NetSalary,
+        },
+      ])
+      .select()
+      .single();
 
-    ...body,
+    if (error) {
 
-    PayrollId: Date.now(),
+      return NextResponse.json(
+        {
+          message: error.message,
+        },
+        {
+          status: 400,
+        }
+      );
 
-  };
+    }
 
+    return NextResponse.json({
 
-  payrolls.push(newPayroll);
+      message: "Payroll added successfully",
 
+      payroll: {
 
-  return NextResponse.json(newPayroll);
+        PayrollId: data.id,
+
+        EmployeeId: data.employeeid,
+
+        EmployeeName: data.employeename,
+
+        Month: data.month,
+
+        Basic: Number(data.basic),
+
+        Allowance: Number(data.allowance),
+
+        Deduction: Number(data.deduction),
+
+        NetSalary: Number(data.netsalary),
+
+      },
+
+    });
+
+  }
+
+  catch (error) {
+
+    return NextResponse.json(
+
+      {
+        message: "Failed to add payroll",
+        error,
+      },
+
+      {
+        status: 500,
+      }
+
+    );
+
+  }
 
 }
-
-
-
-
-
-
-
+// ========================
 // UPDATE PAYROLL
+// ========================
 
-export async function PUT(
-  request:Request
-){
+export async function PUT(request: Request) {
 
-  const body:Payroll = await request.json();
+  try {
 
+    const body = await request.json();
 
-  payrolls = payrolls.map((payroll)=>
+    const { data, error } = await supabaseServer
+      .from("payrolls")
+      .update({
 
-    payroll.PayrollId === body.PayrollId
+        employeeid: body.EmployeeId,
 
-    ?
+        employeename: body.EmployeeName,
 
-    body
+        month: body.Month,
 
-    :
+        basic: body.Basic,
 
-    payroll
+        allowance: body.Allowance,
 
-  );
+        deduction: body.Deduction,
 
+        netsalary: body.NetSalary,
 
-  return NextResponse.json({
+      })
+      .eq("id", body.PayrollId)
+      .select()
+      .single();
 
-    message:"Payroll updated successfully"
+    if (error) {
 
-  });
+      return NextResponse.json(
+        {
+          message: error.message,
+        },
+        {
+          status: 400,
+        }
+      );
 
+    }
+
+    return NextResponse.json({
+
+      message: "Payroll updated successfully",
+
+      payroll: {
+
+        PayrollId: data.id,
+
+        EmployeeId: data.employeeid,
+
+        EmployeeName: data.employeename,
+
+        Month: data.month,
+
+        Basic: Number(data.basic),
+
+        Allowance: Number(data.allowance),
+
+        Deduction: Number(data.deduction),
+
+        NetSalary: Number(data.netsalary),
+
+      },
+
+    });
+
+  }
+
+  catch (error) {
+
+    return NextResponse.json(
+
+      {
+        message: "Failed to update payroll",
+        error,
+      },
+
+      {
+        status: 500,
+      }
+
+    );
+
+  }
 
 }
 
 
 
-
-
-
-
+// ========================
 // DELETE PAYROLL
+// ========================
 
-export async function DELETE(
-  request:Request
-){
+export async function DELETE(request: Request) {
 
-  const body = await request.json();
+  try {
 
+    const body = await request.json();
 
-  payrolls = payrolls.filter(
+    const { error } = await supabaseServer
+      .from("payrolls")
+      .delete()
+      .eq("id", body.PayrollId);
 
-    (payroll)=>
+    if (error) {
 
-    payroll.PayrollId !== body.PayrollId
+      return NextResponse.json(
+        {
+          message: error.message,
+        },
+        {
+          status: 400,
+        }
+      );
 
-  );
+    }
 
+    return NextResponse.json({
 
+      message: "Payroll deleted successfully",
 
-  return NextResponse.json({
+    });
 
-    message:"Payroll deleted successfully"
+  }
 
-  });
+  catch (error) {
 
+    return NextResponse.json(
+
+      {
+        message: "Failed to delete payroll",
+        error,
+      },
+
+      {
+        status: 500,
+      }
+
+    );
+
+  }
 
 }

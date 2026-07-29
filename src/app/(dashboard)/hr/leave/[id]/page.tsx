@@ -1,12 +1,10 @@
 "use client";
-
+import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Leave } from "@/types/leave";
 
-
 export default function LeaveViewPage() {
-
 
   const router = useRouter();
 
@@ -14,10 +12,31 @@ export default function LeaveViewPage() {
 
   const id = Number(params.id);
 
+  const [leave, setLeave] = useState<Leave | null>(null);
 
+  const handleDelete = async () => {
 
-  const [leave,setLeave] = useState<Leave | null>(null);
+    const confirmDelete = confirm(
+      "Are you sure you want to delete this leave?"
+    );
 
+    if (!confirmDelete) return;
+
+    const response = await fetch("/api/leaves", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        LeaveId: leave?.LeaveId,
+      }),
+    });
+
+    if (response.ok) {
+      alert("Leave Deleted Successfully");
+      router.push("/hr/leave");
+    }
+  };
 
 
 
@@ -111,6 +130,9 @@ View leave request information
 </div>
 
 
+<div className="flex gap-3">
+
+
 <button
 
 onClick={()=>router.back()}
@@ -130,6 +152,51 @@ Back
 
 </button>
 
+
+
+<Link
+
+href={`/hr/leave/edit/${leave.LeaveId}`}
+
+className="
+bg-blue-600
+hover:bg-blue-700
+text-white
+px-5
+py-2
+rounded-lg
+"
+
+>
+
+Edit
+
+</Link>
+
+
+
+
+<button
+
+onClick={handleDelete}
+
+className="
+bg-red-600
+hover:bg-red-700
+text-white
+px-5
+py-2
+rounded-lg
+"
+
+>
+
+Delete
+
+</button>
+
+
+</div>
 
 
 </div>

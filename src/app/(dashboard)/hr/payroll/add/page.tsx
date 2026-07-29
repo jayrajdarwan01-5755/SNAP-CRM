@@ -1,12 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";    
+import { useEffect, useState } from "react";
+import { Employee } from "@/types/employee";
 import { useRouter } from "next/navigation";
 
 export default function AddPayrollPage() {
 
   const router = useRouter();
 
+  // Employee List
+  const [employees, setEmployees] = useState<Employee[]>([]);
+
+  // Form States
   const [employeeId, setEmployeeId] = useState("");
   const [employeeName, setEmployeeName] = useState("");
   const [month, setMonth] = useState("");
@@ -15,23 +20,62 @@ export default function AddPayrollPage() {
   const [deduction, setDeduction] = useState("");
   const [netSalary, setNetSalary] = useState("");
 
+  // ===========================
+  // Load Employees
+  // ===========================
+
   useEffect(() => {
 
-  const basicSalary = Number(basic) || 0;
+    const loadEmployees = async () => {
 
-  const allowanceAmount = Number(allowance) || 0;
+      try {
 
-  const deductionAmount = Number(deduction) || 0;
+        const response = await fetch("/api/employees");
 
-  const total =
-    basicSalary +
-    allowanceAmount -
-    deductionAmount;
+        const data: Employee[] = await response.json();
 
-  setNetSalary(total > 0 ? total.toString() : "");
+        setEmployees(data);
 
-}, [basic, allowance, deduction]);
+      } catch (error) {
 
+        console.log(error);
+
+      }
+
+    };
+
+    loadEmployees();
+
+  }, []);
+
+  // ===========================
+  // Auto Calculate Net Salary
+  // ===========================
+
+  useEffect(() => {
+
+    const basicSalary = Number(basic) || 0;
+
+    const allowanceAmount = Number(allowance) || 0;
+
+    const deductionAmount = Number(deduction) || 0;
+
+    const total =
+      basicSalary +
+      allowanceAmount -
+      deductionAmount;
+
+    setNetSalary(
+      total > 0
+        ? total.toString()
+        : ""
+    );
+
+  }, [basic, allowance, deduction]);
+
+    // ===========================
+  // Save Payroll
+  // ===========================
 
   const handleSave = async (
     e: React.FormEvent
@@ -48,39 +92,42 @@ export default function AddPayrollPage() {
       !deduction ||
       !netSalary
     ) {
+
       alert("Please fill all fields.");
+
       return;
+
     }
 
-    const response = await fetch(
-      "/api/payrolls",
-      {
-        method: "POST",
+    const response = await fetch("/api/payrolls", {
 
-        headers: {
-          "Content-Type": "application/json",
-        },
+      method: "POST",
 
-        body: JSON.stringify({
+      headers: {
 
-          EmployeeId: Number(employeeId),
+        "Content-Type": "application/json",
 
-          EmployeeName: employeeName,
+      },
 
-          Month: month,
+      body: JSON.stringify({
 
-          Basic: Number(basic),
+        EmployeeId: Number(employeeId),
 
-          Allowance: Number(allowance),
+        EmployeeName: employeeName,
 
-          Deduction: Number(deduction),
+        Month: month,
 
-          NetSalary: Number(netSalary),
+        Basic: Number(basic),
 
-        }),
+        Allowance: Number(allowance),
 
-      }
-    );
+        Deduction: Number(deduction),
+
+        NetSalary: Number(netSalary),
+
+      }),
+
+    });
 
     if (response.ok) {
 
@@ -132,8 +179,6 @@ export default function AddPayrollPage() {
 
       </div>
 
-      {/* Form */}
-
       <form
         onSubmit={handleSave}
         className="
@@ -147,33 +192,69 @@ export default function AddPayrollPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-          {/* Employee ID */}
+          {/* Employee */}
 
           <div>
 
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Employee ID
+              Employee
             </label>
 
-            <input
-              type="number"
+            <select
+
               value={employeeId}
-              onChange={(e) =>
-                setEmployeeId(e.target.value)
-              }
-              placeholder="Enter Employee ID"
-             className="
-                w-full
-                border
-                border-gray-300
-                bg-white
-                text-gray-900
-                placeholder:text-gray-600
-                rounded-lg
-                px-4
-                py-2
+
+              onChange={(e) => {
+
+                const selectedId = e.target.value;
+
+                setEmployeeId(selectedId);
+
+                const emp = employees.find(
+
+                  (item) =>
+                    item.EmployeeId === Number(selectedId)
+
+                );
+
+                if (emp) {
+
+                  setEmployeeName(
+                    `${emp.FirstName} ${emp.LastName}`
+                  );
+
+                }
+
+              }}
+
+              className="
+              w-full
+              border
+              border-gray-300
+              bg-white
+              text-gray-900
+              rounded-lg
+              px-4
+              py-2
               "
-            />
+            >
+
+              <option value="">
+                Select Employee
+              </option>
+
+              {employees.map((emp) => (
+
+                <option
+                  key={emp.EmployeeId}
+                  value={emp.EmployeeId}
+                >
+                  {emp.EmployeeId} - {emp.FirstName} {emp.LastName}
+                </option>
+
+              ))}
+
+            </select>
 
           </div>
 
@@ -188,20 +269,16 @@ export default function AddPayrollPage() {
             <input
               type="text"
               value={employeeName}
-              onChange={(e) =>
-                setEmployeeName(e.target.value)
-              }
-              placeholder="Enter Employee Name"
-             className="
-w-full
-border
-border-gray-300
-bg-white
-text-gray-900
-placeholder:text-gray-600
-rounded-lg
-px-4
-py-2
+              readOnly
+              className="
+              w-full
+              border
+              border-gray-300
+              bg-gray-100
+              text-gray-900
+              rounded-lg
+              px-4
+              py-2
               "
             />
 
@@ -218,15 +295,14 @@ py-2
               value={month}
               onChange={(e) => setMonth(e.target.value)}
               className="
-w-full
-border
-border-gray-300
-bg-white
-text-gray-900
-placeholder:text-gray-600
-rounded-lg
-px-4
-py-2
+              w-full
+              border
+              border-gray-300
+              bg-white
+              text-gray-900
+              rounded-lg
+              px-4
+              py-2
               "
             >
               <option value="">Select Month</option>
@@ -259,16 +335,15 @@ py-2
               value={basic}
               onChange={(e) => setBasic(e.target.value)}
               placeholder="Enter Basic Salary"
-             className="
-w-full
-border
-border-gray-300
-bg-white
-text-gray-900
-placeholder:text-gray-600
-rounded-lg
-px-4
-py-2
+              className="
+              w-full
+              border
+              border-gray-300
+              bg-white
+              text-gray-900
+              rounded-lg
+              px-4
+              py-2
               "
             />
 
@@ -288,15 +363,14 @@ py-2
               onChange={(e) => setAllowance(e.target.value)}
               placeholder="Enter Allowance"
               className="
-w-full
-border
-border-gray-300
-bg-white
-text-gray-900
-placeholder:text-gray-600
-rounded-lg
-px-4
-py-2
+              w-full
+              border
+              border-gray-300
+              bg-white
+              text-gray-900
+              rounded-lg
+              px-4
+              py-2
               "
             />
 
@@ -315,21 +389,21 @@ py-2
               value={deduction}
               onChange={(e) => setDeduction(e.target.value)}
               placeholder="Enter Deduction"
-             className="
-w-full
-border
-border-gray-300
-bg-white
-text-gray-900
-placeholder:text-gray-600
-rounded-lg
-px-4
-py-2
+              className="
+              w-full
+              border
+              border-gray-300
+              bg-white
+              text-gray-900
+              rounded-lg
+              px-4
+              py-2
               "
             />
 
           </div>
-                    {/* Net Salary */}
+
+          {/* Net Salary */}
 
           <div>
 
@@ -337,29 +411,27 @@ py-2
               Net Salary
             </label>
 
-           <input
-  type="number"
-  value={netSalary}
-  onChange={(e) => setNetSalary(e.target.value)}
-  placeholder="Enter Net Salary"
-  className="
-  w-full
-  border
-  border-gray-300
-  bg-white
-  text-gray-900
-  placeholder:text-gray-600
-  rounded-lg
-  px-4
-  py-2
-  "
-/>
+            <input
+              type="number"
+              value={netSalary}
+              readOnly
+              className="
+              w-full
+              border
+              border-gray-300
+              bg-gray-100
+              text-gray-900
+              rounded-lg
+              px-4
+              py-2
+              "
+            />
 
           </div>
 
         </div>
 
-        {/* Save Button */}
+        {/* Buttons */}
 
         <div className="mt-8 flex gap-3">
 

@@ -4,15 +4,21 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { User } from "@/types/user";
 
+
 export default function ViewUserPage() {
+
 
   const router = useRouter();
 
   const params = useParams();
 
+
   const [user, setUser] = useState<User | null>(null);
 
   const [loading, setLoading] = useState(true);
+
+
+
 
   useEffect(() => {
 
@@ -20,49 +26,79 @@ export default function ViewUserPage() {
 
   }, []);
 
+
+
+
+
   const loadUser = async () => {
+
 
     try {
 
+
       setLoading(true);
 
-      const response = await fetch("/api/users");
 
-      const data: User[] = await response.json();
 
-      const selectedUser = data.find(
-
-        (item) => item.UserId === Number(params.id)
-
+      const response = await fetch(
+        `/api/users?id=${params.id}`
       );
 
-      if (selectedUser) {
 
-        setUser(selectedUser);
 
-      }
+      const data: User = await response.json();
 
-    } catch (error) {
 
-      console.log(error);
 
-    } finally {
+      setUser(data);
 
-      setLoading(false);
+
 
     }
 
+    catch(error){
+
+
+      console.log(error);
+
+
+    }
+
+    finally{
+
+
+      setLoading(false);
+
+
+    }
+
+
   };
+
+
+
+
+
+
 
   return (
 
+
     <div className="space-y-6">
+
+
+
+
 
       {/* Header */}
 
+
+
       <div className="flex justify-between items-center">
 
+
         <div>
+
 
           <h1 className="text-3xl font-bold text-gray-900">
 
@@ -70,17 +106,25 @@ export default function ViewUserPage() {
 
           </h1>
 
+
+
           <p className="text-gray-600 mt-2">
 
             View user information
 
           </p>
 
+
         </div>
+
+
+
 
         <button
 
-          onClick={() => router.back()}
+
+          onClick={()=>router.back()}
+
 
           className="
           bg-gray-600
@@ -91,117 +135,225 @@ export default function ViewUserPage() {
           rounded-lg
           "
 
+
         >
 
           Back
 
         </button>
 
+
+
       </div>
 
+
+
+
+
+
+
+
       <div className="bg-white border rounded-xl shadow p-6">
-                {
 
-          loading ? (
 
-            <div className="text-center py-10 text-gray-600">
 
-              Loading user...
 
-            </div>
 
-          ) : !user ? (
+      {
 
-            <div className="text-center py-10 text-red-600">
+        loading ? (
 
-              User not found
 
-            </div>
+          <div className="text-center py-10 text-gray-600">
 
-          ) : (
+            Loading user...
 
-            <>
+          </div>
 
-              <h2 className="text-xl font-semibold text-gray-900 mb-6">
 
-                User Information
 
-              </h2>
+        )
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                {/* Username */}
 
-                <div>
+        : !user ? (
 
-                  <p className="text-sm text-gray-500">
 
-                    Username
+          <div className="text-center py-10 text-red-600">
 
-                  </p>
+            User not found
 
-                  <p className="font-semibold text-gray-900">
+          </div>
 
-                    {user.Username}
 
-                  </p>
 
-                </div>
+        )
 
-                {/* Role */}
 
-                <div>
 
-                  <p className="text-sm text-gray-500">
+        : (
 
-                    Role
 
-                  </p>
 
-                  <p className="font-semibold text-gray-900">
+          <>
 
-                    {user.Role}
 
-                  </p>
 
-                </div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-6">
 
-                {/* Status */}
+              User Information
 
-                <div>
+            </h2>
 
-                  <p className="text-sm text-gray-500">
 
-                    Status
 
-                  </p>
 
-                  <p
-                    className={
-                      user.Status === "Active"
-                        ? "font-semibold text-green-600"
-                        : "font-semibold text-red-600"
-                    }
-                  >
 
-                    {user.Status}
 
-                  </p>
 
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+
+
+
+
+
+
+              {/* Username */}
+
+
+              <div>
+
+
+                <p className="text-sm text-gray-500">
+
+                  Username
+
+                </p>
+
+
+
+                <p className="font-semibold text-gray-900">
+
+                  {user.username}
+
+                </p>
+
 
               </div>
 
-            </>
 
-          )
 
-        }
+
+
+
+
+              {/* Full Name */}
+
+
+
+              <div>
+
+
+                <p className="text-sm text-gray-500">
+
+                  Full Name
+
+                </p>
+
+
+
+                <p className="font-semibold text-gray-900">
+
+                  {user.fullname}
+
+                </p>
+
+
+              </div>
+
+
+
+
+
+
+
+              {/* Role */}
+
+
+
+              <div>
+
+
+                <p className="text-sm text-gray-500">
+
+                  Role
+
+                </p>
+
+
+
+                <p className="font-semibold text-gray-900">
+
+                  {user.role}
+
+                </p>
+
+
+              </div>
+
+
+
+
+
+
+
+
+              {/* Status */}
+
+
+
+              <div>
+
+
+                <p className="text-sm text-gray-500">
+
+                  Status
+
+                </p>
+
+
+
+                <p
+
+                  className={
+
+                    user.status
+
+                    ?
+
+                    "font-semibold text-green-600"
+
+                    :
+
+                    "font-semibold text-red-600"
+
+                  }
+
+                >
+
+                  {user.status ? "Active" : "Inactive"}
+                </p>
+
+              </div>
+
+            </div>
+          </>
+        )
+      }
 
       </div>
 
     </div>
-
   );
-
 }

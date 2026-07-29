@@ -1,9 +1,9 @@
 export interface ThemeSettings {
-
   theme: string;
-
   primaryColor: string;
+  sidebarColor: string;
+  fontSize: string;
 
-  sidebarStyle: string;
-
+  textColor: string;
+  backgroundColor: string;
 }

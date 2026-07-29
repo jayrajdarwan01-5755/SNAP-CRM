@@ -10,9 +10,12 @@ export default function UsersPage() {
   const [loading, setLoading] = useState(true);
   const [searchText, setSearchText] = useState("");
 
+
   useEffect(() => {
     loadUsers();
   }, []);
+
+
 
   const loadUsers = async () => {
 
@@ -26,11 +29,13 @@ export default function UsersPage() {
 
       setUsers(data);
 
-    } catch (error) {
+    }
+    catch(error){
 
       console.log(error);
 
-    } finally {
+    }
+    finally {
 
       setLoading(false);
 
@@ -38,39 +43,53 @@ export default function UsersPage() {
 
   };
 
-  const handleDelete = async (UserId: number) => {
+
+
+
+  const handleDelete = async (userid:number) => {
+
 
     const confirmDelete = confirm(
       "Are you sure you want to delete this user?"
     );
 
-    if (!confirmDelete) return;
 
-    const response = await fetch("/api/users", {
+    if(!confirmDelete) return;
 
-      method: "DELETE",
 
-      headers: {
-        "Content-Type": "application/json",
+
+    const response = await fetch("/api/users",{
+
+      method:"DELETE",
+
+      headers:{
+        "Content-Type":"application/json"
       },
 
-      body: JSON.stringify({
-        UserId,
-      }),
+      body:JSON.stringify({
+        userid
+      })
 
     });
 
-    if (response.ok) {
 
-      setUsers((prev) =>
+
+    if(response.ok){
+
+      setUsers((prev)=>
         prev.filter(
-          (user) => user.UserId !== UserId
+          (user)=>user.userid !== userid
         )
       );
 
     }
 
+
   };
+
+
+
+
 
   const handleClearFilter = () => {
 
@@ -78,37 +97,53 @@ export default function UsersPage() {
 
   };
 
-  const filteredUsers = users.filter((user) => {
+
+
+
+
+
+  const filteredUsers = users.filter((user)=>{
+
 
     return (
 
-      user.Username
-        .toLowerCase()
-        .includes(searchText.toLowerCase())
+      user.username
+      .toLowerCase()
+      .includes(searchText.toLowerCase())
+
 
       ||
 
-      user.Role
-        .toLowerCase()
-        .includes(searchText.toLowerCase())
+      user.role
+      .toLowerCase()
+      .includes(searchText.toLowerCase())
+
 
       ||
 
-      user.Status
-        .toLowerCase()
-        .includes(searchText.toLowerCase())
+      (user.status ? "active" : "inactive")
+      .includes(searchText.toLowerCase())
+
 
     );
 
+
   });
+
+
+
+
+
 
   return (
 
     <div className="space-y-6">
 
+
       {/* Header */}
 
       <div className="flex justify-between items-center">
+
 
         <div>
 
@@ -116,13 +151,19 @@ export default function UsersPage() {
             User Management
           </h1>
 
+
           <p className="text-gray-600 mt-2">
             Manage system users
           </p>
 
+
         </div>
 
+
+
+
         <div className="flex gap-3">
+
 
           <Link
             href="/settings"
@@ -131,6 +172,8 @@ export default function UsersPage() {
             ← Back
           </Link>
 
+
+
           <Link
             href="/settings/users/add"
             className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg"
@@ -138,23 +181,42 @@ export default function UsersPage() {
             + Add User
           </Link>
 
+
         </div>
+
 
       </div>
 
+
+
+
+
+
       {/* Search */}
+
 
       <div className="bg-white border rounded-xl shadow p-6">
 
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
+
           <input
+
             type="text"
+
             value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
+
+            onChange={(e)=>setSearchText(e.target.value)}
+
             placeholder="Search Username"
+
             className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg px-4 py-2"
+
           />
+
+
+
 
           <button
             className="bg-green-600 hover:bg-green-700 text-white rounded-lg"
@@ -162,151 +224,287 @@ export default function UsersPage() {
             Search
           </button>
 
+
+
+
           <button
+
             onClick={handleClearFilter}
+
             className="bg-gray-600 hover:bg-gray-700 text-white rounded-lg"
+
           >
             Clear
           </button>
 
+
+
         </div>
+
 
       </div>
 
-      {/* Users Table */}
+
+
+
+
+
+
+
+
+      {/* Table */}
+
 
       <div className="bg-white border rounded-xl shadow overflow-hidden">
 
+
         <table className="w-full">
+
 
           <thead className="bg-gray-100">
 
+
             <tr>
+
 
               <th className="px-4 py-3 text-left text-gray-900">
                 Username
               </th>
 
+
+              <th className="px-4 py-3 text-left text-gray-900">
+                Full Name
+              </th>
+
+
               <th className="px-4 py-3 text-left text-gray-900">
                 Role
               </th>
+
 
               <th className="px-4 py-3 text-left text-gray-900">
                 Status
               </th>
 
+
               <th className="px-4 py-3 text-center text-gray-900">
                 Action
               </th>
 
+
             </tr>
+
 
           </thead>
 
+
+
+
+
           <tbody>
 
-            {
-              loading ? (
 
-                <tr>
+          {
 
-                  <td
-                    colSpan={4}
-                    className="text-center py-10 text-gray-600"
-                  >
-                    Loading users...
-                  </td>
+          loading ? (
 
-                </tr>
 
-              ) :
+            <tr>
 
-              filteredUsers.length === 0 ? (
+              <td
+                colSpan={5}
+                className="text-center py-10 text-gray-600"
+              >
+                Loading users...
+              </td>
 
-                <tr>
+            </tr>
 
-                  <td
-                    colSpan={4}
-                    className="text-center py-10 text-gray-600"
-                  >
-                    No users found
-                  </td>
 
-                </tr>
 
-              ) :
-                            filteredUsers.map((user) => (
+          )
 
-                <tr
-                  key={user.UserId}
-                  className="border-t hover:bg-gray-50"
+
+          : filteredUsers.length === 0 ? (
+
+
+            <tr>
+
+              <td
+                colSpan={5}
+                className="text-center py-10 text-gray-600"
+              >
+                No users found
+              </td>
+
+            </tr>
+
+
+
+          )
+
+
+
+          :
+
+
+
+          filteredUsers.map((user)=>(
+
+
+            <tr
+              key={user.userid}
+              className="border-t hover:bg-gray-50"
+            >
+
+
+
+              <td className="px-4 py-4 text-gray-900">
+
+                {user.username}
+
+              </td>
+
+
+
+
+              <td className="px-4 py-4 text-gray-700">
+
+                {user.fullname}
+
+              </td>
+
+
+
+
+              <td className="px-4 py-4 text-gray-700">
+
+                {user.role}
+
+              </td>
+
+
+
+
+
+              <td className="px-4 py-4">
+
+
+                <span
+
+                  className={
+
+                    user.status
+
+                    ?
+
+                    "bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
+
+                    :
+
+                    "bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm"
+
+                  }
+
                 >
 
-                  <td className="px-4 py-4 text-gray-900">
-                    {user.Username}
-                  </td>
+                  {user.status ? "Active" : "Inactive"}
 
-                  <td className="px-4 py-4 text-gray-700">
-                    {user.Role}
-                  </td>
+                </span>
 
-                  <td className="px-4 py-4">
 
-                    <span
-                      className={
-                        user.Status === "Active"
-                          ? "bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
-                          : "bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm"
-                      }
-                    >
-                      {user.Status}
-                    </span>
 
-                  </td>
+              </td>
 
-                  <td className="px-4 py-4">
 
-                    <div className="flex justify-center gap-2">
 
-                      <Link
-                        href={`/settings/users/${user.UserId}`}
-                        className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm"
-                      >
-                        View
-                      </Link>
 
-                      <Link
-                        href={`/settings/users/edit/${user.UserId}`}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
-                      >
-                        Edit
-                      </Link>
 
-                      <button
-                        onClick={() => handleDelete(user.UserId)}
-                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm"
-                      >
-                        Delete
-                      </button>
 
-                    </div>
 
-                  </td>
+              <td className="px-4 py-4">
 
-                </tr>
 
-              ))
+                <div className="flex justify-center gap-2">
 
-            }
+
+                  <Link
+
+                    href={`/settings/users/${user.userid}`}
+
+                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm"
+
+                  >
+
+                    View
+
+                  </Link>
+
+
+
+
+                  <Link
+
+                    href={`/settings/users/edit/${user.userid}`}
+
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
+
+                  >
+
+                    Edit
+
+                  </Link>
+
+
+
+
+
+                  <button
+
+                    onClick={()=>handleDelete(user.userid)}
+
+                    className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm"
+
+                  >
+
+                    Delete
+
+                  </button>
+
+
+
+                </div>
+
+
+              </td>
+
+
+
+
+            </tr>
+
+
+          ))
+
+
+          }
+
 
           </tbody>
 
+
+
         </table>
 
+
+
       </div>
+
+
 
     </div>
 
   );
+
 
 }

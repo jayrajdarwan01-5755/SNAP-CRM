@@ -1,88 +1,354 @@
 import { NextRequest, NextResponse } from "next/server";
+import { supabase } from "@/lib/supabase";
 
-let products = [
-  {
-    ProductId: 1,
-    ProductCode: "PRD001",
-    ProductName: "Dell Laptop",
-    Category: "Electronics",
-    Price: 65000,
-    Quantity: 15,
-    Status: "Active",
-  },
-  {
-    ProductId: 2,
-    ProductCode: "PRD002",
-    ProductName: "Office Chair",
-    Category: "Furniture",
-    Price: 8500,
-    Quantity: 30,
-    Status: "Active",
-  },
-  {
-    ProductId: 3,
-    ProductCode: "PRD003",
-    ProductName: "HP Printer",
-    Category: "Office Supplies",
-    Price: 12000,
-    Quantity: 8,
-    Status: "Inactive",
-  },
-];
 
-// GET
+
+// GET ALL PRODUCTS
+
 export async function GET() {
-  return NextResponse.json(products);
-}
 
-// POST
-export async function POST(request: NextRequest) {
-  const body = await request.json();
+  try {
 
-  const newProduct = {
-    ProductId:
-      products.length > 0
-        ? Math.max(...products.map((p) => p.ProductId)) + 1
-        : 1,
-    ...body,
-  };
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .order("productid", { ascending: true });
 
-  products.push(newProduct);
 
-  return NextResponse.json(newProduct, { status: 201 });
-}
 
-// PUT
-export async function PUT(request: NextRequest) {
-  const body = await request.json();
+    if (error) {
 
-  const index = products.findIndex(
-    (p) => p.ProductId === body.ProductId
-  );
+      return NextResponse.json(
+        {
+          message: "Failed to fetch products",
+          error: error.message,
+        },
+        {
+          status: 500,
+        }
+      );
 
-  if (index === -1) {
+    }
+
+
+
+    const products = data.map((product) => ({
+
+      ProductId: product.productid,
+
+      ProductCode: product.productcode,
+
+      ProductName: product.productname,
+
+      Category: product.category,
+
+      Price: product.price,
+
+      Quantity: product.quantity,
+
+      Status: product.status,
+
+    }));
+
+
+
+    return NextResponse.json(products);
+
+
+
+  } catch (error) {
+
+
     return NextResponse.json(
-      { message: "Product not found" },
-      { status: 404 }
+
+      {
+        message: "Server error",
+      },
+
+      {
+        status: 500,
+      }
+
     );
+
   }
 
-  products[index] = body;
-
-  return NextResponse.json({
-    message: "Product Updated Successfully",
-  });
 }
 
-// DELETE
+
+
+
+
+
+// ADD PRODUCT
+
+export async function POST(request: NextRequest) {
+
+  try {
+
+
+    const body = await request.json();
+
+
+
+    const { data, error } = await supabase
+      .from("products")
+      .insert([
+
+        {
+
+          productcode: body.ProductCode,
+
+          productname: body.ProductName,
+
+          category: body.Category,
+
+          price: body.Price,
+
+          quantity: body.Quantity,
+
+          status: body.Status,
+
+        }
+
+      ])
+      .select();
+
+
+
+
+    if (error) {
+
+
+      return NextResponse.json(
+
+        {
+          message: "Failed to add product",
+          error: error.message,
+        },
+
+        {
+          status: 500,
+        }
+
+      );
+
+    }
+
+
+
+
+    const product = data[0];
+
+
+
+    return NextResponse.json(
+
+      {
+
+        ProductId: product.productid,
+
+        ProductCode: product.productcode,
+
+        ProductName: product.productname,
+
+        Category: product.category,
+
+        Price: product.price,
+
+        Quantity: product.quantity,
+
+        Status: product.status,
+
+      },
+
+      {
+        status: 201,
+      }
+
+    );
+
+
+
+  } catch (error) {
+
+
+    return NextResponse.json(
+
+      {
+        message: "Server error",
+      },
+
+      {
+        status: 500,
+      }
+
+    );
+
+  }
+
+}
+
+// UPDATE PRODUCT
+
+export async function PUT(request: NextRequest) {
+
+  try {
+
+    const body = await request.json();
+
+
+
+    const { data, error } = await supabase
+      .from("products")
+      .update({
+
+        productcode: body.ProductCode,
+
+        productname: body.ProductName,
+
+        category: body.Category,
+
+        price: body.Price,
+
+        quantity: body.Quantity,
+
+        status: body.Status,
+
+      })
+      .eq("productid", body.ProductId)
+      .select();
+
+
+
+    if (error) {
+
+      return NextResponse.json(
+
+        {
+          message: "Failed to update product",
+          error: error.message,
+        },
+
+        {
+          status: 500,
+        }
+
+      );
+
+    }
+
+
+
+    const product = data[0];
+
+
+
+    return NextResponse.json({
+
+      message: "Product Updated Successfully",
+
+      data: {
+
+        ProductId: product.productid,
+
+        ProductCode: product.productcode,
+
+        ProductName: product.productname,
+
+        Category: product.category,
+
+        Price: product.price,
+
+        Quantity: product.quantity,
+
+        Status: product.status,
+
+      }
+
+    });
+
+
+
+  } catch (error) {
+
+
+    return NextResponse.json(
+
+      {
+        message: "Server error",
+      },
+
+      {
+        status: 500,
+      }
+
+    );
+
+  }
+
+}
+
+// DELETE PRODUCT
+
 export async function DELETE(request: NextRequest) {
-  const body = await request.json();
 
-  products = products.filter(
-    (p) => p.ProductId !== body.ProductId
-  );
+  try {
 
-  return NextResponse.json({
-    message: "Product Deleted Successfully",
-  });
+    const body = await request.json();
+
+
+
+    const { error } = await supabase
+      .from("products")
+      .delete()
+      .eq("productid", body.ProductId);
+
+
+
+    if (error) {
+
+
+      return NextResponse.json(
+
+        {
+          message: "Failed to delete product",
+          error: error.message,
+        },
+
+        {
+          status: 500,
+        }
+
+      );
+
+    }
+
+
+
+    return NextResponse.json({
+
+      message: "Product Deleted Successfully",
+
+    });
+
+
+
+  } catch (error) {
+
+
+    return NextResponse.json(
+
+      {
+        message: "Server error",
+      },
+
+      {
+        status: 500,
+      }
+
+    );
+
+  }
+
 }

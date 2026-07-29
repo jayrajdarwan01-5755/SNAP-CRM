@@ -1,121 +1,258 @@
 import { NextResponse } from "next/server";
-import { Employee } from "@/types/employee";
-
-export let employees: Employee[] = [
-  {
-    EmployeeId: 1,
-    EmployeeCode: "EMP001",
-    FirstName: "John",
-    LastName: "Smith",
-    Email: "john@gmail.com",
-    Phone: "9876543210",
-    Gender: "Male",
-    DOB: "1995-05-10",
-    JoiningDate: "2026-01-15",
-    Department: "HR",
-    Designation: "HR Manager",
-    Salary: 50000,
-    Status: "Active",
-  },
-  {
-    EmployeeId: 2,
-    EmployeeCode: "EMP002",
-    FirstName: "Alice",
-    LastName: "Brown",
-    Email: "alice@gmail.com",
-    Phone: "9876543211",
-    Gender: "Female",
-    DOB: "1998-08-20",
-    JoiningDate: "2026-02-01",
-    Department: "Sales",
-    Designation: "Sales Executive",
-    Salary: 35000,
-    Status: "Active",
-  },
-];
+import { supabaseServer } from "@/lib/supabaseServer";
 
 // ========================
-// GET ALL EMPLOYEES
+// GET EMPLOYEES
 // ========================
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
 
-  const id = searchParams.get("id");
+    // Get Single Employee
+    if (id) {
+      const { data, error } = await supabaseServer
+        .from("employees")
+        .select("*")
+        .eq("id", Number(id))
+        .single();
 
-  if (id) {
-    const employee = employees.find(
-      (emp) => emp.EmployeeId === Number(id)
-    );
+      if (error) {
+        return NextResponse.json(
+          { message: error.message },
+          { status: 404 }
+        );
+      }
 
-    if (!employee) {
+      return NextResponse.json({
+        EmployeeId: data.id,
+        EmployeeCode: data.employee_code,
+        FirstName: data.first_name,
+        LastName: data.last_name,
+        Email: data.email,
+        Phone: data.phone,
+        Gender: data.gender,
+        DOB: data.dob,
+        JoiningDate: data.joining_date,
+        Department: data.department,
+        Designation: data.designation,
+        Salary: data.salary,
+        Status: data.status,
+      });
+    }
+
+    // Get All Employees
+    const { data, error } = await supabaseServer
+      .from("employees")
+      .select("*")
+      .order("id", { ascending: true });
+
+    if (error) {
       return NextResponse.json(
-        { message: "Employee not found" },
-        { status: 404 }
+        { message: error.message },
+        { status: 500 }
       );
     }
 
-    return NextResponse.json(employee);
-  }
+    const employees = data.map((emp) => ({
+      EmployeeId: emp.id,
+      EmployeeCode: emp.employee_code,
+      FirstName: emp.first_name,
+      LastName: emp.last_name,
+      Email: emp.email,
+      Phone: emp.phone,
+      Gender: emp.gender,
+      DOB: emp.dob,
+      JoiningDate: emp.joining_date,
+      Department: emp.department,
+      Designation: emp.designation,
+      Salary: emp.salary,
+      Status: emp.status,
+    }));
 
-  return NextResponse.json(employees);
+    return NextResponse.json(employees);
+  } catch (error) {
+    return NextResponse.json(
+      {
+        message: "Failed to fetch employees",
+        error,
+      },
+      {
+        status: 500,
+      }
+    );
+  }
 }
+
 
 // ========================
 // ADD EMPLOYEE
 // ========================
 
 export async function POST(request: Request) {
-  const body: Employee = await request.json();
+  try {
+    const body = await request.json();
 
-  const newEmployee: Employee = {
-    ...body,
-    EmployeeId: Date.now(),
-  };
+    const { data, error } = await supabaseServer
+      .from("employees")
+      .insert([
+        {
+          employee_code: body.EmployeeCode,
+          first_name: body.FirstName,
+          last_name: body.LastName,
+          email: body.Email,
+          phone: body.Phone,
+          gender: body.Gender,
+          dob: body.DOB,
+          joining_date: body.JoiningDate,
+          department: body.Department,
+          designation: body.Designation,
+          salary: body.Salary,
+          status: body.Status,
+        },
+      ])
+      .select()
+      .single();
 
-  employees.push(newEmployee);
+    if (error) {
+      return NextResponse.json(
+        { message: error.message },
+        { status: 400 }
+      );
+    }
 
-  return NextResponse.json(newEmployee);
+    return NextResponse.json({
+      message: "Employee added successfully",
+      employee: {
+        EmployeeId: data.id,
+        EmployeeCode: data.employee_code,
+        FirstName: data.first_name,
+        LastName: data.last_name,
+        Email: data.email,
+        Phone: data.phone,
+        Gender: data.gender,
+        DOB: data.dob,
+        JoiningDate: data.joining_date,
+        Department: data.department,
+        Designation: data.designation,
+        Salary: data.salary,
+        Status: data.status,
+      },
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        message: "Failed to add employee",
+        error,
+      },
+      {
+        status: 500,
+      }
+    );
+  }
 }
+
 
 // ========================
 // UPDATE EMPLOYEE
 // ========================
 
 export async function PUT(request: Request) {
-  const body: Employee = await request.json();
+  try {
+    const body = await request.json();
 
-  const index = employees.findIndex(
-    (emp) => emp.EmployeeId === body.EmployeeId
-  );
+    const { data, error } = await supabaseServer
+      .from("employees")
+      .update({
+        employee_code: body.EmployeeCode,
+        first_name: body.FirstName,
+        last_name: body.LastName,
+        email: body.Email,
+        phone: body.Phone,
+        gender: body.Gender,
+        dob: body.DOB,
+        joining_date: body.JoiningDate,
+        department: body.Department,
+        designation: body.Designation,
+        salary: body.Salary,
+        status: body.Status,
+      })
+      .eq("id", body.EmployeeId)
+      .select()
+      .single();
 
-  if (index === -1) {
+    if (error) {
+      return NextResponse.json(
+        { message: error.message },
+        { status: 400 }
+      );
+    }
+
+    return NextResponse.json({
+      message: "Employee updated successfully",
+      employee: {
+        EmployeeId: data.id,
+        EmployeeCode: data.employee_code,
+        FirstName: data.first_name,
+        LastName: data.last_name,
+        Email: data.email,
+        Phone: data.phone,
+        Gender: data.gender,
+        DOB: data.dob,
+        JoiningDate: data.joining_date,
+        Department: data.department,
+        Designation: data.designation,
+        Salary: data.salary,
+        Status: data.status,
+      },
+    });
+  } catch (error) {
     return NextResponse.json(
-      { message: "Employee not found" },
-      { status: 404 }
+      {
+        message: "Failed to update employee",
+        error,
+      },
+      {
+        status: 500,
+      }
     );
   }
-
-  employees[index] = body;
-
-  return NextResponse.json({
-    message: "Employee updated successfully",
-    employee: employees[index],
-  });
 }
+
 
 // ========================
 // DELETE EMPLOYEE
 // ========================
 
 export async function DELETE(request: Request) {
-  const body = await request.json();
+  try {
+    const body = await request.json();
 
-  employees = employees.filter(
-    (emp) => emp.EmployeeId !== body.EmployeeId
-  );
+    const { error } = await supabaseServer
+      .from("employees")
+      .delete()
+      .eq("id", body.EmployeeId);
 
-  return NextResponse.json({
-    message: "Employee deleted successfully",
-  });
+    if (error) {
+      return NextResponse.json(
+        { message: error.message },
+        { status: 400 }
+      );
+    }
+
+    return NextResponse.json({
+      message: "Employee deleted successfully",
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        message: "Failed to delete employee",
+        error,
+      },
+      {
+        status: 500,
+      }
+    );
+  }
 }

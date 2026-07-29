@@ -9,16 +9,68 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
  const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent) => {
+ const handleLogin = async (e: React.FormEvent) => {
+
   e.preventDefault();
 
+
   if (!username || !password) {
+
     alert("Please enter username and password");
     return;
+
   }
 
-  // Temporary Login
-  router.push("/dashboard");
+
+  try {
+
+
+    const response = await fetch("/api/login", {
+
+      method:"POST",
+
+      headers:{
+        "Content-Type":"application/json"
+      },
+
+      body:JSON.stringify({
+        username,
+        password
+      })
+
+    });
+
+
+
+    const result = await response.json();
+
+
+
+    if(!response.ok){
+
+      alert(result.message);
+      return;
+
+    }
+
+
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify(result.user)
+    );
+
+
+    router.push("/dashboard");
+
+
+
+  } catch(error){
+
+    alert("Login failed");
+
+  }
+
 };
 
   return (
@@ -136,16 +188,19 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="text-center mt-5 text-sm text-gray-500">
+         <div className="text-center mt-5 text-sm text-gray-500">
 
-            First time here?
+  First time here?
 
-            <span className="text-blue-600 cursor-pointer ml-1">
-              Create account
-            </span>
+  <span
+    onClick={() => router.push("/register")}
+    className="text-blue-600 cursor-pointer ml-1 font-semibold"
+  >
+    Create account
+  </span>
 
-          </div>
-        </div>
+ </div>
+</div>
       </div>
 
       {/* Right Gradient Section */}

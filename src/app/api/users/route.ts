@@ -1,121 +1,253 @@
 import { NextResponse } from "next/server";
-import { User } from "@/types/user";
+import { supabaseServer } from "@/lib/supabaseServer";
 
-let users: User[] = [
 
-  {
-    UserId: 1,
-    Username: "admin",
-    Password: "admin123",
-    Role: "Administrator",
-    Status: "Active",
-  },
+// GET ALL USERS / GET SINGLE USER
 
-  {
-    UserId: 2,
-    Username: "john.doe",
-    Password: "john123",
-    Role: "Manager",
-    Status: "Active",
-  },
-
-  {
-    UserId: 3,
-    Username: "jane.smith",
-    Password: "jane123",
-    Role: "HR",
-    Status: "Inactive",
-  },
-
-];
-
-// GET ALL USERS
 export async function GET(request: Request) {
 
-  const { searchParams } = new URL(request.url);
+  try {
 
-  const id = searchParams.get("id");
+    const { searchParams } = new URL(request.url);
 
-  if (id) {
+    const id = searchParams.get("id");
 
-    const user = users.find(
-      (u) => u.UserId === Number(id)
-    );
 
-    if (!user) {
+    if(id){
 
-      return NextResponse.json(
-        { message: "User not found" },
-        { status: 404 }
-      );
+      const { data, error } = await supabaseServer
+        .from("users")
+        .select("*")
+        .eq("userid", id)
+        .single();
+
+
+      if(error || !data){
+
+        return NextResponse.json(
+          {
+            message:"User not found"
+          },
+          {
+            status:404
+          }
+        );
+
+      }
+
+
+      return NextResponse.json(data);
 
     }
 
-    return NextResponse.json(user);
+
+
+    const { data, error } = await supabaseServer
+      .from("users")
+      .select("*")
+      .order("userid");
+
+
+    if(error){
+
+      throw error;
+
+    }
+
+
+    return NextResponse.json(data);
+
+
+
+  }
+  catch(error){
+
+    return NextResponse.json(
+      {
+        message:"Server error"
+      },
+      {
+        status:500
+      }
+    );
 
   }
 
-  return NextResponse.json(users);
-
 }
+
+
+
+
 
 // ADD USER
-export async function POST(request: Request) {
 
-  const body: User = await request.json();
+export async function POST(request:Request){
 
-  const newUser: User = {
+try{
 
-    ...body,
 
-    UserId: Date.now(),
+const body = await request.json();
 
-  };
 
-  users.push(newUser);
+const {data,error}=await supabaseServer
+.from("users")
+.insert({
 
-  return NextResponse.json(newUser);
+username: body.username,
+password: body.password,
+fullname: body.fullname,
+role: body.role,
+status: body.status ?? true
+
+})
+.select()
+.single();
+
+
+
+if(error){
+
+throw error;
 
 }
+
+
+
+return NextResponse.json(data);
+
+
+
+}
+catch(error){
+
+return NextResponse.json(
+{
+message:"User create failed"
+},
+{
+status:500
+}
+);
+
+
+}
+
+}
+
+
+
+
 
 // UPDATE USER
-export async function PUT(request: Request) {
 
-  const body: User = await request.json();
+export async function PUT(request:Request){
 
-  users = users.map((user) =>
+try{
 
-    user.UserId === body.UserId
 
-      ? body
+const body = await request.json();
 
-      : user
 
-  );
+const {error}=await supabaseServer
+.from("users")
+.update({
 
-  return NextResponse.json({
+username:body.username,
+password:body.password,
+fullname:body.fullname,
+role:body.role,
+status:body.status
 
-    message: "User updated successfully",
+})
+.eq("userid",body.userid);
 
-  });
+
+
+if(error){
+
+throw error;
 
 }
 
+
+
+return NextResponse.json(
+{
+message:"User updated successfully"
+}
+);
+
+
+
+}
+catch(error){
+
+return NextResponse.json(
+{
+message:"User update failed"
+},
+{
+status:500
+}
+);
+
+}
+
+
+}
+
+
+
+
+
+
+
 // DELETE USER
-export async function DELETE(request: Request) {
 
-  const body = await request.json();
+export async function DELETE(request:Request){
 
-  users = users.filter(
+try{
 
-    (user) => user.UserId !== body.UserId
 
-  );
+const body = await request.json();
 
-  return NextResponse.json({
 
-    message: "User deleted successfully",
+const {error}=await supabaseServer
+.from("users")
+.delete()
+.eq("userid",body.userid);
 
-  });
+
+
+if(error){
+
+throw error;
+
+}
+
+
+
+return NextResponse.json(
+{
+message:"User deleted successfully"
+}
+);
+
+
+
+}
+catch(error){
+
+return NextResponse.json(
+{
+message:"User delete failed"
+},
+{
+status:500
+}
+);
+
+}
+
 
 }

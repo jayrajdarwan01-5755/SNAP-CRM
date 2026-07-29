@@ -41,27 +41,46 @@ useEffect(() => {
 
   const loadCustomer = async () => {
 
+    try {
 
-    const response = await fetch("/api/customers");
-
-
-    const data: Customer[] = await response.json();
-
-
-
-    const foundCustomer = data.find(
-      (item) =>
-        item.CustomerId === id
-    );
+      const response = await fetch(
+        `/api/customers?id=${id}`
+      );
 
 
-    setCustomer(foundCustomer || null);
+      if(!response.ok){
 
+        throw new Error(
+          "Customer not found"
+        );
+
+      }
+
+
+      const data: Customer =
+        await response.json();
+
+
+      setCustomer(data);
+
+
+    }
+    catch(error){
+
+      console.log(error);
+
+      setCustomer(null);
+
+    }
 
   };
 
 
-  loadCustomer();
+  if(id){
+
+    loadCustomer();
+
+  }
 
 
 }, [id]);

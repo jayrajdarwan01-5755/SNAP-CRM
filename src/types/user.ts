@@ -1,13 +1,15 @@
 export interface User {
 
-  UserId: number;
+  userid: number;
 
-  Username: string;
+  username: string;
 
-  Password: string;
+  password: string;
 
-  Role: string;
+  fullname: string;
 
-  Status: string;
+  role: string;
+
+  status: boolean;
 
 }

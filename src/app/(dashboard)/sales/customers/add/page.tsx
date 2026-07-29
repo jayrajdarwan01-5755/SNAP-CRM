@@ -6,9 +6,7 @@ import { useRouter } from "next/navigation";
 
 export default function AddCustomerPage() {
 
-
   const router = useRouter();
-
 
 
   const [customerCode, setCustomerCode] = useState("");
@@ -16,73 +14,116 @@ export default function AddCustomerPage() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
-    const [city, setCity] = useState("");
-    const [state, setState] = useState("");
-    const [country, setCountry] = useState("India");
-    const [status, setStatus] = useState("Active");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [country, setCountry] = useState("India");
+  const [status, setStatus] = useState("Active");
+
+  const [loading, setLoading] = useState(false);
 
 
 
- const handleSave = async () => {
-
-  const response = await fetch("/api/customers", {
-
-    method: "POST",
-
-    headers: {
-      "Content-Type": "application/json",
-    },
-
-    body: JSON.stringify({
-
-      CustomerCode: customerCode,
-      CustomerName: customerName,
-      Phone: phone,
-      Email: email,
-      Address: address,
-      City: city,
-      State: state,
-      Country: country,
-      Status: status,
-
-    }),
-
-  });
+  const handleSave = async () => {
 
 
-  const data = await response.json();
+    if (!customerCode || !customerName) {
+
+      alert("Customer Code and Customer Name are required");
+
+      return;
+
+    }
 
 
-  console.log(data);
+
+    try {
+
+      setLoading(true);
 
 
-  alert("Customer Added Successfully");
+
+      const response = await fetch("/api/customers", {
+
+        method: "POST",
+
+        headers: {
+
+          "Content-Type": "application/json",
+
+        },
 
 
-  router.push("/sales/customers");
+        body: JSON.stringify({
 
-};
+          CustomerCode: customerCode,
+          CustomerName: customerName,
+          Phone: phone,
+          Email: email,
+          Address: address,
+          City: city,
+          State: state,
+          Country: country,
+          Status: status,
 
+        }),
+
+      });
+
+
+
+      const data = await response.json();
+
+
+
+      if (!response.ok) {
+
+        alert(data.message || "Failed to add customer");
+
+        return;
+
+      }
+
+
+
+      alert("Customer Added Successfully");
+
+
+      router.push("/sales/customers");
+
+
+
+    } catch (error) {
+
+
+      console.log(error);
+
+      alert("Something went wrong");
+
+
+    } finally {
+
+
+      setLoading(false);
+
+
+    }
+
+
+  };
 
 
 
   return (
 
-
     <div className="space-y-6">
 
 
-
-
-
       {/* Header */}
-
 
       <div className="flex justify-between items-center">
 
 
         <div>
-
 
           <h1 className="text-3xl font-bold text-gray-900">
             Add Customer
@@ -95,8 +136,6 @@ export default function AddCustomerPage() {
 
 
         </div>
-
-
 
 
 
@@ -120,17 +159,13 @@ export default function AddCustomerPage() {
         </button>
 
 
-
       </div>
 
 
 
 
 
-
-
       {/* Form */}
-
 
 
       <div className="bg-white border rounded-xl shadow p-6">
@@ -140,26 +175,14 @@ export default function AddCustomerPage() {
 
 
 
-
-
-          {/* Customer Code */}
-
-
-
           <div>
 
-
             <label className="block text-sm font-semibold text-gray-900 mb-2">
-
               Customer Code
-
             </label>
 
 
-
             <input
-
-              type="text"
 
               value={customerCode}
 
@@ -172,20 +195,13 @@ export default function AddCustomerPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
-              placeholder-gray-400
               rounded-lg
               px-4
               py-2
-              focus:outline-none
-              focus:ring-2
-              focus:ring-blue-500
+              text-gray-900
               "
 
             />
-
 
           </div>
 
@@ -193,26 +209,14 @@ export default function AddCustomerPage() {
 
 
 
-
-
-          {/* Customer Name */}
-
-
-
           <div>
 
-
             <label className="block text-sm font-semibold text-gray-900 mb-2">
-
               Customer Name
-
             </label>
 
 
-
             <input
-
-              type="text"
 
               value={customerName}
 
@@ -225,20 +229,13 @@ export default function AddCustomerPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
-              placeholder-gray-400
               rounded-lg
               px-4
               py-2
-              focus:outline-none
-              focus:ring-2
-              focus:ring-blue-500
+              text-gray-900
               "
 
             />
-
 
           </div>
 
@@ -246,26 +243,14 @@ export default function AddCustomerPage() {
 
 
 
-
-
-          {/* Phone */}
-
-
-
           <div>
 
-
             <label className="block text-sm font-semibold text-gray-900 mb-2">
-
               Phone
-
             </label>
 
 
-
             <input
-
-              type="text"
 
               value={phone}
 
@@ -273,25 +258,18 @@ export default function AddCustomerPage() {
                 setPhone(e.target.value)
               }
 
-              placeholder="Enter Phone Number"
+              placeholder="Enter Phone"
 
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
-              placeholder-gray-400
               rounded-lg
               px-4
               py-2
-              focus:outline-none
-              focus:ring-2
-              focus:ring-blue-500
+              text-gray-900
               "
 
             />
-
 
           </div>
 
@@ -299,21 +277,11 @@ export default function AddCustomerPage() {
 
 
 
-
-
-          {/* Email */}
-
-
-
           <div>
 
-
             <label className="block text-sm font-semibold text-gray-900 mb-2">
-
               Email
-
             </label>
-
 
 
             <input
@@ -331,58 +299,40 @@ export default function AddCustomerPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
-              placeholder-gray-400
               rounded-lg
               px-4
               py-2
-              focus:outline-none
-              focus:ring-2
-              focus:ring-blue-500
+              text-gray-900
               "
 
             />
 
-
           </div>
-                    {/* Address */}
-
-
+          
           <div>
 
-
             <label className="block text-sm font-semibold text-gray-900 mb-2">
-
               Address
-
             </label>
 
 
+            <textarea
 
-           <textarea
+              value={address}
 
-                value={address}
-
-                onChange={(e)=>
+              onChange={(e)=>
                 setAddress(e.target.value)
-                }
+              }
 
-                placeholder="Enter Address"
+              placeholder="Enter Address"
+
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
-              placeholder-gray-400
               rounded-lg
               px-4
               py-2
-              focus:outline-none
-              focus:ring-2
-              focus:ring-blue-500
+              text-gray-900
               "
 
             />
@@ -394,43 +344,30 @@ export default function AddCustomerPage() {
 
 
 
-
-
-          {/* City */}
-
-
-
           <div>
 
-
             <label className="block text-sm font-semibold text-gray-900 mb-2">
-
               City
-
             </label>
 
 
+            <input
 
-           <input
+              value={city}
 
-value={city}
+              onChange={(e)=>
+                setCity(e.target.value)
+              }
 
-onChange={(e)=>
- setCity(e.target.value)
-}
-
-placeholder="Enter City"
+              placeholder="Enter City"
 
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
-              placeholder-gray-400
               rounded-lg
               px-4
               py-2
+              text-gray-900
               "
 
             />
@@ -442,42 +379,30 @@ placeholder="Enter City"
 
 
 
-
-
-          {/* State */}
-
-
-
           <div>
 
-
             <label className="block text-sm font-semibold text-gray-900 mb-2">
-
               State
-
             </label>
 
 
-<input
+            <input
 
-value={state}
+              value={state}
 
-onChange={(e)=>
- setState(e.target.value)
-}
+              onChange={(e)=>
+                setState(e.target.value)
+              }
 
-placeholder="Enter State"
+              placeholder="Enter State"
 
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
-              placeholder-gray-400
               rounded-lg
               px-4
               py-2
+              text-gray-900
               "
 
             />
@@ -489,42 +414,30 @@ placeholder="Enter State"
 
 
 
-
-
-          {/* Country */}
-
-
-
           <div>
 
-
             <label className="block text-sm font-semibold text-gray-900 mb-2">
-
               Country
-
             </label>
 
 
+            <input
 
-           <input
+              value={country}
 
-value={country}
+              onChange={(e)=>
+                setCountry(e.target.value)
+              }
 
-onChange={(e)=>
- setCountry(e.target.value)
-}
+              placeholder="Enter Country"
 
-placeholder="Enter Country"
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
-              placeholder-gray-400
               rounded-lg
               px-4
               py-2
+              text-gray-900
               "
 
             />
@@ -536,48 +449,40 @@ placeholder="Enter Country"
 
 
 
-
-
-          {/* Status */}
-
-
-
           <div>
 
-
             <label className="block text-sm font-semibold text-gray-900 mb-2">
-
               Status
-
             </label>
-
 
 
             <select
 
-            value={status}
+              value={status}
 
-            onChange={(e) =>
+              onChange={(e)=>
                 setStatus(e.target.value)
-            }
+              }
 
-            className="w-full border
-            border-gray-300
-            bg-white
-            text-gray-900
-            rounded-lg
-            px-4
-            py-2
-            ">
+              className="
+              w-full
+              border
+              rounded-lg
+              px-4
+              py-2
+              text-gray-900
+              "
 
-            <option value="Active">
+            >
+
+              <option value="Active">
                 Active
-            </option>
+              </option>
 
 
-            <option value="Inactive">
+              <option value="Inactive">
                 Inactive
-            </option>
+              </option>
 
 
             </select>
@@ -587,17 +492,9 @@ placeholder="Enter Country"
 
 
 
-
-
         </div>
 
 
-
-
-
-
-
-        {/* Save Button */}
 
 
 
@@ -606,13 +503,14 @@ placeholder="Enter Country"
 
           <button
 
-
             onClick={handleSave}
 
+            disabled={loading}
 
             className="
             bg-blue-600
             hover:bg-blue-700
+            disabled:bg-gray-400
             text-white
             px-6
             py-2
@@ -621,8 +519,11 @@ placeholder="Enter Country"
 
           >
 
-
-            Save Customer
+            {
+              loading
+              ? "Saving..."
+              : "Save Customer"
+            }
 
 
           </button>
@@ -635,9 +536,7 @@ placeholder="Enter Country"
       </div>
 
 
-
     </div>
-
 
   );
 

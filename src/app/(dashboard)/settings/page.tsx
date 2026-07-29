@@ -1,113 +1,221 @@
 "use client";
 
 import Link from "next/link";
+import {
+  Building2,
+  Users,
+  ShieldCheck,
+  Mail,
+  Palette,
+  FileText,
+  DatabaseBackup,
+} from "lucide-react";
 
 export default function SettingsPage() {
 
   const settings = [
-
     {
       title: "Company Information",
       description: "Manage company details",
       href: "/settings/company",
+      icon: Building2,
     },
-
     {
       title: "Users",
       description: "Manage system users",
       href: "/settings/users",
+      icon: Users,
     },
-
     {
       title: "Roles",
-      description: "Manage user roles",
+      description: "Manage user permissions and roles",
       href: "/settings/roles",
+      icon: ShieldCheck,
     },
-
     {
       title: "Email Settings",
-      description: "Configure email service",
+      description: "Configure SMTP and email service",
       href: "/settings/email",
+      icon: Mail,
     },
-
     {
       title: "Theme",
-      description: "Customize application theme",
+      description: "Customize application appearance",
       href: "/settings/theme",
+      icon: Palette,
     },
-
     {
       title: "Audit Logs",
-      description: "View system activity logs",
+      description: "View system activity history",
       href: "/settings/audit-logs",
+      icon: FileText,
     },
-
     {
       title: "Backup",
-      description: "Backup and restore data",
+      description: "Backup and restore system data",
       href: "/settings/backup",
+      icon: DatabaseBackup,
     },
-
   ];
 
-  return (
 
-    <div className="space-y-6">
+  return (
+    <div className="space-y-8">
+
 
       {/* Header */}
 
-      <div>
+      <div className="flex items-center justify-between">
 
-        <h1 className="text-3xl font-bold text-gray-900">
-          Settings
-        </h1>
+        <div>
 
-        <p className="text-gray-600 mt-2">
-          Manage application settings
-        </p>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Settings
+          </h1>
+
+          <p className="mt-2 text-gray-600">
+            Manage application configuration and preferences
+          </p>
+
+        </div>
+
+
+        <div className="bg-blue-50 px-4 py-3 rounded-lg">
+
+          <p className="text-sm text-gray-600">
+            Total Settings
+          </p>
+
+          <p className="text-2xl font-bold text-blue-600">
+            {settings.length}
+          </p>
+
+        </div>
+
 
       </div>
+
+
 
       {/* Settings Cards */}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-        {settings.map((item) => (
+      <div className="
+        grid 
+        grid-cols-1 
+        md:grid-cols-2 
+        lg:grid-cols-3 
+        gap-6
+      ">
 
-          <Link
-            key={item.title}
-            href={item.href}
-            className="
-            bg-white
-            border
-            rounded-xl
-            shadow
-            p-6
-            hover:shadow-lg
-            hover:border-blue-500
-            transition
-            "
-          >
 
-            <h2 className="text-xl font-semibold text-gray-900">
+        {settings.map((item) => {
 
-              {item.title}
+          const Icon = item.icon;
 
-            </h2>
 
-            <p className="text-gray-600 mt-2">
+          return (
 
-              {item.description}
+            <Link
+              key={item.title}
+              href={item.href}
+              className="
+                group
+                bg-white
+                border
+                rounded-xl
+                p-6
+                shadow-sm
+                hover:shadow-xl
+                hover:border-blue-500
+                transition-all
+                duration-300
+              "
+            >
 
-            </p>
-                      </Link>
 
-        ))}
+              <div className="
+                flex
+                items-center
+                justify-between
+              ">
+
+
+                <div className="
+                  h-12
+                  w-12
+                  rounded-lg
+                  bg-blue-100
+                  flex
+                  items-center
+                  justify-center
+                  group-hover:bg-blue-600
+                  transition
+                ">
+
+                  <Icon
+                    className="
+                      h-6
+                      w-6
+                      text-blue-600
+                      group-hover:text-white
+                      transition
+                    "
+                  />
+
+                </div>
+
+
+              </div>
+
+
+
+              <h2 className="
+                mt-5
+                text-xl
+                font-semibold
+                text-gray-900
+              ">
+
+                {item.title}
+
+              </h2>
+
+
+
+              <p className="
+                mt-2
+                text-gray-600
+                text-sm
+              ">
+
+                {item.description}
+
+              </p>
+
+
+              <div className="
+                mt-5
+                text-sm
+                text-blue-600
+                font-medium
+              ">
+
+                Manage →
+
+              </div>
+
+
+            </Link>
+
+          );
+
+        })}
+
 
       </div>
 
+
     </div>
-
   );
-
 }
