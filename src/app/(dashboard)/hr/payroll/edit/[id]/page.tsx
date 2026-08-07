@@ -997,18 +997,9 @@ export default function EditPayrollPage(){
 
             className="
             w-full
-            border
-            border-gray-300
-            rounded-lg
-            px-4
-            py-2
+            input-theme
             font-semibold
-            text-theme
-            bg-gray-100
-            dark:bg-gray-700
             "
-
-
           />
 
 

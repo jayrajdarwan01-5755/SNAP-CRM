@@ -772,20 +772,16 @@ export default function PayrollPage() {
 
 
 
-                <td
-
-                  className="
-                  p-4
-                  font-semibold
-                  text-green-600
-                  "
-
-                >
-
-                  ₹{payroll.NetSalary.toLocaleString()}
-
-
-                </td>
+               <td
+  className="
+  p-4
+  font-semibold
+  text-theme
+  bg-theme
+  "
+>
+  ₹{payroll.NetSalary.toLocaleString()}
+</td>
 
 
 

@@ -170,3 +170,11 @@ select option {
   background-color: var(--background-color);
   color: var(--text-color);
 }
+
+.salary-success {
+  color: #16a34a;
+}
+
+.dark .salary-success {
+  color: #4ade80;
+}
