@@ -178,14 +178,12 @@ const currentCustomers =
 
         <div>
 
-
-          <h1 className="text-3xl font-bold text-gray-900">
+        <h1 className="text-3xl font-bold text-theme">
             Customer Management
           </h1>
 
-
-          <p className="text-gray-600 mt-2">
-            Manage customer records
+        <p className="text-muted mt-2">
+            Manage customer records 
           </p>
 
 
@@ -213,32 +211,13 @@ const currentCustomers =
           + Add Customer
 
         </Link>
-
-
-
       </div>
-
-
-
-
-
 
 
       {/* Search Section */}
 
-
-
-
-      <div className="bg-white border rounded-xl shadow p-6">
-
-
-
+<div className="card-theme border border-theme rounded-xl shadow p-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-
-
-
-
-
          <input
 
             value={searchText}
@@ -251,21 +230,15 @@ const currentCustomers =
 
             className="
             border
-            border-gray-300
-            bg-white
-            text-gray-900
+            border-theme
+            bg-theme
+            text-theme
             rounded-lg
             px-4
             py-2
             "
 
             />
-
-
-
-
-
-
 
          <select
 
@@ -277,9 +250,9 @@ const currentCustomers =
 
             className="
             border
-            border-gray-300
-            bg-white
-            text-gray-900
+            border-theme
+            bg-theme
+            text-theme
             rounded-lg
             px-4
             py-2
@@ -318,9 +291,9 @@ const currentCustomers =
 
             className="
             border
-            border-gray-300
-            bg-white
-            text-gray-900
+            border-theme
+            bg-theme
+            text-theme
             rounded-lg
             px-4
             py-2
@@ -388,16 +361,16 @@ const currentCustomers =
             {/* Customer Table */}
 
 
-      <div className="bg-white border rounded-xl shadow overflow-hidden">
+      <div className="card-theme border border-theme rounded-xl shadow overflow-hidden">
 
 
         <table className="w-full">
 
 
-          <thead className="bg-gray-100">
+          <thead className="bg-theme border-b border-theme">
 
 
-            <tr className="text-gray-900">
+            <tr className="text-theme">
 
 
               <th className="px-3 py-3 text-left">
@@ -451,7 +424,7 @@ const currentCustomers =
 
             <td
             colSpan={7}
-            className="text-center py-10 text-gray-600"
+            className="text-center py-10 text-muted"
             >
 
             Loading customers...
@@ -470,7 +443,7 @@ const currentCustomers =
 
             <td
             colSpan={7}
-            className="text-center py-10 text-gray-600"
+            className="text-center py-10 text-muted"
             >
 
             No customers found
@@ -487,14 +460,14 @@ const currentCustomers =
 
             <tr
             key={customer.CustomerId}
-            className="border-t hover:bg-gray-50"
+            className="border-t border-theme hover:bg-theme table-row-theme transition-colors"
             >
 
 
 
   {/* Customer Code */}
 
-  <td className="px-3 py-4 text-gray-800">
+  <td className="px-3 py-4 text-theme">
     {customer.CustomerCode}
   </td>
 
@@ -502,7 +475,7 @@ const currentCustomers =
 
   {/* Customer Name */}
 
-  <td className="px-3 py-4 font-medium text-gray-900">
+  <td className="px-3 py-4 font-medium text-theme">
     {customer.CustomerName}
   </td>
 
@@ -511,7 +484,7 @@ const currentCustomers =
 
   {/* City */}
 
-  <td className="px-3 py-4 text-gray-700">
+  <td className="px-3 py-4 text-muted">
     {customer.City}
   </td>
 
@@ -521,7 +494,7 @@ const currentCustomers =
 
   {/* Phone */}
 
-  <td className="px-3 py-4 text-gray-700">
+  <td className="px-3 py-4 text-muted">
     {customer.Phone}
   </td>
 
@@ -531,7 +504,7 @@ const currentCustomers =
 
   {/* Email */}
 
-  <td className="px-3 py-4 text-gray-700">
+  <td className="px-3 py-4 text-muted">
     {customer.Email}
   </td>
 

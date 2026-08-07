@@ -65,12 +65,7 @@ export default function EditCustomerPage() {
 
 }, [customerId]);
     
-
-
-  
-
-
-  const handleUpdate = async () => {
+    const handleUpdate = async () => {
 
 
   const response = await fetch("/api/customers", {
@@ -122,37 +117,22 @@ export default function EditCustomerPage() {
 
     <div className="space-y-6">
 
-
-
-
-
-
       {/* Header */}
-
-
-
       <div className="flex justify-between items-center">
-
-
-
         <div>
 
 
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-theme">
             Edit Customer
           </h1>
 
 
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted mt-2">
             Update customer information
           </p>
 
 
         </div>
-
-
-
-
 
         <button
 
@@ -177,42 +157,17 @@ export default function EditCustomerPage() {
 
       </div>
 
-
-
-
-
-
-
       {/* Form */}
-
-
-
-      <div className="bg-white border rounded-xl shadow p-6">
-
-
-
+      <div className="card-theme border border-theme rounded-xl shadow p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
 
-
-
-
-
-
-
           {/* Customer Code */}
-
-
-
           <div>
 
-
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Customer Code
             </label>
-
-
-
             <input
 
               type="text"
@@ -224,44 +179,29 @@ export default function EditCustomerPage() {
               }
 
 
-              className="
-              w-full
-              border
-              border-gray-300
-              bg-white
-              text-gray-900
-              rounded-lg
-              px-4
-              py-2
-              focus:outline-none
-              focus:ring-2
-              focus:ring-blue-500
-              "
-
+                className="
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                rounded-lg
+                px-4
+                py-2
+                focus:outline-none
+                focus:ring-2
+                focus:ring-blue-500
+                "
             />
-
-
           </div>
 
-
-
-
-
-
-
-
           {/* Customer Name */}
-
-
-
           <div>
 
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Customer Name
             </label>
-
-
 
             <input
 
@@ -274,40 +214,27 @@ export default function EditCustomerPage() {
               }
 
 
-              className="
-              w-full
-              border
-              border-gray-300
-              bg-white
-              text-gray-900
-              rounded-lg
-              px-4
-              py-2
-              focus:outline-none
-              focus:ring-2
-              focus:ring-blue-500
-              "
-
+                className="
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                rounded-lg
+                px-4
+                py-2
+                focus:outline-none
+                focus:ring-2
+                focus:ring-blue-500
+                "
             />
-
-
           </div>
 
-
-
-
-
-
-
-
           {/* Phone */}
-
-
-
           <div>
 
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Phone
             </label>
 
@@ -322,46 +249,29 @@ export default function EditCustomerPage() {
               onChange={(e)=>
                 setPhone(e.target.value)
               }
-
-
-              className="
-              w-full
-              border
-              border-gray-300
-              bg-white
-              text-gray-900
-              rounded-lg
-              px-4
-              py-2
-              focus:outline-none
-              focus:ring-2
-              focus:ring-blue-500
-              "
-
+                className="
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                rounded-lg
+                px-4
+                py-2
+                focus:outline-none
+                focus:ring-2
+                focus:ring-blue-500
+                "
             />
-
-
           </div>
 
 
-
-
-
-
-
-
           {/* Email */}
-
-
-
           <div>
 
-
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Email
             </label>
-
-
 
             <input
 
@@ -372,34 +282,25 @@ export default function EditCustomerPage() {
               onChange={(e)=>
                 setEmail(e.target.value)
               }
-
-
-              className="
-              w-full
-              border
-              border-gray-300
-              bg-white
-              text-gray-900
-              rounded-lg
-              px-4
-              py-2
-              focus:outline-none
-              focus:ring-2
-              focus:ring-blue-500
-              "
-
+                className="
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                rounded-lg
+                px-4
+                py-2
+                focus:outline-none
+                focus:ring-2
+                focus:ring-blue-500
+                "
             />
-
-
           </div>
 
                     {/* Address */}
-
-
-          <div>
-
-
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+         <div>
+            <label className="block text-sm font-semibold text-theme mb-2">
               Address
             </label>
 
@@ -413,38 +314,27 @@ export default function EditCustomerPage() {
                 setAddress(e.target.value)
               }
 
-              className="
-              w-full
-              border
-              border-gray-300
-              bg-white
-              text-gray-900
-              rounded-lg
-              px-4
-              py-2
-              focus:outline-none
-              focus:ring-2
-              focus:ring-blue-500
-              "
-
+            className="
+            w-full
+            border
+            border-theme
+            bg-theme
+            text-theme
+            rounded-lg
+            px-4
+            py-2
+            focus:outline-none
+            focus:ring-2
+            focus:ring-blue-500
+            "
             />
-
-
           </div>
 
-
-
-
-
-
-
           {/* City */}
-
-
           <div>
 
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               City
             </label>
 
@@ -460,35 +350,24 @@ export default function EditCustomerPage() {
                 setCity(e.target.value)
               }
 
-              className="
-              w-full
-              border
-              border-gray-300
-              bg-white
-              text-gray-900
-              rounded-lg
-              px-4
-              py-2
-              "
-
+            className="
+            w-full
+            border
+            border-theme
+            bg-theme
+            text-theme
+            rounded-lg
+            px-4
+            py-2
+            "
             />
-
-
           </div>
 
-
-
-
-
-
-
           {/* State */}
-
-
           <div>
 
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               State
             </label>
 
@@ -504,39 +383,26 @@ export default function EditCustomerPage() {
                 setState(e.target.value)
               }
 
-              className="
-              w-full
-              border
-              border-gray-300
-              bg-white
-              text-gray-900
-              rounded-lg
-              px-4
-              py-2
-              "
-
+                className="
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                rounded-lg
+                px-4
+                py-2
+                "
             />
-
-
           </div>
 
 
 
-
-
-
-
           {/* Country */}
-
-
           <div>
-
-
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Country
             </label>
-
-
 
             <input
 
@@ -548,39 +414,25 @@ export default function EditCustomerPage() {
                 setCountry(e.target.value)
               }
 
-              className="
-              w-full
-              border
-              border-gray-300
-              bg-white
-              text-gray-900
-              rounded-lg
-              px-4
-              py-2
-              "
-
+                className="
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                rounded-lg
+                px-4
+                py-2
+                "
             />
-
-
           </div>
 
 
-
-
-
-
-
           {/* Status */}
-
-
           <div>
-
-
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Status
             </label>
-
-
 
             <select
 
@@ -590,17 +442,16 @@ export default function EditCustomerPage() {
                 setStatus(e.target.value)
               }
 
-              className="
-              w-full
-              border
-              border-gray-300
-              bg-white
-              text-gray-900
-              rounded-lg
-              px-4
-              py-2
-              "
-
+            className="
+            w-full
+            border
+            border-theme
+            bg-theme
+            text-theme
+            rounded-lg
+            px-4
+            py-2
+            "
             >
 
               <option>
@@ -612,31 +463,12 @@ export default function EditCustomerPage() {
                 Inactive
               </option>
 
-
             </select>
-
-
           </div>
-
-
-
-
-
         </div>
 
-
-
-
-
-
-
         {/* Update Button */}
-
-
-
         <div className="mt-8 flex justify-end">
-
-
           <button
 
             onClick={handleUpdate}
@@ -655,16 +487,8 @@ export default function EditCustomerPage() {
             Update Customer
 
           </button>
-
-
         </div>
-
-
-
       </div>
-
-
-
     </div>
 
 

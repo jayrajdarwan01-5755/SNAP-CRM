@@ -78,12 +78,12 @@ export default function AddOpportunityPage() {
 
         <div>
 
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-theme">
             Add Opportunity
           </h1>
 
 
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted mt-2">
             Create new sales opportunity
           </p>
 
@@ -106,7 +106,7 @@ export default function AddOpportunityPage() {
 
       {/* Form */}
 
-      <div className="bg-white border rounded-xl shadow p-6">
+      <div className="card-theme border border-theme rounded-xl shadow p-6">
 
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -117,7 +117,7 @@ export default function AddOpportunityPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Opportunity Name
             </label>
 
@@ -128,19 +128,19 @@ export default function AddOpportunityPage() {
               onChange={(e)=>setOpportunityName(e.target.value)}
               placeholder="Enter Opportunity Name"
               className="
-              w-full
-              border
-              border-gray-300
-              bg-white
-              text-gray-900
-              placeholder-gray-400
-              rounded-lg
-              px-4
-              py-2
-              focus:outline-none
-              focus:ring-2
-              focus:ring-blue-500
-              "
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                text-placeholder
+                rounded-lg
+                px-4
+                py-2
+                focus:outline-none
+                focus:ring-2
+                focus:ring-blue-500
+                "
             />
 
 
@@ -154,7 +154,7 @@ export default function AddOpportunityPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Customer
             </label>
 
@@ -164,20 +164,20 @@ export default function AddOpportunityPage() {
               value={customer}
               onChange={(e)=>setCustomer(e.target.value)}
               placeholder="Enter Customer Name"
-              className="
-              w-full
-              border
-              border-gray-300
-              bg-white
-              text-gray-900
-              placeholder-gray-400
-              rounded-lg
-              px-4
-              py-2
-              focus:outline-none
-              focus:ring-2
-              focus:ring-blue-500
-              "
+                className="
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                text-placeholder
+                rounded-lg
+                px-4
+                py-2
+                focus:outline-none
+                focus:ring-2
+                focus:ring-blue-500
+                "
             />
 
 
@@ -191,7 +191,7 @@ export default function AddOpportunityPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Amount
             </label>
 
@@ -201,20 +201,19 @@ export default function AddOpportunityPage() {
               value={amount}
               onChange={(e)=>setAmount(e.target.value)}
               placeholder="Enter Amount"
-              className="
-              w-full
-              border
-              border-gray-300
-              bg-white
-              text-gray-900
-              placeholder-gray-400
-              rounded-lg
-              px-4
-              py-2
-              focus:outline-none
-              focus:ring-2
-              focus:ring-blue-500
-              "
+                className="
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                rounded-lg
+                px-4
+                py-2
+                focus:outline-none
+                focus:ring-2
+                focus:ring-blue-500
+                "
             />
 
 
@@ -224,7 +223,7 @@ export default function AddOpportunityPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Stage
             </label>
 
@@ -233,18 +232,18 @@ export default function AddOpportunityPage() {
               value={stage}
               onChange={(e)=>setStage(e.target.value)}
               className="
-              w-full
-              border
-              border-gray-300
-              bg-white
-              text-gray-900
-              rounded-lg
-              px-4
-              py-2
-              focus:outline-none
-              focus:ring-2
-              focus:ring-blue-500
-              "
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                rounded-lg
+                px-4
+                py-2
+                focus:outline-none
+                focus:ring-2
+                focus:ring-blue-500
+                "
             >
 
               <option>Prospecting</option>
@@ -265,7 +264,7 @@ export default function AddOpportunityPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Probability
             </label>
 
@@ -275,20 +274,20 @@ export default function AddOpportunityPage() {
               value={probability}
               onChange={(e)=>setProbability(e.target.value)}
               placeholder="Example: 70%"
-              className="
-              w-full
-              border
-              border-gray-300
-              bg-white
-              text-gray-900
-              placeholder-gray-400
-              rounded-lg
-              px-4
-              py-2
-              focus:outline-none
-              focus:ring-2
-              focus:ring-blue-500
-              "
+                className="
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                text-placeholder
+                rounded-lg
+                px-4
+                py-2
+                focus:outline-none
+                focus:ring-2
+                focus:ring-blue-500
+                "
             />
 
 
@@ -302,7 +301,7 @@ export default function AddOpportunityPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Expected Close Date
             </label>
 
@@ -311,19 +310,19 @@ export default function AddOpportunityPage() {
               type="date"
               value={closeDate}
               onChange={(e)=>setCloseDate(e.target.value)}
-              className="
-              w-full
-              border
-              border-gray-300
-              bg-white
-              text-gray-900
-              rounded-lg
-              px-4
-              py-2
-              focus:outline-none
-              focus:ring-2
-              focus:ring-blue-500
-              "
+                className="
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                rounded-lg
+                px-4
+                py-2
+                focus:outline-none
+                focus:ring-2
+                focus:ring-blue-500
+                "
             />
 
 

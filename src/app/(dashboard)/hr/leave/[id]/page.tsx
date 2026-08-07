@@ -1,10 +1,14 @@
 "use client";
+
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Leave } from "@/types/leave";
+import { useTheme } from "@/context/ThemeContext";
+
 
 export default function LeaveViewPage() {
+
 
   const router = useRouter();
 
@@ -12,58 +16,99 @@ export default function LeaveViewPage() {
 
   const id = Number(params.id);
 
+
+  const { themeSettings } = useTheme();
+
+
+
   const [leave, setLeave] = useState<Leave | null>(null);
 
+
+
+
   const handleDelete = async () => {
+
 
     const confirmDelete = confirm(
       "Are you sure you want to delete this leave?"
     );
 
+
     if (!confirmDelete) return;
 
+
+
     const response = await fetch("/api/leaves", {
+
       method: "DELETE",
+
       headers: {
         "Content-Type": "application/json",
       },
+
       body: JSON.stringify({
+
         LeaveId: leave?.LeaveId,
+
       }),
+
     });
 
+
+
     if (response.ok) {
+
       alert("Leave Deleted Successfully");
+
       router.push("/hr/leave");
+
     }
+
+
   };
 
 
 
-  useEffect(()=>{
 
 
-    const loadLeave = async()=>{
+  useEffect(() => {
 
 
-      const response = await fetch("/api/leaves");
+    const loadLeave = async () => {
 
 
-      const data: Leave[] = await response.json();
+      try {
 
 
+        const response = await fetch("/api/leaves");
 
-      const foundLeave = data.find(
 
-        (item)=>
-
-        item.LeaveId === id
-
-      );
+        const data: Leave[] = await response.json();
 
 
 
-      setLeave(foundLeave || null);
+        const foundLeave = data.find(
+
+          (item) =>
+
+          item.LeaveId === id
+
+        );
+
+
+
+        setLeave(foundLeave || null);
+
+
+
+      }
+
+      catch(error){
+
+        console.log(error);
+
+      }
+
 
 
     };
@@ -73,24 +118,27 @@ export default function LeaveViewPage() {
     loadLeave();
 
 
-  },[id]);
+
+  }, [id]);
 
 
 
 
 
 
-  if(!leave){
+  if (!leave) {
+
 
     return (
 
-      <div className="text-center py-10 text-gray-600">
+      <div className="text-center py-10 text-muted">
 
         Loading Leave...
 
       </div>
 
     );
+
 
   }
 
@@ -99,336 +147,394 @@ export default function LeaveViewPage() {
 
 
 
-return (
+  return (
 
-<div className="space-y-6">
 
-{/* Header */}
+    <div className="space-y-6">
 
 
-<div className="flex justify-between items-center">
+      {/* Header */}
 
 
+      <div className="flex justify-between items-center">
 
-<div>
 
+        <div>
 
-<h1 className="text-3xl font-bold text-gray-900">
 
-Leave Details
+          <h1 className="text-3xl font-bold text-theme">
 
-</h1>
+            Leave Details
 
+          </h1>
 
-<p className="text-gray-600 mt-2">
 
-View leave request information
 
-</p>
+          <p className="text-muted mt-2">
 
+            View leave request information
 
-</div>
+          </p>
 
 
-<div className="flex gap-3">
+        </div>
+                <div className="flex gap-3">
 
 
-<button
+          <button
 
-onClick={()=>router.back()}
+            onClick={() => router.back()}
 
-className="
-bg-gray-600
-hover:bg-gray-700
-text-white
-px-5
-py-2
-rounded-lg
-"
+            className="
+            bg-gray-600
+            hover:bg-gray-700
+            text-white
+            px-5
+            py-2
+            rounded-lg
+            "
 
->
+          >
 
-Back
+            Back
 
-</button>
+          </button>
 
 
 
-<Link
 
-href={`/hr/leave/edit/${leave.LeaveId}`}
 
-className="
-bg-blue-600
-hover:bg-blue-700
-text-white
-px-5
-py-2
-rounded-lg
-"
+          <Link
 
->
 
-Edit
+            href={`/hr/leave/edit/${leave.LeaveId}`}
 
-</Link>
 
+            className="
+            bg-blue-600
+            hover:bg-blue-700
+            text-white
+            px-5
+            py-2
+            rounded-lg
+            "
 
+          >
 
+            Edit
 
-<button
+          </Link>
 
-onClick={handleDelete}
 
-className="
-bg-red-600
-hover:bg-red-700
-text-white
-px-5
-py-2
-rounded-lg
-"
 
->
 
-Delete
 
-</button>
 
+          <button
 
-</div>
 
+            onClick={handleDelete}
 
-</div>
 
-{/* Leave Information */}
+            className="
+            bg-red-600
+            hover:bg-red-700
+            text-white
+            px-5
+            py-2
+            rounded-lg
+            "
 
+          >
 
+            Delete
 
-<div className="bg-white border rounded-xl shadow p-6">
+          </button>
 
 
 
-<h2 className="text-xl font-semibold text-gray-900 mb-6">
+        </div>
 
-Leave Information
 
-</h2>
 
+      </div>
 
 
 
 
 
-<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
 
-{/* Leave ID */}
+      {/* Leave Information */}
 
-<div>
 
 
-<p className="text-sm text-gray-500">
 
-Leave ID
+      <div className="card-theme rounded-xl shadow p-6">
 
-</p>
 
 
-<p className="font-semibold text-gray-900">
+        <h2 className="text-xl font-semibold text-theme mb-6">
 
-{leave.LeaveId}
+          Leave Information
 
-</p>
+        </h2>
 
 
-</div>
 
-{/* Employee ID */}
 
-<div>
 
 
-<p className="text-sm text-gray-500">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Leave ID */}
 
-Employee ID
+          <div>
 
-</p>
+            <p className="text-sm text-muted">
 
+              Leave ID
 
-<p className="font-semibold text-gray-900">
+            </p>
 
-{leave.EmployeeId}
 
-</p>
+            <p className="font-semibold text-theme">
 
+              {leave.LeaveId}
 
-</div>
+            </p>
 
 
-{/* Employee Name */}
+          </div>
 
-<div>
 
 
-<p className="text-sm text-gray-500">
 
-Employee Name
 
-</p>
+          {/* Employee ID */}
 
 
-<p className="font-semibold text-gray-900">
+          <div>
 
-{leave.EmployeeName}
 
-</p>
+            <p className="text-sm text-muted">
 
+              Employee ID
 
-</div>
+            </p>
 
-{/* Leave Type */}
 
-<div>
+            <p className="font-semibold text-theme">
 
+              {leave.EmployeeId}
 
-<p className="text-sm text-gray-500">
+            </p>
 
-Leave Type
 
-</p>
+          </div>
 
 
-<p className="font-semibold text-gray-900">
 
-{leave.LeaveType}
 
-</p>
 
 
-</div>
 
+          {/* Employee Name */}
 
-{/* From Date */}
 
-<div>
+          <div>
 
 
-<p className="text-sm text-gray-500">
+            <p className="text-sm text-muted">
 
-From Date
+              Employee Name
 
-</p>
+            </p>
 
 
-<p className="font-semibold text-gray-900">
+            <p className="font-semibold text-theme">
 
-{leave.FromDate}
+              {leave.EmployeeName}
 
-</p>
+            </p>
 
 
-</div>
+          </div>
 
-{/* To Date */}
 
-<div>
 
 
-<p className="text-sm text-gray-500">
 
-To Date
 
-</p>
 
+          {/* Leave Type */}
 
-<p className="font-semibold text-gray-900">
 
-{leave.ToDate}
+          <div>
 
-</p>
 
+            <p className="text-sm text-muted">
 
-</div>
+              Leave Type
 
-{/* Reason */}
+            </p>
 
-<div className="md:col-span-2">
 
+            <p className="font-semibold text-theme">
 
-<p className="text-sm text-gray-500">
+              {leave.LeaveType}
 
-Reason
+            </p>
 
-</p>
 
+          </div>
 
-<p className="font-semibold text-gray-900">
 
-{leave.Reason}
 
-</p>
 
 
-</div>
 
 
-{/* Status */}
+          {/* From Date */}
 
-<div>
 
+          <div>
 
-<p className="text-sm text-gray-500 mb-2">
 
-Status
+            <p className="text-sm text-muted">
 
-</p>
+              From Date
 
+            </p>
 
 
+            <p className="font-semibold text-theme">
 
-<span
+              {leave.FromDate}
 
-className={
+            </p>
 
 
-leave.Status === "Approved"
+          </div>
 
-?
 
-"bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
 
 
-:
 
 
-leave.Status === "Rejected"
 
+          {/* To Date */}
 
-?
 
+          <div>
 
-"bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm"
 
+            <p className="text-sm text-muted">
 
-:
+              To Date
 
+            </p>
 
-"bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm"
 
+            <p className="font-semibold text-theme">
 
-}
+              {leave.ToDate}
 
->
-{leave.Status}
-</span>
-</div>
-</div>
-</div>
+            </p>
 
-</div>
 
-);
+          </div>
+                    {/* Reason */}
+
+
+          <div className="md:col-span-2">
+
+
+            <p className="text-sm text-muted">
+
+              Reason
+
+            </p>
+
+
+            <p className="font-semibold text-theme">
+
+              {leave.Reason}
+
+            </p>
+
+
+          </div>
+
+
+
+
+
+
+          {/* Status */}
+
+
+          <div>
+
+
+            <p className="text-sm text-muted mb-2">
+
+              Status
+
+            </p>
+
+
+
+
+
+            <span
+
+
+              className={
+
+                leave.Status === "Approved"
+
+                ?
+
+                "bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
+
+                :
+
+                leave.Status === "Rejected"
+
+                ?
+
+                "bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm"
+
+                :
+
+                "bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm"
+
+              }
+
+
+            >
+
+              {leave.Status}
+
+            </span>
+
+
+
+          </div>
+
+
+
+
+        </div>
+
+
+      </div>
+
+
+    </div>
+
+
+  );
 
 
 }

@@ -28,17 +28,9 @@ export default function ViewRolePage() {
 
       setLoading(true);
 
-      const response = await fetch("/api/roles");
+      const response = await fetch(`/api/roles?id=${roleId}`);
 
-      const data: Role[] = await response.json();
-
-      const selectedRole = data.find(
-
-        (item) => item.RoleId === roleId
-
-      );
-
-      if (!selectedRole) {
+      if (!response.ok) {
 
         alert("Role not found");
 
@@ -48,7 +40,9 @@ export default function ViewRolePage() {
 
       }
 
-      setRole(selectedRole);
+      const data: Role = await response.json();
+
+      setRole(data);
 
     }
 
@@ -72,7 +66,7 @@ export default function ViewRolePage() {
 
     return (
 
-      <div className="p-6 text-center">
+      <div className="p-6 text-center bg-theme text-theme min-h-screen">
 
         Loading...
 
@@ -90,7 +84,7 @@ export default function ViewRolePage() {
 
   return (
 
-    <div className="space-y-6">
+    <div className="space-y-6 bg-theme text-theme min-h-screen">
 
       {/* Header */}
 
@@ -98,13 +92,13 @@ export default function ViewRolePage() {
 
         <div>
 
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-theme">
 
             Role Details
 
           </h1>
 
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted mt-2">
 
             View role information
 
@@ -135,26 +129,27 @@ export default function ViewRolePage() {
 
       {/* Role Information */}
 
-      <div className="bg-white border rounded-xl shadow p-6">
+      <div className="card-theme border-theme rounded-xl shadow p-6">
 
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">
+        <h2 className="text-xl font-semibold text-theme mb-6">
 
           Role Information
 
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {/* Role Name */}
+
+          {/* Role Name */}
 
           <div>
 
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted">
 
               Role Name
 
             </p>
 
-            <p className="font-semibold text-gray-900">
+            <p className="font-semibold text-theme">
 
               {role.RoleName}
 
@@ -166,13 +161,13 @@ export default function ViewRolePage() {
 
           <div>
 
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted">
 
               Description
 
             </p>
 
-            <p className="font-semibold text-gray-900">
+            <p className="font-semibold text-theme">
 
               {role.Description}
 
@@ -184,7 +179,7 @@ export default function ViewRolePage() {
 
           <div>
 
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted">
 
               Status
 

@@ -3,11 +3,15 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { useAuth } from "@/context/AuthContext";
+
 export default function LoginPage() {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
  const router = useRouter();
+
+ const { setUser } = useAuth();
 
  const handleLogin = async (e: React.FormEvent) => {
 
@@ -56,12 +60,16 @@ export default function LoginPage() {
 
 
     localStorage.setItem(
-      "user",
-      JSON.stringify(result.user)
-    );
+  "user",
+  JSON.stringify(result.user)
+);
 
+setUser(result.user);
 
-    router.push("/dashboard");
+console.log("Logged User:", result.user);   
+console.log("Employee ID:", result.user.employeeid);
+
+router.push("/dashboard");
 
 
 

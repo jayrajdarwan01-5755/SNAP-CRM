@@ -65,8 +65,6 @@ export default function ThemePage() {
 
 
 
-      // Live Context Update
-
       setThemeSettings({
 
         theme:
@@ -157,8 +155,6 @@ export default function ThemePage() {
 
 
 
-      // Live update without refresh
-
       setThemeSettings({
 
         theme,
@@ -217,7 +213,7 @@ export default function ThemePage() {
 
   return (
 
-    <div className="space-y-6">
+    <div className="space-y-6 bg-theme text-theme min-h-screen">
 
 
       <div className="flex justify-between items-center">
@@ -225,12 +221,12 @@ export default function ThemePage() {
 
         <div>
 
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-theme">
             Theme Settings
           </h1>
 
 
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-muted">
             Customize application appearance
           </p>
 
@@ -266,7 +262,7 @@ export default function ThemePage() {
 
 
 
-      <div className="bg-white border rounded-xl shadow p-6">
+      <div className="card-theme border-theme rounded-xl shadow p-6">
 
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -275,7 +271,7 @@ export default function ThemePage() {
 
           <div>
 
-            <label className="block text-sm font-semibold mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Theme
             </label>
 
@@ -291,6 +287,9 @@ export default function ThemePage() {
               className="
               w-full
               border
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2
@@ -325,7 +324,7 @@ export default function ThemePage() {
 
           <div>
 
-            <label className="block text-sm font-semibold mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Primary Color
             </label>
 
@@ -340,7 +339,7 @@ export default function ThemePage() {
                 setPrimaryColor(e.target.value)
               }
 
-              className="w-full h-10"
+              className="w-full h-10 border border-theme rounded-lg"
 
             />
 
@@ -354,7 +353,7 @@ export default function ThemePage() {
 
           <div>
 
-            <label className="block text-sm font-semibold mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Sidebar Color
             </label>
 
@@ -369,7 +368,7 @@ export default function ThemePage() {
                 setSidebarColor(e.target.value)
               }
 
-              className="w-full h-10"
+              className="w-full h-10 border border-theme rounded-lg"
 
             />
 
@@ -383,7 +382,7 @@ export default function ThemePage() {
 
           <div>
 
-            <label className="block text-sm font-semibold mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Font Size
             </label>
 
@@ -400,6 +399,9 @@ export default function ThemePage() {
               className="
               w-full
               border
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2
@@ -434,6 +436,8 @@ export default function ThemePage() {
 
 
 
+
+
         {
           message &&
 
@@ -444,6 +448,8 @@ export default function ThemePage() {
           </div>
 
         }
+
+
 
 
 

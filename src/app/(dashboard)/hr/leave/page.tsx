@@ -3,84 +3,94 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Leave } from "@/types/leave";
-
+import { useTheme } from "@/context/ThemeContext";
+import { useSearchParams } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 export default function LeavePage() {
 
+  const { themeSettings } = useTheme();
+  const { user } = useAuth();
+
+  const role = user?.role ?? "";
+  const employeeId = user?.employeeid ?? null;
 
   const [leaves, setLeaves] = useState<Leave[]>([]);
 
   const [loading, setLoading] = useState(true);
 
-
   const [searchEmployee, setSearchEmployee] = useState("");
 
   const [filterStatus, setFilterStatus] =
-  useState("All Status");
-
+    useState("All Status");
 
   const [filterLeaveType, setFilterLeaveType] =
-  useState("All Leave Type");
+    useState("All Leave Type");
 
+  const handleClear = () => {
 
-const handleClear = () => {
+    setSearchEmployee("");
 
-  setSearchEmployee("");
+    setFilterStatus("All Status");
 
-  setFilterStatus("All Status");
-
-  setFilterLeaveType("All Leave Type");
-
-};
-
-
-  useEffect(()=>{
-
-    loadLeaves();
-
-  },[]);
-
-
-
-
-
-  const loadLeaves = async()=>{
-
-
-    try{
-
-
-      const response = await fetch(
-        "/api/leaves"
-      );
-
-
-      const data:Leave[] =
-      await response.json();
-
-
-      setLeaves(data);
-
-
-    }
-    catch(error){
-
-      console.log(error);
-
-    }
-    finally{
-
-      setLoading(false);
-
-    }
-
+    setFilterLeaveType("All Leave Type");
 
   };
 
 
+useEffect(() => {
+
+  if (user) {
+    loadLeaves();
+  }
+
+}, [user]);
 
 
+const loadLeaves = async () => {
 
+  try {
+
+    setLoading(true);
+
+    let url = "/api/leaves";
+
+    if (role === "Employee") {
+
+      if (!employeeId) {
+        setLeaves([]);
+        return;
+      }
+
+      url = `/api/leaves?employeeid=${employeeId}`;
+
+    }
+
+    console.log("Leave Role:", role);
+    console.log("Leave Employee ID:", employeeId);
+    console.log("Leave API:", url);
+
+    const response = await fetch(url);
+
+    const data: Leave[] = await response.json();
+
+    console.log("Leaves From API:", data);
+
+    setLeaves(data);
+
+  }
+  catch (error) {
+
+    console.log(error);
+
+  }
+  finally {
+
+    setLoading(false);
+
+  }
+
+};
 
 
   const filteredLeaves = leaves.filter((leave)=>{
@@ -88,36 +98,30 @@ const handleClear = () => {
 
     const employeeMatch =
 
-    leave.EmployeeName
-
-    ?.toLowerCase()
-
-    .includes(
-      searchEmployee.toLowerCase()
-    );
-
+      leave.EmployeeName
+      ?.toLowerCase()
+      .includes(
+        searchEmployee.toLowerCase()
+      );
 
 
     const statusMatch =
 
-    filterStatus === "All Status"
+      filterStatus === "All Status"
 
-    ||
+      ||
 
-    leave.Status === filterStatus;
-
-
+      leave.Status === filterStatus;
 
 
 
     const leaveTypeMatch =
 
-    filterLeaveType === "All Leave Type"
+      filterLeaveType === "All Leave Type"
 
-    ||
+      ||
 
-    leave.LeaveType === filterLeaveType;
-
+      leave.LeaveType === filterLeaveType;
 
 
 
@@ -136,67 +140,32 @@ const handleClear = () => {
 
 
 
-
-
-
-
-
   const updateLeaveStatus = async(
-
     id:number,
-
     status:string
-
   )=>{
 
 
-
-    const selectedLeave =
-
-    leaves.find(
-
+    const selectedLeave = leaves.find(
       (leave)=>
-
-      leave.LeaveId === id
-
+        leave.LeaveId === id
     );
 
 
-    const handleClear = () => {
-
-  setSearchEmployee("");
-
-  setFilterStatus("All Status");
-
-  setFilterLeaveType("All Leave Type");
-
-};
-
-
     if(!selectedLeave)
-
       return;
 
 
 
-
-
     await fetch(
-
       "/api/leaves",
-
       {
-
 
         method:"PUT",
 
-
         headers:{
-
           "Content-Type":"application/json"
-
         },
-
 
         body:JSON.stringify({
 
@@ -206,12 +175,8 @@ const handleClear = () => {
 
         })
 
-
       }
-
     );
-
-
 
 
 
@@ -222,28 +187,26 @@ const handleClear = () => {
 
 
 
-
-
   return (
-
 
     <div className="space-y-6">
 
+
+      {/* Header */}
 
       <div className="flex justify-between items-center">
 
 
         <div>
 
-
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-theme">
 
             Leave Management
 
           </h1>
 
 
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted mt-2">
 
             Manage employee leave requests
 
@@ -251,7 +214,6 @@ const handleClear = () => {
 
 
         </div>
-
 
 
 
@@ -279,13 +241,12 @@ const handleClear = () => {
 
 
 
+      {/* Filter Card */}
+
+      <div className="card-theme rounded-xl shadow p-6">
 
 
-      <div className="bg-white border rounded-xl shadow p-6">
-
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
 
 
           <input
@@ -295,504 +256,568 @@ const handleClear = () => {
             value={searchEmployee}
 
             onChange={(e)=>
-
               setSearchEmployee(e.target.value)
-
             }
-
 
             className="
             border
             border-gray-300
-            bg-white
-            text-gray-900
             rounded-lg
             px-4
             py-2
+            text-theme
+            bg-transparent
             "
 
           />
+                    <select
+
+            value={filterLeaveType}
+
+            onChange={(e)=>
+              setFilterLeaveType(e.target.value)
+            }
+
+            className="
+            border
+            border-gray-300
+            rounded-lg
+            px-4
+            py-2
+            text-theme
+            card-theme
+            "
+
+          >
+
+            <option value="All Leave Type">
+
+              All Leave Type
+
+            </option>
+
+
+            <option value="Casual Leave">
+
+              Casual Leave
+
+            </option>
+
+
+            <option value="Sick Leave">
+
+              Sick Leave
+
+            </option>
+
+
+            <option value="Paid Leave">
+
+              Paid Leave
+
+            </option>
+
+
+          </select>
+
+
+
+
+
           <select
 
-value={filterLeaveType}
+            value={filterStatus}
 
-onChange={(e)=>
+            onChange={(e)=>
+              setFilterStatus(e.target.value)
+            }
 
-setFilterLeaveType(e.target.value)
+            className="
+            border
+            border-gray-300
+            rounded-lg
+            px-4
+            py-2
+            text-theme
+            card-theme
+            "
 
-}
+          >
 
-className="
-border
-border-gray-300
-bg-white
-text-gray-900
-rounded-lg
-px-4
-py-2
-"
 
->
+            <option value="All Status">
 
-<option value="All Leave Type">
-All Leave Type
-</option>
+              All Status
 
-<option value="Casual Leave">
-Casual Leave
-</option>
+            </option>
 
-<option value="Sick Leave">
-Sick Leave
-</option>
 
-<option value="Paid Leave">
-Paid Leave
-</option>
+            <option value="Pending">
 
+              Pending
 
-</select>
+            </option>
 
 
+            <option value="Approved">
 
+              Approved
 
+            </option>
 
-<select
 
-value={filterStatus}
+            <option value="Rejected">
 
-onChange={(e)=>
+              Rejected
 
-setFilterStatus(e.target.value)
+            </option>
 
-}
 
-className="
-border
-border-gray-300
-bg-white
-text-gray-900
-rounded-lg
-px-4
-py-2
-"
+          </select>
 
->
 
-<option value="All Status">
-All Status
-</option>
 
 
-<option value="Pending">
-Pending
-</option>
 
 
-<option value="Approved">
-Approved
-</option>
+          <button
 
+            className="
+            bg-green-600
+            hover:bg-green-700
+            text-white
+            rounded-lg
+            "
 
-<option value="Rejected">
-Rejected
-</option>
+          >
 
+            Search
 
-</select>
+          </button>
 
 
 
 
 
-<button
 
-className="
-bg-green-600
-text-white
-rounded-lg
-"
+          <button
 
->
+            onClick={handleClear}
 
-Search
+            className="
+            bg-gray-600
+            hover:bg-gray-700
+            text-white
+            rounded-lg
+            "
 
-</button>
+          >
 
-<button
+            Clear
 
-onClick={handleClear}
+          </button>
 
-className="
-bg-gray-600
-hover:bg-gray-700
-text-white
-rounded-lg
-"
 
->
 
-Clear
+        </div>
 
-</button>
 
-</div>
+      </div>
 
 
-</div>
 
 
 
+      {/* Table */}
 
 
+      <div className="card-theme rounded-xl shadow overflow-hidden">
 
 
+        <table className="w-full">
 
-{/* Table */}
 
+          <thead className="card-theme">
 
-<div className="bg-white border rounded-xl shadow overflow-hidden">
 
+            <tr className="text-theme">
 
-<table className="w-full">
 
+              <th className="p-4 text-left">
 
-<thead className="bg-gray-100">
+                ID
 
+              </th>
 
-<tr className="text-gray-900">
 
+              <th className="p-4 text-left">
 
-<th className="p-4 text-left">
-ID
-</th>
+                Employee
 
+              </th>
 
-<th className="p-4 text-left">
-Employee
-</th>
 
+              <th className="p-4 text-left">
 
-<th className="p-4 text-left">
-Leave Type
-</th>
+                Leave Type
 
+              </th>
 
-<th className="p-4 text-left">
-From Date
-</th>
 
+              <th className="p-4 text-left">
 
-<th className="p-4 text-left">
-To Date
-</th>
+                From Date
 
+              </th>
 
-<th className="p-4 text-left">
-Reason
-</th>
 
+              <th className="p-4 text-left">
 
-<th className="p-4 text-left">
-Status
-</th>
+                To Date
 
+              </th>
 
-<th className="p-4 text-center">
-Action
-</th>
 
+              <th className="p-4 text-left">
 
-</tr>
+                Reason
 
+              </th>
 
-</thead>
 
+              <th className="p-4 text-left">
 
+                Status
 
+              </th>
 
 
-<tbody>
+              <th className="p-4 text-center">
 
+                Action
 
-{
+              </th>
 
-loading ?
 
+            </tr>
 
-<tr>
 
-<td
+          </thead>
 
-colSpan={8}
 
-className="text-center py-10 text-gray-600"
 
->
+          <tbody>
 
-Loading Leaves...
 
-</td>
+            {
 
-</tr>
 
+              loading ?
 
 
-:
+              <tr>
 
+                <td
 
-filteredLeaves.length === 0 ?
+                  colSpan={8}
 
+                  className="text-center py-10 text-muted"
 
-<tr>
+                >
 
-<td
+                  Loading Leaves...
 
-colSpan={8}
+                </td>
 
-className="text-center py-10 text-gray-600"
+              </tr>
 
->
 
-No Leave Found
 
-</td>
+              :
 
-</tr>
 
 
+              filteredLeaves.length === 0 ?
 
-:
 
 
-filteredLeaves.map((leave)=>(
+              <tr>
 
+                <td
 
-<tr
+                  colSpan={8}
 
-key={leave.LeaveId}
+                  className="text-center py-10 text-muted"
 
-className="border-t hover:bg-gray-50"
+                >
 
->
+                  No Leave Found
 
+                </td>
 
-<td className="p-4 text-gray-800">
+              </tr>
 
-{leave.LeaveId}
 
-</td>
+              :
 
 
+              filteredLeaves.map((leave)=>(
 
 
-<td className="p-4 text-gray-900">
+                <tr
 
-{leave.EmployeeName}
+                  key={leave.LeaveId}
 
-</td>
+                  className="
+                  border-t
+                  hover:bg-black/5
+                  dark:hover:bg-white/10
+                  "
 
+                >
+                                      <td className="p-4 text-theme">
 
+                    {leave.LeaveId}
 
+                  </td>
 
-<td className="p-4 text-gray-700">
 
-{leave.LeaveType}
 
-</td>
+                  <td className="p-4 text-theme">
 
+                    {leave.EmployeeName}
 
+                  </td>
 
 
-<td className="p-4 text-gray-700">
 
-{leave.FromDate}
 
-</td>
+                  <td className="p-4 text-muted">
 
+                    {leave.LeaveType}
 
+                  </td>
 
 
-<td className="p-4 text-gray-700">
 
-{leave.ToDate}
 
-</td>
+                  <td className="p-4 text-muted">
 
+                    {leave.FromDate}
 
+                  </td>
 
 
-<td className="p-4 text-gray-700">
 
-{leave.Reason}
 
-</td>
+                  <td className="p-4 text-muted">
 
+                    {leave.ToDate}
 
+                  </td>
 
 
-<td className="p-4">
 
 
-<span
+                  <td className="p-4 text-muted">
 
-className={
+                    {leave.Reason}
 
-leave.Status === "Approved"
+                  </td>
 
-?
 
-"bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
 
-:
 
-leave.Status === "Rejected"
+                  <td className="p-4">
 
-?
 
-"bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm"
+                    <span
 
-:
+                      className={
 
-"bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm"
+                        leave.Status === "Approved"
 
-}
+                        ?
 
->
+                        `
+                        bg-green-100
+                        text-green-700
+                        px-3
+                        py-1
+                        rounded-full
+                        text-sm
+                        `
 
+                        :
 
-{leave.Status}
 
+                        leave.Status === "Rejected"
 
-</span>
+                        ?
 
+                        `
+                        bg-red-100
+                        text-red-700
+                        px-3
+                        py-1
+                        rounded-full
+                        text-sm
+                        `
 
-</td>
 
+                        :
 
 
+                        `
+                        bg-yellow-100
+                        text-yellow-700
+                        px-3
+                        py-1
+                        rounded-full
+                        text-sm
+                        `
 
+                      }
 
+                    >
 
-<td className="p-4">
+                      {leave.Status}
 
 
-<div className="flex justify-center gap-2">
+                    </span>
 
 
+                  </td>
 
-<Link
 
-href={`/hr/leave/${leave.LeaveId}`}
 
-className="
-bg-green-600
-text-white
-px-3
-py-1
-rounded
-text-sm
-"
 
->
 
-View
 
-</Link>
 
+                  <td className="p-4">
 
 
+                    <div className="flex justify-center gap-2">
 
 
 
-<button
 
-onClick={()=>updateLeaveStatus(
 
-leave.LeaveId,
+                      <Link
 
-"Approved"
+                        href={`/hr/leave/${leave.LeaveId}`}
 
-)}
+                        className="
+                        bg-green-600
+                        hover:bg-green-700
+                        text-white
+                        px-3
+                        py-1
+                        rounded
+                        text-sm
+                        "
 
-className="
-bg-blue-600
-text-white
-px-3
-py-1
-rounded
-text-sm
-"
+                      >
 
->
+                        View
 
-Approve
+                      </Link>
 
-</button>
 
 
 
 
 
+                      <button
 
+                        onClick={()=>updateLeaveStatus(
 
-<button
+                          leave.LeaveId,
 
-onClick={()=>updateLeaveStatus(
+                          "Approved"
 
-leave.LeaveId,
+                        )}
 
-"Rejected"
+                        className="
+                        bg-blue-600
+                        hover:bg-blue-700
+                        text-white
+                        px-3
+                        py-1
+                        rounded
+                        text-sm
+                        "
 
-)}
+                      >
 
-className="
-bg-red-600
-text-white
-px-3
-py-1
-rounded
-text-sm
-"
+                        Approve
 
->
+                      </button>
 
-Reject
 
-</button>
 
 
 
-</div>
 
 
-</td>
+                      <button
 
+                        onClick={()=>updateLeaveStatus(
 
+                          leave.LeaveId,
 
-</tr>
+                          "Rejected"
 
+                        )}
 
-))
+                        className="
+                        bg-red-600
+                        hover:bg-red-700
+                        text-white
+                        px-3
+                        py-1
+                        rounded
+                        text-sm
+                        "
 
+                      >
 
-}
+                        Reject
 
+                      </button>
 
 
-</tbody>
 
 
-</table>
 
+                    </div>
 
-</div>
 
+                  </td>
 
-</div>
 
 
-);
+                </tr>
+
+
+              ))
+
+
+            }
+
+
+          </tbody>
+
+
+        </table>
+              </div>
+
+
+    </div>
+
+
+  );
 
 
 }

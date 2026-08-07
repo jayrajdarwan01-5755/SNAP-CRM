@@ -87,12 +87,13 @@ export default function ViewProductPage() {
 
 
 
+
   if (!product) {
 
 
     return (
 
-      <div>
+      <div className="text-muted">
 
         Loading Product...
 
@@ -102,6 +103,7 @@ export default function ViewProductPage() {
 
 
   }
+
 
 
 
@@ -130,7 +132,7 @@ export default function ViewProductPage() {
 
 
 
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-theme">
 
             Product Details
 
@@ -138,7 +140,7 @@ export default function ViewProductPage() {
 
 
 
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted mt-2">
 
             View product information
 
@@ -147,6 +149,8 @@ export default function ViewProductPage() {
 
 
         </div>
+
+
 
 
 
@@ -180,18 +184,23 @@ export default function ViewProductPage() {
 
       </div>
       
+
+
+
       {/* Product Information */}
 
 
-      <div className="bg-white border rounded-xl shadow p-6">
+      <div className="card-theme border border-theme rounded-xl shadow p-6">
 
 
 
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">
+        <h2 className="text-xl font-semibold text-theme mb-6">
 
           Product Information
 
         </h2>
+
+
 
 
 
@@ -209,14 +218,14 @@ export default function ViewProductPage() {
           <div>
 
 
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted">
 
               Product Code
 
             </p>
 
 
-            <p className="font-semibold text-gray-900">
+            <p className="font-semibold text-theme">
 
               {product.ProductCode}
 
@@ -231,20 +240,22 @@ export default function ViewProductPage() {
 
 
 
+
+
           {/* Product Name */}
 
 
           <div>
 
 
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted">
 
               Product Name
 
             </p>
 
 
-            <p className="font-semibold text-gray-900">
+            <p className="font-semibold text-theme">
 
               {product.ProductName}
 
@@ -260,20 +271,21 @@ export default function ViewProductPage() {
 
 
 
+
           {/* Category */}
 
 
           <div>
 
 
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted">
 
               Category
 
             </p>
 
 
-            <p className="font-semibold text-gray-900">
+            <p className="font-semibold text-theme">
 
               {product.Category}
 
@@ -282,20 +294,25 @@ export default function ViewProductPage() {
 
           </div>
 
+
+
+
+
+
           {/* Price */}
 
 
           <div>
 
 
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted">
 
               Price
 
             </p>
 
 
-            <p className="font-semibold text-gray-900">
+            <p className="font-semibold text-theme">
 
               ₹{product.Price.toLocaleString("en-IN")}
 
@@ -303,35 +320,51 @@ export default function ViewProductPage() {
 
 
           </div>
+
+
+
+
+
+
           {/* Quantity */}
 
 
           <div>
 
 
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted">
 
               Quantity
 
             </p>
 
 
-            <p className="font-semibold text-gray-900">
+            <p className="font-semibold text-theme">
 
               {product.Quantity}
 
             </p>
+
+
           </div>
+
+
+
+
+
 
           {/* Status */}
 
 
           <div>
-            <p className="text-sm text-gray-500 mb-2">
+
+
+            <p className="text-sm text-muted mb-2">
 
               Status
 
             </p>
+
 
             <span
 
@@ -350,12 +383,25 @@ export default function ViewProductPage() {
               }
 
             >
+
               {product.Status}
 
             </span>
+
+
           </div>
+
+
         </div>
+
+
       </div>
+
+
     </div>
+
+
   );
+
+
 }

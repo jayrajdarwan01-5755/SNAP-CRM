@@ -89,10 +89,10 @@ export default function LeadsPage() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-theme">
             Lead Management
           </h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted mt-2">
             Manage sales leads
           </p>
         </div>
@@ -106,19 +106,19 @@ export default function LeadsPage() {
       </div>
 
       {/* Search Section */}
-      <div className="bg-white border rounded-xl shadow p-6">
+      <div className="card-theme border-theme border rounded-xl shadow p-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <input
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
             placeholder="Search Lead"
-            className="border border-gray-300 bg-white text-gray-900 rounded-lg px-4 py-2"
+            className="bg-theme text-theme border border-theme rounded-lg px-4 py-2"
           />
 
           <select
             value={selectedSource}
             onChange={(e) => setSelectedSource(e.target.value)}
-            className="border border-gray-300 bg-white text-gray-900 rounded-lg px-4 py-2"
+            className="bg-theme text-theme border border-theme rounded-lg px-4 py-2"
           >
             <option value="">All Sources</option>
             <option value="Website">Website</option>
@@ -130,7 +130,7 @@ export default function LeadsPage() {
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="border border-gray-300 bg-white text-gray-900 rounded-lg px-4 py-2"
+            className="bg-theme text-theme border border-theme rounded-lg px-4 py-2"
           >
             <option value="">All Status</option>
             <option value="New">New</option>
@@ -153,10 +153,10 @@ export default function LeadsPage() {
       </div>
 
       {/* Lead Table */}
-      <div className="bg-white border rounded-xl shadow overflow-hidden">
+      <div className="card-theme border-theme border rounded-xl shadow overflow-hidden">
         <table className="w-full">
-          <thead className="bg-gray-100">
-            <tr className="text-gray-900">
+          <thead className="bg-theme border-b border-theme">
+            <tr className="text-theme">
               <th className="px-3 py-3 text-left">Lead Name</th>
               <th className="px-3 py-3 text-left">Company</th>
               <th className="px-3 py-3 text-left">Phone</th>
@@ -172,7 +172,7 @@ export default function LeadsPage() {
               <tr>
                 <td
                   colSpan={7}
-                  className="text-center py-10 text-gray-600"
+                  className="text-center py-10 text-muted"
                 >
                   Loading leads...
                 </td>
@@ -181,34 +181,35 @@ export default function LeadsPage() {
               <tr>
                 <td
                   colSpan={7}
-                  className="text-center py-10 text-gray-600"
+                  className="text-center py-10 text-muted"
                 >
                   No leads found
                 </td>
               </tr>
             ) : (
-                              currentLeads.map((lead) => (
-                <tr
-                  key={lead.LeadId}
-                  className="border-t hover:bg-gray-50"
-                >
-                  <td className="px-3 py-4 font-medium text-gray-900">
+              currentLeads.map((lead) => (
+                
+               <tr
+  key={lead.LeadId}
+  className="border-t border-theme table-row-theme"
+>
+                  <td className="px-3 py-4 font-medium text-theme">
                     {lead.LeadName}
                   </td>
 
-                  <td className="px-3 py-4 text-gray-700">
+                  <td className="px-3 py-4 text-muted">
                     {lead.Company}
                   </td>
 
-                  <td className="px-3 py-4 text-gray-700">
+                  <td className="px-3 py-4 text-muted">
                     {lead.Phone}
                   </td>
 
-                  <td className="px-3 py-4 text-gray-700">
+                  <td className="px-3 py-4 text-muted">
                     {lead.Email}
                   </td>
 
-                  <td className="px-3 py-4 text-gray-700">
+                  <td className="px-3 py-4 text-muted">
                     {lead.LeadSource}
                   </td>
 
@@ -260,16 +261,18 @@ export default function LeadsPage() {
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-between items-center bg-white border rounded-xl shadow p-4">
-        <p className="text-sm text-gray-600">
-          Showing {firstLeadIndex + 1} to {Math.min(lastLeadIndex, filteredLeads.length)} of {filteredLeads.length} leads
+      <div className="flex justify-between items-center card-theme border-theme border rounded-xl shadow p-4">
+        <p className="text-sm text-muted">
+          Showing {firstLeadIndex + 1} to{" "}
+          {Math.min(lastLeadIndex, filteredLeads.length)} of{" "}
+          {filteredLeads.length} leads
         </p>
 
         <div className="flex gap-2">
           <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
-            className="border px-3 py-1 rounded disabled:opacity-50"
+            className="border border-theme text-theme px-3 py-1 rounded disabled:opacity-50"
           >
             Previous
           </button>
@@ -282,8 +285,11 @@ export default function LeadsPage() {
                   : prev
               )
             }
-            disabled={currentPage >= Math.ceil(filteredLeads.length / leadsPerPage)}
-            className="border px-3 py-1 rounded disabled:opacity-50"
+            disabled={
+              currentPage >=
+              Math.ceil(filteredLeads.length / leadsPerPage)
+            }
+            className="border border-theme text-theme px-3 py-1 rounded disabled:opacity-50"
           >
             Next
           </button>

@@ -30,6 +30,8 @@ export default function ViewUserPage() {
 
 
 
+
+
   const loadUser = async () => {
 
 
@@ -81,10 +83,14 @@ export default function ViewUserPage() {
 
 
 
+
+
+
+
   return (
 
 
-    <div className="space-y-6">
+    <div className="space-y-6 bg-theme text-theme min-h-screen">
 
 
 
@@ -100,7 +106,7 @@ export default function ViewUserPage() {
         <div>
 
 
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-theme">
 
             User Details
 
@@ -108,7 +114,7 @@ export default function ViewUserPage() {
 
 
 
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted mt-2">
 
             View user information
 
@@ -116,6 +122,7 @@ export default function ViewUserPage() {
 
 
         </div>
+
 
 
 
@@ -153,7 +160,8 @@ export default function ViewUserPage() {
 
 
 
-      <div className="bg-white border rounded-xl shadow p-6">
+
+      <div className="card-theme border-theme rounded-xl shadow p-6">
 
 
 
@@ -164,7 +172,7 @@ export default function ViewUserPage() {
         loading ? (
 
 
-          <div className="text-center py-10 text-gray-600">
+          <div className="text-center py-10 text-muted">
 
             Loading user...
 
@@ -199,11 +207,15 @@ export default function ViewUserPage() {
 
 
 
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            <h2 className="text-xl font-semibold text-theme mb-6">
 
               User Information
 
             </h2>
+
+
+
+
 
 
 
@@ -219,13 +231,17 @@ export default function ViewUserPage() {
 
 
 
+
+
+
+
               {/* Username */}
 
 
               <div>
 
 
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted">
 
                   Username
 
@@ -233,7 +249,7 @@ export default function ViewUserPage() {
 
 
 
-                <p className="font-semibold text-gray-900">
+                <p className="font-semibold text-theme">
 
                   {user.username}
 
@@ -248,6 +264,8 @@ export default function ViewUserPage() {
 
 
 
+
+
               {/* Full Name */}
 
 
@@ -255,7 +273,7 @@ export default function ViewUserPage() {
               <div>
 
 
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted">
 
                   Full Name
 
@@ -263,7 +281,7 @@ export default function ViewUserPage() {
 
 
 
-                <p className="font-semibold text-gray-900">
+                <p className="font-semibold text-theme">
 
                   {user.fullname}
 
@@ -278,6 +296,8 @@ export default function ViewUserPage() {
 
 
 
+
+
               {/* Role */}
 
 
@@ -285,7 +305,7 @@ export default function ViewUserPage() {
               <div>
 
 
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted">
 
                   Role
 
@@ -293,7 +313,7 @@ export default function ViewUserPage() {
 
 
 
-                <p className="font-semibold text-gray-900">
+                <p className="font-semibold text-theme">
 
                   {user.role}
 
@@ -309,6 +329,10 @@ export default function ViewUserPage() {
 
 
 
+
+
+
+
               {/* Status */}
 
 
@@ -316,7 +340,7 @@ export default function ViewUserPage() {
               <div>
 
 
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted">
 
                   Status
 
@@ -343,17 +367,31 @@ export default function ViewUserPage() {
                 >
 
                   {user.status ? "Active" : "Inactive"}
+
                 </p>
+
 
               </div>
 
+
             </div>
+
+
           </>
+
+
         )
+
+
       }
+
 
       </div>
 
+
     </div>
+
+
   );
+
 }

@@ -85,7 +85,6 @@ export async function GET(request: Request) {
   }
 }
 
-
 // ========================
 // ADD EMPLOYEE
 // ========================
@@ -122,6 +121,15 @@ export async function POST(request: Request) {
       );
     }
 
+    // Activity
+    await supabaseServer.from("activities").insert([
+      {
+        title: "Employee Added",
+        description: `${data.first_name} ${data.last_name} added as ${data.designation}`,
+        type: "HR",
+      },
+    ]);
+
     return NextResponse.json({
       message: "Employee added successfully",
       employee: {
@@ -152,7 +160,6 @@ export async function POST(request: Request) {
     );
   }
 }
-
 
 // ========================
 // UPDATE EMPLOYEE
@@ -189,6 +196,15 @@ export async function PUT(request: Request) {
       );
     }
 
+    // Activity
+    await supabaseServer.from("activities").insert([
+      {
+        title: "Employee Updated",
+        description: `${data.first_name} ${data.last_name} employee updated`,
+        type: "HR",
+      },
+    ]);
+
     return NextResponse.json({
       message: "Employee updated successfully",
       employee: {
@@ -220,7 +236,6 @@ export async function PUT(request: Request) {
   }
 }
 
-
 // ========================
 // DELETE EMPLOYEE
 // ========================
@@ -228,6 +243,13 @@ export async function PUT(request: Request) {
 export async function DELETE(request: Request) {
   try {
     const body = await request.json();
+
+    // Employee details before delete
+    const { data: employee } = await supabaseServer
+      .from("employees")
+      .select("first_name,last_name")
+      .eq("id", body.EmployeeId)
+      .single();
 
     const { error } = await supabaseServer
       .from("employees")
@@ -240,6 +262,15 @@ export async function DELETE(request: Request) {
         { status: 400 }
       );
     }
+
+    // Activity
+    await supabaseServer.from("activities").insert([
+      {
+        title: "Employee Deleted",
+        description: `${employee?.first_name} ${employee?.last_name} employee deleted`,
+        type: "HR",
+      },
+    ]);
 
     return NextResponse.json({
       message: "Employee deleted successfully",

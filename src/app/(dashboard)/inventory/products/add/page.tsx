@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function AddProductPage() {
 
   const router = useRouter();
 
+  const [categories, setCategories] = useState<any[]>([]);
 
   const [product, setProduct] = useState({
 
@@ -18,6 +19,33 @@ export default function AddProductPage() {
     status: "Active",
 
   });
+
+
+  useEffect(() => {
+
+    loadCategories();
+
+  }, []);
+
+
+
+  const loadCategories = async () => {
+
+    try {
+
+      const response = await fetch("/api/categories");
+
+      const data = await response.json();
+
+      setCategories(data);
+
+    } catch(error) {
+
+      console.log(error);
+
+    }
+
+  };
 
 
 
@@ -158,22 +186,32 @@ export default function AddProductPage() {
 
 
   };
+
+
+
   return (
 
     <div className="space-y-6">
 
 
+
       {/* Header */}
+
 
       <div>
 
-        <h1 className="text-3xl font-bold text-gray-900">
+
+        <h1 className="text-3xl font-bold text-theme">
+
           Add Product
+
         </h1>
 
 
-        <p className="text-gray-600 mt-2">
+        <p className="text-muted mt-2">
+
           Create new product
+
         </p>
 
 
@@ -186,7 +224,7 @@ export default function AddProductPage() {
       {/* Form */}
 
 
-      <div className="bg-white border rounded-xl shadow p-6">
+      <div className="card-theme border border-theme rounded-xl shadow p-6">
 
 
         <form
@@ -203,10 +241,10 @@ export default function AddProductPage() {
             {/* Product Information */}
 
 
-            <div className="bg-gray-50 border rounded-xl p-6">
+            <div className="bg-theme border border-theme rounded-xl p-6">
 
 
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              <h2 className="text-2xl font-bold text-theme mb-6">
 
                 Product Information
 
@@ -221,8 +259,10 @@ export default function AddProductPage() {
 
                 <div>
 
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-muted mb-2">
+
                     Product Code
+
                   </label>
 
 
@@ -238,7 +278,17 @@ export default function AddProductPage() {
 
                     placeholder="PRD001"
 
-                    className="w-full border rounded-lg px-4 py-2 text-gray-900"
+                    className="
+                    w-full
+                    border
+                    border-theme
+                    bg-theme
+                    text-theme
+                    placeholder:text-muted
+                    rounded-lg
+                    px-4
+                    py-2
+                    "
 
                   />
 
@@ -251,8 +301,10 @@ export default function AddProductPage() {
 
                 <div>
 
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-muted mb-2">
+
                     Product Name
+
                   </label>
 
 
@@ -268,21 +320,28 @@ export default function AddProductPage() {
 
                     placeholder="Enter Product Name"
 
-                    className="w-full border rounded-lg px-4 py-2 text-gray-900"
+                    className="
+                    w-full
+                    border
+                    border-theme
+                    bg-theme
+                    text-theme
+                    placeholder:text-muted
+                    rounded-lg
+                    px-4
+                    py-2
+                    "
 
                   />
 
 
                 </div>
+                                <div>
 
+                  <label className="block text-sm font-semibold text-muted mb-2">
 
-
-
-
-                <div>
-
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Category
+
                   </label>
 
 
@@ -294,7 +353,16 @@ export default function AddProductPage() {
 
                     onChange={handleChange}
 
-                    className="w-full border rounded-lg px-4 py-2 text-gray-900"
+                    className="
+                    w-full
+                    border
+                    border-theme
+                    bg-theme
+                    text-theme
+                    rounded-lg
+                    px-4
+                    py-2
+                    "
 
                   >
 
@@ -303,19 +371,23 @@ export default function AddProductPage() {
                     </option>
 
 
-                    <option value="Electronics">
-                      Electronics
-                    </option>
+                    {
+                      categories.map((category)=>(
 
+                        <option
 
-                    <option value="Furniture">
-                      Furniture
-                    </option>
+                          key={category.CategoryId}
 
+                          value={category.CategoryName}
 
-                    <option value="Office Supplies">
-                      Office Supplies
-                    </option>
+                        >
+
+                          {category.CategoryName}
+
+                        </option>
+
+                      ))
+                    }
 
 
                   </select>
@@ -336,13 +408,14 @@ export default function AddProductPage() {
 
 
 
+
             {/* Inventory Information */}
 
 
-            <div className="bg-gray-50 border rounded-xl p-6">
+            <div className="bg-theme border border-theme rounded-xl p-6">
 
 
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              <h2 className="text-2xl font-bold text-theme mb-6">
 
                 Inventory Information
 
@@ -356,8 +429,10 @@ export default function AddProductPage() {
 
                 <div>
 
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-muted mb-2">
+
                     Price
+
                   </label>
 
 
@@ -373,7 +448,17 @@ export default function AddProductPage() {
 
                     placeholder="50000"
 
-                    className="w-full border rounded-lg px-4 py-2 text-gray-900"
+                    className="
+                    w-full
+                    border
+                    border-theme
+                    bg-theme
+                    text-theme
+                    placeholder:text-muted
+                    rounded-lg
+                    px-4
+                    py-2
+                    "
 
                   />
 
@@ -386,8 +471,10 @@ export default function AddProductPage() {
 
                 <div>
 
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-muted mb-2">
+
                     Quantity
+
                   </label>
 
 
@@ -403,7 +490,17 @@ export default function AddProductPage() {
 
                     placeholder="100"
 
-                    className="w-full border rounded-lg px-4 py-2 text-gray-900"
+                    className="
+                    w-full
+                    border
+                    border-theme
+                    bg-theme
+                    text-theme
+                    placeholder:text-muted
+                    rounded-lg
+                    px-4
+                    py-2
+                    "
 
                   />
 
@@ -416,8 +513,10 @@ export default function AddProductPage() {
 
                 <div>
 
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-muted mb-2">
+
                     Status
+
                   </label>
 
 
@@ -430,17 +529,31 @@ export default function AddProductPage() {
 
                     onChange={handleChange}
 
-                    className="w-full border rounded-lg px-4 py-2 text-gray-900"
+                    className="
+                    w-full
+                    border
+                    border-theme
+                    bg-theme
+                    text-theme
+                    rounded-lg
+                    px-4
+                    py-2
+                    "
 
                   >
 
+
                     <option value="Active">
+
                       Active
+
                     </option>
 
 
                     <option value="Inactive">
+
                       Inactive
+
                     </option>
 
 
@@ -498,6 +611,8 @@ export default function AddProductPage() {
 
 
 
+
+
             <button
 
               type="button"
@@ -505,8 +620,8 @@ export default function AddProductPage() {
               onClick={() => router.back()}
 
               className="
-              bg-gray-500
-              hover:bg-gray-600
+              bg-gray-600
+              hover:bg-gray-700
               text-white
               px-6
               py-2

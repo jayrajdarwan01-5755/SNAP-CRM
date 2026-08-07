@@ -2,14 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-
+import { Backup } from "@/types/backup";
 
 export default function BackupPage() {
 
 
-  const [backupName, setBackupName] = useState(
-    "SNAP_CRM_Backup"
-  );
+const [backupName, setBackupName] = useState("");
 
 
   const [lastBackup, setLastBackup] = useState("");
@@ -32,47 +30,53 @@ export default function BackupPage() {
 
 
 
-  const loadBackup = async () => {
+const loadBackup = async () => {
 
-    try {
-
-      const response = await fetch(
-        "/api/backup"
-      );
+try {
 
 
-      const result = await response.json();
+const response = await fetch("/api/backup");
 
 
-      const data = result.data;
+const result = await response.json();
 
 
-      setBackupName(
-        data.backupName
-      );
+
+const data:Backup = result.data;
 
 
-      setLastBackup(
-        data.lastBackup
-      );
+
+setBackupName(
+data.backupname
+);
 
 
-      setStatus(
-        data.status
-      );
+setLastBackup(
+  new Date(data.lastbackup).toLocaleString("en-IN", {
+    timeZone: "Asia/Kolkata",
+  })
+);
 
 
-    }
-    catch(error){
 
-      console.error(
-        "Backup Load Error",
-        error
-      );
+setStatus(
+data.status
+);
 
-    }
 
-  };
+
+}
+catch(error){
+
+console.log(
+"Backup Load Error",
+error
+);
+
+
+}
+
+};
 
 
 
@@ -85,65 +89,70 @@ export default function BackupPage() {
   const handleCreateBackup = async () => {
 
 
-    try {
+try{
 
 
-      const response = await fetch(
-        "/api/backup",
-        {
-          method:"POST",
+const response = await fetch(
+"/api/backup",
+{
+method:"POST",
 
-          headers:{
-            "Content-Type":"application/json",
-          },
+headers:{
+"Content-Type":"application/json"
+},
 
-          body:JSON.stringify({
+body:JSON.stringify({
 
-            action:"create",
+action:"create"
 
-          }),
+})
 
-        }
-      );
-
-
-
-      const result = await response.json();
+}
+);
 
 
 
-      setLastBackup(
-        result.data.lastBackup
-      );
+const result = await response.json();
 
 
-      setStatus(
-        result.data.status
-      );
+
+setLastBackup(
+new Date(
+result.data.lastbackup
+).toLocaleString()
+);
 
 
-      setMessage(
-        result.message
-      );
+
+setStatus(
+result.data.status
+);
 
 
-    }
-    catch(error){
 
-      console.error(
-        "Create Backup Error",
-        error
-      );
+setMessage(
+result.message
+);
 
 
-      setMessage(
-        "Backup creation failed"
-      );
 
-    }
+}
+catch(error){
 
 
-  };
+console.log(error);
+
+
+setMessage(
+"Backup creation failed"
+);
+
+
+}
+
+
+};
+
 
 
 
@@ -153,82 +162,94 @@ export default function BackupPage() {
   // RESTORE BACKUP
   // ==========================
 
-  const handleRestoreBackup = async () => {
+const handleRestoreBackup = async () => {
 
 
-    try {
+try{
 
 
-      const response = await fetch(
-        "/api/backup",
-        {
-          method:"POST",
+const response = await fetch(
+"/api/backup",
+{
+method:"POST",
 
-          headers:{
-            "Content-Type":"application/json",
-          },
-
-          body:JSON.stringify({
-
-            action:"restore",
-
-          }),
-
-        }
-      );
+headers:{
+"Content-Type":"application/json"
+},
 
 
-      const result = await response.json();
+body:JSON.stringify({
 
+action:"restore"
 
+})
 
-      setStatus(
-        result.data.status
-      );
-
-
-      setMessage(
-        result.message
-      );
-
-
-    }
-    catch(error){
-
-
-      console.error(
-        "Restore Backup Error",
-        error
-      );
-
-
-      setMessage(
-        "Restore failed"
-      );
-
-
-    }
-
-
-  };
+}
+);
 
 
 
+const result = await response.json();
 
 
-  const handleDownloadBackup = () => {
 
-    setMessage(
-      "Backup Download Started"
-    );
+setStatus(
+result.data.status
+);
 
-  };
+
+
+setMessage(
+result.message
+);
+
+
+
+}
+catch(error){
+
+console.log(error);
+
+
+setMessage(
+"Restore failed"
+);
+
+
+}
+
+
+};
+
+
+
+
+
+
+const handleDownloadBackup = async () => {
+
+  const response = await fetch("/api/backup/download");
+
+  const blob = await response.blob();
+
+  const url = window.URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+
+  link.href = url;
+
+  link.download = "backup.json";
+
+  link.click();
+
+};
+
 
 
 
   return (
 
-    <div className="space-y-6">
+    <div className="space-y-6 bg-theme text-theme min-h-screen">
 
 
       {/* Header */}
@@ -238,12 +259,12 @@ export default function BackupPage() {
 
         <div>
 
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-theme">
             Backup
           </h1>
 
 
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted mt-2">
             Manage system backups
           </p>
 
@@ -276,7 +297,7 @@ export default function BackupPage() {
       
       {/* Backup Card */}
 
-      <div className="bg-white border rounded-xl shadow p-6">
+      <div className="card-theme border-theme rounded-xl shadow p-6">
 
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -287,7 +308,7 @@ export default function BackupPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Backup Name
             </label>
 
@@ -303,9 +324,9 @@ export default function BackupPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2
@@ -323,7 +344,7 @@ export default function BackupPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Last Backup
             </label>
 
@@ -339,9 +360,9 @@ export default function BackupPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-gray-100
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2
@@ -359,32 +380,35 @@ export default function BackupPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Backup Status
             </label>
 
 
-            <input
+<input
 
-              type="text"
+  type="text"
 
-              value={status}
+  value={status}
 
-              readOnly
+  readOnly
 
-              className="
-              w-full
-              border
-              border-gray-300
-              bg-gray-100
-              text-green-700
-              font-semibold
-              rounded-lg
-              px-4
-              py-2
-              "
+  className={`
+  w-full
+  border
+  border-theme
+  bg-theme
+  rounded-lg
+  px-4
+  py-2
+  ${
+    status === "Completed"
+      ? "text-green-600 font-semibold"
+      : "text-red-600 font-semibold"
+  }
+  `}
 
-            />
+/>
 
           </div>
 
@@ -407,6 +431,7 @@ export default function BackupPage() {
 
             )
           }
+
 
 
 

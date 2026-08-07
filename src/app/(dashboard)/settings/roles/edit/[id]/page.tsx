@@ -34,13 +34,15 @@ export default function EditRolePage() {
 
       setLoading(true);
 
-      const response = await fetch("/api/roles");
+      const response = await fetch(`/api/roles?id=${roleId}`);
 
-      const data: Role[] = await response.json();
+      if (!response.ok) {
+        alert("Role not found");
+        router.push("/settings/roles");
+        return;
+      }
 
-      const role = data.find(
-        (item) => item.RoleId === roleId
-      );
+      const role: Role = await response.json();
 
       if (!role) {
 
@@ -149,7 +151,7 @@ export default function EditRolePage() {
 
     return (
 
-      <div className="p-6 text-center">
+      <div className="p-6 text-center bg-theme text-theme min-h-screen">
 
         Loading...
 
@@ -161,7 +163,7 @@ export default function EditRolePage() {
 
   return (
 
-    <div className="space-y-6">
+    <div className="space-y-6 bg-theme text-theme min-h-screen">
 
       {/* Header */}
 
@@ -169,13 +171,13 @@ export default function EditRolePage() {
 
         <div>
 
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-theme">
 
             Edit Role
 
           </h1>
 
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted mt-2">
 
             Update role information
 
@@ -203,7 +205,7 @@ export default function EditRolePage() {
 
       {/* Form */}
 
-      <div className="bg-white border rounded-xl shadow p-6">
+      <div className="card-theme border-theme rounded-xl shadow p-6">
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -211,7 +213,7 @@ export default function EditRolePage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Role Name
 
@@ -224,9 +226,9 @@ export default function EditRolePage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2
@@ -234,11 +236,13 @@ export default function EditRolePage() {
             />
 
           </div>
-                    {/* Status */}
+
+
+          {/* Status */}
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Status
 
@@ -250,9 +254,9 @@ export default function EditRolePage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2
@@ -279,7 +283,7 @@ export default function EditRolePage() {
 
           <div className="md:col-span-2">
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Description
 
@@ -292,9 +296,9 @@ export default function EditRolePage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2

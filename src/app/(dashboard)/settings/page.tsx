@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import RoleGuard from "@/components/auth/RoleGuard";
+
 import {
   Building2,
   Users,
@@ -58,164 +60,158 @@ export default function SettingsPage() {
     },
   ];
 
-
   return (
-    <div className="space-y-8">
 
+    <RoleGuard allowedRoles={["Admin"]}>
 
-      {/* Header */}
+      <div className="space-y-8">
 
-      <div className="flex items-center justify-between">
+        {/* Header */}
 
-        <div>
+        <div className="flex items-center justify-between">
 
-          <h1 className="text-3xl font-bold text-gray-900">
-            Settings
-          </h1>
+          <div>
 
-          <p className="mt-2 text-gray-600">
-            Manage application configuration and preferences
-          </p>
+            <h1 className="text-3xl font-bold text-theme">
+              Settings
+            </h1>
+
+            <p className="mt-2 text-muted">
+              Manage application configuration and preferences
+            </p>
+
+          </div>
+
+          <div className="
+            card-theme
+            border
+            border-theme
+            px-4
+            py-3
+            rounded-lg
+          ">
+
+            <p className="text-sm text-muted">
+              Total Settings
+            </p>
+
+            <p className="text-2xl font-bold text-blue-600">
+              {settings.length}
+            </p>
+
+          </div>
 
         </div>
 
+        {/* Settings Cards */}
 
-        <div className="bg-blue-50 px-4 py-3 rounded-lg">
+        <div className="
+          grid
+          grid-cols-1
+          md:grid-cols-2
+          lg:grid-cols-3
+          gap-6
+        ">
 
-          <p className="text-sm text-gray-600">
-            Total Settings
-          </p>
+          {settings.map((item) => {
 
-          <p className="text-2xl font-bold text-blue-600">
-            {settings.length}
-          </p>
+            const Icon = item.icon;
 
-        </div>
+            return (
 
-
-      </div>
-
-
-
-      {/* Settings Cards */}
-
-
-      <div className="
-        grid 
-        grid-cols-1 
-        md:grid-cols-2 
-        lg:grid-cols-3 
-        gap-6
-      ">
-
-
-        {settings.map((item) => {
-
-          const Icon = item.icon;
-
-
-          return (
-
-            <Link
-              key={item.title}
-              href={item.href}
-              className="
-                group
-                bg-white
-                border
-                rounded-xl
-                p-6
-                shadow-sm
-                hover:shadow-xl
-                hover:border-blue-500
-                transition-all
-                duration-300
-              "
-            >
-
-
-              <div className="
-                flex
-                items-center
-                justify-between
-              ">
-
+              <Link
+                key={item.title}
+                href={item.href}
+                className="
+                  group
+                  card-theme
+                  border
+                  border-theme
+                  rounded-xl
+                  p-6
+                  shadow-sm
+                  hover:shadow-xl
+                  hover:border-blue-500
+                  transition-all
+                  duration-300
+                "
+              >
 
                 <div className="
-                  h-12
-                  w-12
-                  rounded-lg
-                  bg-blue-100
                   flex
                   items-center
-                  justify-center
-                  group-hover:bg-blue-600
-                  transition
+                  justify-between
                 ">
 
-                  <Icon
-                    className="
-                      h-6
-                      w-6
-                      text-blue-600
-                      group-hover:text-white
-                      transition
-                    "
-                  />
+                  <div className="
+                    h-12
+                    w-12
+                    rounded-lg
+                    bg-blue-100
+                    flex
+                    items-center
+                    justify-center
+                    group-hover:bg-blue-600
+                    transition
+                  ">
+
+                    <Icon
+                      className="
+                        h-6
+                        w-6
+                        text-blue-600
+                        group-hover:text-white
+                        transition
+                      "
+                    />
+
+                  </div>
 
                 </div>
 
+                <h2 className="
+                  mt-5
+                  text-xl
+                  font-semibold
+                  text-theme
+                ">
 
-              </div>
+                  {item.title}
 
+                </h2>
 
+                <p className="
+                  mt-2
+                  text-muted
+                  text-sm
+                ">
 
-              <h2 className="
-                mt-5
-                text-xl
-                font-semibold
-                text-gray-900
-              ">
+                  {item.description}
 
-                {item.title}
+                </p>
 
-              </h2>
+                <div className="
+                  mt-5
+                  text-sm
+                  text-blue-600
+                  font-medium
+                ">
 
+                  Manage →
 
+                </div>
 
-              <p className="
-                mt-2
-                text-gray-600
-                text-sm
-              ">
+              </Link>
 
-                {item.description}
+            );
 
-              </p>
+          })}
 
-
-              <div className="
-                mt-5
-                text-sm
-                text-blue-600
-                font-medium
-              ">
-
-                Manage →
-
-              </div>
-
-
-            </Link>
-
-          );
-
-        })}
-
+        </div>
 
       </div>
 
+    </RoleGuard>
 
-    </div>
   );
 }

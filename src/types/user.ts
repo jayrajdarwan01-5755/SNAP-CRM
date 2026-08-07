@@ -12,4 +12,6 @@ export interface User {
 
   status: boolean;
 
+  employeeid: number | null;
+
 }

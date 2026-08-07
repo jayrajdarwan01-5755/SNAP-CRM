@@ -64,12 +64,13 @@ export default function ViewSupplierPage() {
 
 
 
+
   if(!supplier){
 
 
     return (
 
-      <div>
+      <div className="text-muted">
 
         Loading Supplier...
 
@@ -84,10 +85,13 @@ export default function ViewSupplierPage() {
 
 
 
+
   return (
 
 
     <div className="space-y-6">
+
+
 
 
 
@@ -101,14 +105,14 @@ export default function ViewSupplierPage() {
         <div>
 
 
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-theme">
 
             Supplier Details
 
           </h1>
 
 
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted mt-2">
 
             View supplier information
 
@@ -116,6 +120,8 @@ export default function ViewSupplierPage() {
 
 
         </div>
+
+
 
 
 
@@ -155,19 +161,34 @@ export default function ViewSupplierPage() {
 
 
 
+
+
       {/* Supplier Information */}
 
 
 
-      <div className="bg-white border rounded-xl shadow p-6">
+      <div
+
+        className="
+        card-theme
+        border
+        border-theme
+        rounded-xl
+        shadow
+        p-6
+        "
+
+      >
 
 
 
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">
+        <h2 className="text-xl font-semibold text-theme mb-6">
 
           Supplier Information
 
         </h2>
+
+
 
 
 
@@ -179,20 +200,22 @@ export default function ViewSupplierPage() {
 
 
 
+
+
           {/* Supplier Name */}
 
 
           <div>
 
 
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted">
 
               Supplier Name
 
             </p>
 
 
-            <p className="font-semibold text-gray-900">
+            <p className="font-semibold text-theme">
 
               {supplier.SupplierName}
 
@@ -207,20 +230,22 @@ export default function ViewSupplierPage() {
 
 
 
+
+
           {/* Email */}
 
 
           <div>
 
 
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted">
 
               Email
 
             </p>
 
 
-            <p className="font-semibold text-gray-900">
+            <p className="font-semibold text-theme">
 
               {supplier.Email}
 
@@ -235,20 +260,22 @@ export default function ViewSupplierPage() {
 
 
 
+
+
           {/* Phone */}
 
 
           <div>
 
 
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted">
 
               Phone
 
             </p>
 
 
-            <p className="font-semibold text-gray-900">
+            <p className="font-semibold text-theme">
 
               {supplier.Phone}
 
@@ -263,20 +290,22 @@ export default function ViewSupplierPage() {
 
 
 
+
+
           {/* Address */}
 
 
           <div>
 
 
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted">
 
               Address
 
             </p>
 
 
-            <p className="font-semibold text-gray-900">
+            <p className="font-semibold text-theme">
 
               {supplier.Address}
 
@@ -284,6 +313,7 @@ export default function ViewSupplierPage() {
 
 
           </div>
+
 
 
 

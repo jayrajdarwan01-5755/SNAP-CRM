@@ -144,12 +144,6 @@ opportunity.OpportunityId !== OpportunityId
 };
 
 
-
-
-
-
-
-
 const handleClear = ()=>{
 
 
@@ -237,7 +231,7 @@ return (
 
 <div>
 
-<h1 className="text-3xl font-bold text-gray-900">
+<h1 className="text-3xl font-bold text-theme">
 Opportunity Management
 </h1>
 
@@ -281,7 +275,7 @@ rounded-lg
 {/* Search Section */}
 
 
-<div className="bg-white border rounded-xl shadow p-6">
+<div className="card-theme border border-theme rounded-xl shadow p-6">
 
 
 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -304,9 +298,9 @@ placeholder="Search Opportunity"
 
 className="
 border
-border-gray-300
-bg-white
-text-gray-900
+border-theme
+bg-theme
+text-theme
 rounded-lg
 px-4
 py-2
@@ -332,9 +326,9 @@ setCurrentPage(1);
 
 className="
 border
-border-gray-300
-bg-white
-text-gray-900
+border-theme
+bg-theme
+text-theme
 rounded-lg
 px-4
 py-2
@@ -431,16 +425,16 @@ Clear
 
 
 
-<div className="bg-white border rounded-xl shadow overflow-hidden">
+<div className="card-theme border border-theme rounded-xl shadow overflow-hidden">
 
 
 <table className="w-full">
 
 
-<thead className="bg-gray-100">
+<thead className="bg-theme border-b border-theme">
 
 
-<tr className="text-gray-900">
+<tr className="text-theme">
 
 
 <th className="px-3 py-3 text-left">
@@ -499,7 +493,7 @@ loading ?
 
 <td
 colSpan={7}
-className="text-center py-10 text-gray-600"
+className="text-center py-10 text-muted"
 >
 
 Loading opportunities...
@@ -520,7 +514,7 @@ currentOpportunities.length === 0 ?
 
 <td
 colSpan={7}
-className="text-center py-10 text-gray-600"
+className="text-center py-10 text-muted"
 >
 
 No opportunities found
@@ -543,13 +537,16 @@ key={opportunity.OpportunityId}
 
 className="
 border-t
-hover:bg-gray-50
+border-theme
+table-row-theme
+hover:bg-theme
+transition-colors
 "
 
 >
 
 
-<td className="px-3 py-4 font-medium text-gray-900">
+<td className="px-3 py-4 font-medium text-theme">
 
 {opportunity.OpportunityName}
 
@@ -558,7 +555,7 @@ hover:bg-gray-50
 
 
 
-<td className="px-3 py-4 text-gray-700">
+<td className="px-3 py-4 text-muted">
 
 {opportunity.Customer}
 
@@ -567,7 +564,7 @@ hover:bg-gray-50
 
 
 
-<td className="px-3 py-4 text-gray-700">
+<td className="px-3 py-4 text-muted">
 
 ₹
 {new Intl.NumberFormat("en-IN")
@@ -618,7 +615,7 @@ opportunity.Stage === "Lost"
 
 
 
-<td className="px-3 py-4 text-gray-700">
+<td className="px-3 py-4 text-muted">
 
 {opportunity.Probability}
 
@@ -628,7 +625,7 @@ opportunity.Stage === "Lost"
 
 
 
-<td className="px-3 py-4 text-gray-700">
+<td className="px-3 py-4 text-muted">
 
 {opportunity.CloseDate}
 
@@ -775,7 +772,7 @@ Previous
 
 
 
-<span className="px-4 py-2 text-gray-900 font-semibold">
+<span className="px-4 py-2 text-theme font-semibold">
 
 Page {currentPage}
 

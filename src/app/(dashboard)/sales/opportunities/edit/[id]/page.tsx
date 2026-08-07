@@ -188,14 +188,14 @@ export default function EditOpportunityPage() {
         <div>
 
 
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-theme">
 
             Edit Opportunity
 
           </h1>
 
 
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted mt-2">
 
             Update opportunity information
 
@@ -242,7 +242,7 @@ export default function EditOpportunityPage() {
 
 
 
-      <div className="bg-white border rounded-xl shadow p-6">
+      <div className="card-theme border border-theme rounded-xl shadow p-6">
 
 
 
@@ -260,7 +260,7 @@ export default function EditOpportunityPage() {
           <div>
 
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Opportunity Name
 
@@ -279,16 +279,16 @@ export default function EditOpportunityPage() {
               }
 
 
-              className="
-              w-full
-              border
-              border-gray-300
-              bg-white
-              text-gray-900
-              rounded-lg
-              px-4
-              py-2
-              "
+className="
+w-full
+border
+border-theme
+bg-theme
+text-theme
+rounded-lg
+px-4
+py-2
+"
 
             />
 
@@ -296,25 +296,14 @@ export default function EditOpportunityPage() {
           </div>
 
 
-
-
-
-
-
-
           {/* Customer */}
-
-
           <div>
 
-
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Customer
 
             </label>
-
-
 
             <input
 
@@ -327,45 +316,32 @@ export default function EditOpportunityPage() {
               }
 
 
-              className="
-              w-full
-              border
-              border-gray-300
-              bg-white
-              text-gray-900
-              rounded-lg
-              px-4
-              py-2
-              "
+className="
+w-full
+border
+border-theme
+bg-theme
+text-theme
+rounded-lg
+px-4
+py-2
+"
 
             />
 
-
           </div>
-
-
-
-
-
-
-
 
 
           {/* Amount */}
 
 
           <div>
-
-
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Amount
-
             </label>
 
-
-
-            <input
+        <input
 
               type="number"
 
@@ -377,36 +353,22 @@ export default function EditOpportunityPage() {
 
 
               className="
-              w-full
-              border
-              border-gray-300
-              bg-white
-              text-gray-900
-              rounded-lg
-              px-4
-              py-2
-              "
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                rounded-lg
+                px-4
+                py-2
+                "
 
             />
-
-
           </div>
 
-
-
-
-
-
-
-
-
           {/* Stage */}
-
-
           <div>
-
-
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Stage
 
@@ -423,19 +385,17 @@ export default function EditOpportunityPage() {
               }
 
 
-              className="
-              w-full
-              border
-              border-gray-300
-              bg-white
-              text-gray-900
-              rounded-lg
-              px-4
-              py-2
-              "
-
+                className="
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                rounded-lg
+                px-4
+                py-2
+                "
             >
-
 
               <option>Prospecting</option>
 
@@ -447,34 +407,16 @@ export default function EditOpportunityPage() {
 
               <option>Lost</option>
 
-
             </select>
-
-
           </div>
 
-
-
-
-
-
-
-
-
           {/* Probability */}
-
-
           <div>
-
-
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Probability
 
             </label>
-
-
-
             <input
 
               type="text"
@@ -486,43 +428,27 @@ export default function EditOpportunityPage() {
               }
 
 
-              className="
-              w-full
-              border
-              border-gray-300
-              bg-white
-              text-gray-900
-              rounded-lg
-              px-4
-              py-2
-              "
+                className="
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                rounded-lg
+                px-4
+                py-2
+                "
 
             />
-
-
           </div>
 
-
-
-
-
-
-
-
-
           {/* Close Date */}
-
-
           <div>
-
-
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Expected Close Date
 
             </label>
-
-
 
             <input
 
@@ -536,40 +462,23 @@ export default function EditOpportunityPage() {
 
 
               className="
-              w-full
-              border
-              border-gray-300
-              bg-white
-              text-gray-900
-              rounded-lg
-              px-4
-              py-2
-              "
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                rounded-lg
+                px-4
+                py-2
+                "
 
             />
 
-
           </div>
-
-
-
-
-
-
         </div>
 
-
-
-
-
-
-
         {/* Update Button */}
-
-
         <div className="mt-8 flex justify-end">
-
-
           <button
 
             onClick={handleUpdate}
@@ -585,25 +494,10 @@ export default function EditOpportunityPage() {
             "
 
           >
-
             Update Opportunity
-
           </button>
-
-
         </div>
-
-
-
       </div>
-
-
-
-
     </div>
-
-
   );
-
-
 }

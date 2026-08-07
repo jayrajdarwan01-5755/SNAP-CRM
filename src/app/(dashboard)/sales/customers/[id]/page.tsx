@@ -3,441 +3,353 @@
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Customer } from "@/types/customer";
-
-
+import { useTheme } from "@/context/ThemeContext";
 
 export default function ViewCustomerPage() {
 
-
   const router = useRouter();
+  const params = useParams();
 
+  const { themeSettings } = useTheme();
 
+  const isDark = themeSettings.theme === "dark";
 
-//   const customer = {
+  const id = Number(params.id);
 
-//     CustomerId: 1,
-//     CustomerCode: "CUST001",
-//     CustomerName: "Rahul Sharma",
-//     Phone: "9876543210",
-//     Email: "rahul@gmail.com",
-//     Address: "Andheri East, Mumbai",
-//     City: "Mumbai",
-//     State: "Maharashtra",
-//     Country: "India",
-//     Status: "Active",
+  const [customer, setCustomer] = useState<Customer | null>(null);
 
-//   };
+  useEffect(() => {
 
-const params = useParams();
+    const loadCustomer = async () => {
 
-const id = Number(params.id);
+      try {
 
-
-const [customer, setCustomer] = useState<Customer | null>(null);
-
-
-
-useEffect(() => {
-
-  const loadCustomer = async () => {
-
-    try {
-
-      const response = await fetch(
-        `/api/customers?id=${id}`
-      );
-
-
-      if(!response.ok){
-
-        throw new Error(
-          "Customer not found"
+        const response = await fetch(
+          `/api/customers?id=${id}`
         );
+
+        if (!response.ok) {
+          throw new Error("Customer not found");
+        }
+
+        const data: Customer = await response.json();
+
+        setCustomer(data);
+
+      } catch (error) {
+
+        console.log(error);
+
+        setCustomer(null);
 
       }
 
+    };
 
-      const data: Customer =
-        await response.json();
-
-
-      setCustomer(data);
-
-
-    }
-    catch(error){
-
-      console.log(error);
-
-      setCustomer(null);
-
+    if (id) {
+      loadCustomer();
     }
 
-  };
+  }, [id]);
 
+  if (!customer) {
 
-  if(id){
+    return (
 
-    loadCustomer();
+      <div
+        className="text-center py-10"
+        style={{
+          backgroundColor: themeSettings.backgroundColor,
+          color: themeSettings.textColor,
+        }}
+      >
+        Loading Customer...
+      </div>
+
+    );
 
   }
 
-
-}, [id]);
-
-
-
-if (!customer) {
-
-  return (
-    <div>
-      Loading Customer...
-    </div>
-  );
-
-}
-
-
-
   return (
 
-
-    <div className="space-y-6">
-
-
-
-
+    <div
+      className="space-y-6 min-h-screen"
+      style={{
+        backgroundColor: themeSettings.backgroundColor,
+        color: themeSettings.textColor,
+      }}
+    >
 
       {/* Header */}
 
-
       <div className="flex justify-between items-center">
-
 
         <div>
 
-
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1
+            className="text-3xl font-bold"
+            style={{
+              color: themeSettings.textColor,
+            }}
+          >
             Customer Details
           </h1>
 
-
-          <p className="text-gray-600 mt-2">
+          <p
+            className="mt-2"
+            style={{
+              color: isDark ? "#9CA3AF" : "#6B7280",
+            }}
+          >
             View customer information
           </p>
 
-
         </div>
 
-
-
-
-
         <button
-
           onClick={() => router.back()}
-
-          className="
-          bg-gray-600
-          hover:bg-gray-700
-          text-white
-          px-5
-          py-2
-          rounded-lg
-          "
-
+          className="text-white px-5 py-2 rounded-lg transition"
+          style={{
+            backgroundColor: themeSettings.sidebarColor,
+          }}
         >
-
           Back
-
         </button>
 
-
-
       </div>
-
-
-
-
-
-
 
       {/* Customer Information */}
 
+      <div
+        className="rounded-xl shadow border p-6"
+        style={{
+          backgroundColor: themeSettings.backgroundColor,
+          borderColor: isDark ? "#374151" : "#D1D5DB",
+        }}
+      >
 
-
-      <div className="bg-white border rounded-xl shadow p-6">
-
-
-
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">
-
+        <h2
+          className="text-xl font-semibold mb-6"
+          style={{
+            color: themeSettings.textColor,
+          }}
+        >
           Customer Information
-
         </h2>
 
-
-
-
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-
-
-
-
-
-
-          {/* Customer Code */}
-
-
+                      {/* Customer Code */}
 
           <div>
-
-
-            <p className="text-sm text-gray-500">
+            <p
+              className="text-sm"
+              style={{
+                color: isDark ? "#9CA3AF" : "#6B7280",
+              }}
+            >
               Customer Code
             </p>
 
-
-            <p className="font-semibold text-gray-900">
+            <p
+              className="font-semibold"
+              style={{
+                color: themeSettings.textColor,
+              }}
+            >
               {customer.CustomerCode}
             </p>
-
-
           </div>
-
-
-
-
-
-
-
 
           {/* Customer Name */}
 
-
-
           <div>
-
-
-            <p className="text-sm text-gray-500">
+            <p
+              className="text-sm"
+              style={{
+                color: isDark ? "#9CA3AF" : "#6B7280",
+              }}
+            >
               Customer Name
             </p>
 
-
-            <p className="font-semibold text-gray-900">
+            <p
+              className="font-semibold"
+              style={{
+                color: themeSettings.textColor,
+              }}
+            >
               {customer.CustomerName}
             </p>
-
-
           </div>
-
-
-
-
-
-
-
 
           {/* Phone */}
 
-
-
           <div>
-
-
-            <p className="text-sm text-gray-500">
+            <p
+              className="text-sm"
+              style={{
+                color: isDark ? "#9CA3AF" : "#6B7280",
+              }}
+            >
               Phone
             </p>
 
-
-            <p className="font-semibold text-gray-900">
+            <p
+              className="font-semibold"
+              style={{
+                color: themeSettings.textColor,
+              }}
+            >
               {customer.Phone}
             </p>
-
-
           </div>
-
-
-
-
-
-
-
 
           {/* Email */}
 
-
-
           <div>
-
-
-            <p className="text-sm text-gray-500">
+            <p
+              className="text-sm"
+              style={{
+                color: isDark ? "#9CA3AF" : "#6B7280",
+              }}
+            >
               Email
             </p>
 
-
-            <p className="font-semibold text-gray-900">
+            <p
+              className="font-semibold"
+              style={{
+                color: themeSettings.textColor,
+              }}
+            >
               {customer.Email}
             </p>
-
-
           </div>
-                    {/* Address */}
 
+          {/* Address */}
 
           <div>
-
-
-            <p className="text-sm text-gray-500">
+            <p
+              className="text-sm"
+              style={{
+                color: isDark ? "#9CA3AF" : "#6B7280",
+              }}
+            >
               Address
             </p>
 
-
-            <p className="font-semibold text-gray-900">
+            <p
+              className="font-semibold"
+              style={{
+                color: themeSettings.textColor,
+              }}
+            >
               {customer.Address}
             </p>
-
-
           </div>
-
-
-
-
-
-
 
           {/* City */}
 
-
-
           <div>
-
-
-            <p className="text-sm text-gray-500">
+            <p
+              className="text-sm"
+              style={{
+                color: isDark ? "#9CA3AF" : "#6B7280",
+              }}
+            >
               City
             </p>
 
-
-            <p className="font-semibold text-gray-900">
+            <p
+              className="font-semibold"
+              style={{
+                color: themeSettings.textColor,
+              }}
+            >
               {customer.City}
             </p>
-
-
           </div>
-
-
-
-
-
-
 
           {/* State */}
 
-
-
           <div>
-
-
-            <p className="text-sm text-gray-500">
+            <p
+              className="text-sm"
+              style={{
+                color: isDark ? "#9CA3AF" : "#6B7280",
+              }}
+            >
               State
             </p>
 
-
-            <p className="font-semibold text-gray-900">
+            <p
+              className="font-semibold"
+              style={{
+                color: themeSettings.textColor,
+              }}
+            >
               {customer.State}
             </p>
-
-
           </div>
-
-
-
-
-
-
 
           {/* Country */}
 
-
-
           <div>
-
-
-            <p className="text-sm text-gray-500">
+            <p
+              className="text-sm"
+              style={{
+                color: isDark ? "#9CA3AF" : "#6B7280",
+              }}
+            >
               Country
             </p>
 
-
-            <p className="font-semibold text-gray-900">
+            <p
+              className="font-semibold"
+              style={{
+                color: themeSettings.textColor,
+              }}
+            >
               {customer.Country}
             </p>
-
-
           </div>
-
-
-
-
-
-
-
-          {/* Status */}
-
-
+                    {/* Status */}
 
           <div>
 
-
-            <p className="text-sm text-gray-500 mb-2">
+            <p
+              className="text-sm mb-2"
+              style={{
+                color: isDark ? "#9CA3AF" : "#6B7280",
+              }}
+            >
               Status
             </p>
 
-
-
             <span
-
-              className={
-
-                customer.Status === "Active"
-
-                ?
-
-                "bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
-
-                :
-
-                "bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm"
-
-              }
-
+              className="px-3 py-1 rounded-full text-sm font-medium"
+              style={{
+                backgroundColor:
+                  customer.Status === "Active"
+                    ? "#DCFCE7"
+                    : "#FEE2E2",
+                color:
+                  customer.Status === "Active"
+                    ? "#15803D"
+                    : "#DC2626",
+              }}
             >
-
               {customer.Status}
-
             </span>
-
-
 
           </div>
 
-
-
-
-
         </div>
-
-
 
       </div>
 
-
-
     </div>
 
-
   );
-
 
 }

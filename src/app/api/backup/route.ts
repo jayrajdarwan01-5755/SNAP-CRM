@@ -1,102 +1,176 @@
 import { NextResponse } from "next/server";
+import { supabaseServer } from "@/lib/supabaseServer";
 
 
-let backupData = {
-  backupName: "SNAP_CRM_Backup",
-  lastBackup: "22-Jul-2026 06:30 PM",
-  status: "Completed",
-};
+// GET
+
+export async function GET(){
+
+try{
 
 
-// GET Backup Details
+const {data,error}=await supabaseServer
+.from("backups")
+.select("*")
+.order("id",{ascending:false})
+.limit(1)
+.single();
 
-export async function GET() {
 
-  try {
 
-    return NextResponse.json(
-      {
-        success: true,
-        data: backupData,
-      },
-      {
-        status: 200,
-      }
-    );
+if(error){
 
-  } catch(error){
-
-    return NextResponse.json(
-      {
-        success:false,
-        message:"Failed to fetch backup details",
-      },
-      {
-        status:500,
-      }
-    );
-
-  }
+return NextResponse.json(
+{
+success:false,
+message:"Backup not found"
+},
+{
+status:404
+}
+)
 
 }
 
 
 
-// CREATE / RESTORE BACKUP
+return NextResponse.json(
+{
+success:true,
+data
+}
+)
+
+
+}
+catch(error){
+
+return NextResponse.json(
+{
+success:false
+},
+{
+status:500
+}
+)
+
+}
+
+}
+
+
+
+// CREATE BACKUP
 
 export async function POST(request:Request){
 
-  try{
 
-    const body = await request.json();
-
-
-    if(body.action === "create"){
-
-      backupData = {
-        ...backupData,
-        lastBackup:new Date().toLocaleString("en-IN"),
-        status:"Completed",
-      };
-
-    }
+try{
 
 
-    if(body.action === "restore"){
-
-      backupData = {
-        ...backupData,
-        status:"Restored",
-      };
-
-    }
+const body=await request.json();
 
 
 
-    return NextResponse.json(
-      {
-        success:true,
-        message:"Backup action completed successfully",
-        data:backupData,
-      },
-      {
-        status:200,
-      }
-    );
+if(body.action==="create"){
 
 
-  }catch(error){
+const {data,error}=await supabaseServer
+.from("backups")
+.insert({
 
-    return NextResponse.json(
-      {
-        success:false,
-        message:"Backup action failed",
-      },
-      {
-        status:500,
-      }
-    );
+backupname:"SNAP_CRM_Backup",
 
-  }
+lastbackup:new Date(),
+
+status:"Completed"
+
+})
+.select()
+.single();
+
+
+
+if(error) throw error;
+
+
+
+return NextResponse.json({
+
+success:true,
+
+message:"Backup Created Successfully",
+
+data
+
+})
+
+
+}
+
+
+
+
+if(body.action==="restore"){
+
+
+
+const {data,error}=await supabaseServer
+.from("backups")
+.insert({
+
+backupname:"SNAP_CRM_Backup",
+
+lastbackup:new Date(),
+
+status:"Restored"
+
+})
+.select()
+.single();
+
+
+
+if(error) throw error;
+
+
+
+return NextResponse.json({
+
+success:true,
+
+message:"Backup Restored Successfully",
+
+data
+
+})
+
+
+}
+
+
+
+return NextResponse.json({
+success:false,
+message:"Invalid Action"
+})
+
+
+}
+catch(error){
+
+
+return NextResponse.json(
+{
+success:false,
+message:"Backup Failed"
+},
+{
+status:500
+}
+)
+
+}
+
 
 }

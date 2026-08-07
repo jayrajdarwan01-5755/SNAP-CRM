@@ -163,12 +163,13 @@ export default function EditSupplierPage() {
 
 
 
+
   if(!supplier){
 
 
     return (
 
-      <div>
+      <div className="text-theme">
 
         Loading Supplier...
 
@@ -185,21 +186,31 @@ export default function EditSupplierPage() {
 
     <div className="space-y-6">
 
+
       {/* Header */}
 
       <div className="flex justify-between items-center">
 
+
         <div>
 
-          <h1 className="text-3xl font-bold text-gray-900">
+
+          <h1 className="text-3xl font-bold text-theme">
+
             Edit Supplier
+
           </h1>
 
-          <p className="text-gray-600 mt-2">
+
+          <p className="text-muted mt-2">
+
             Update supplier information
+
           </p>
 
+
         </div>
+
 
 
         <button
@@ -223,9 +234,22 @@ export default function EditSupplierPage() {
 
 
       </div>
-            {/* Form */}
 
-      <div className="bg-white border rounded-xl shadow p-6">
+
+
+
+
+      {/* Form */}
+
+
+      <div className="
+        card-theme
+        border
+        border-theme
+        rounded-xl
+        shadow
+        p-6
+      ">
 
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -238,7 +262,7 @@ export default function EditSupplierPage() {
           <div>
 
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Supplier Name
 
@@ -260,9 +284,10 @@ export default function EditSupplierPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
+              placeholder:text-muted
               rounded-lg
               px-4
               py-2
@@ -283,7 +308,7 @@ export default function EditSupplierPage() {
           <div>
 
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Email
 
@@ -305,9 +330,10 @@ export default function EditSupplierPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
+              placeholder:text-muted
               rounded-lg
               px-4
               py-2
@@ -328,7 +354,7 @@ export default function EditSupplierPage() {
           <div>
 
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Phone
 
@@ -350,9 +376,10 @@ export default function EditSupplierPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
+              placeholder:text-muted
               rounded-lg
               px-4
               py-2
@@ -373,7 +400,7 @@ export default function EditSupplierPage() {
           <div>
 
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Address
 
@@ -395,9 +422,10 @@ export default function EditSupplierPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
+              placeholder:text-muted
               rounded-lg
               px-4
               py-2

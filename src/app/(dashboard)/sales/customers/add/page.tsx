@@ -125,12 +125,12 @@ export default function AddCustomerPage() {
 
         <div>
 
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-theme">
             Add Customer
           </h1>
 
 
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted mt-2">
             Create new customer record
           </p>
 
@@ -168,7 +168,7 @@ export default function AddCustomerPage() {
       {/* Form */}
 
 
-      <div className="bg-white border rounded-xl shadow p-6">
+      <div className="card-theme border border-theme rounded-xl shadow p-6">
 
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -177,7 +177,7 @@ export default function AddCustomerPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Customer Code
             </label>
 
@@ -192,14 +192,16 @@ export default function AddCustomerPage() {
 
               placeholder="Enter Customer Code"
 
-              className="
-              w-full
-              border
-              rounded-lg
-              px-4
-              py-2
-              text-gray-900
-              "
+                className="
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                rounded-lg
+                px-4
+                py-2
+                "
 
             />
 
@@ -226,14 +228,16 @@ export default function AddCustomerPage() {
 
               placeholder="Enter Customer Name"
 
-              className="
-              w-full
-              border
-              rounded-lg
-              px-4
-              py-2
-              text-gray-900
-              "
+                className="
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                rounded-lg
+                px-4
+                py-2
+                "
 
             />
 
@@ -260,14 +264,16 @@ export default function AddCustomerPage() {
 
               placeholder="Enter Phone"
 
-              className="
-              w-full
-              border
-              rounded-lg
-              px-4
-              py-2
-              text-gray-900
-              "
+                className="
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                rounded-lg
+                px-4
+                py-2
+                "
 
             />
 
@@ -296,14 +302,16 @@ export default function AddCustomerPage() {
 
               placeholder="Enter Email"
 
-              className="
-              w-full
-              border
-              rounded-lg
-              px-4
-              py-2
-              text-gray-900
-              "
+                className="
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                rounded-lg
+                px-4
+                py-2
+                "
 
             />
 
@@ -326,14 +334,16 @@ export default function AddCustomerPage() {
 
               placeholder="Enter Address"
 
-              className="
-              w-full
-              border
-              rounded-lg
-              px-4
-              py-2
-              text-gray-900
-              "
+                className="
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                rounded-lg
+                px-4
+                py-2
+                "
 
             />
 
@@ -361,14 +371,16 @@ export default function AddCustomerPage() {
 
               placeholder="Enter City"
 
-              className="
-              w-full
-              border
-              rounded-lg
-              px-4
-              py-2
-              text-gray-900
-              "
+                className="
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                rounded-lg
+                px-4
+                py-2
+                "
 
             />
 
@@ -396,23 +408,18 @@ export default function AddCustomerPage() {
 
               placeholder="Enter State"
 
-              className="
-              w-full
-              border
-              rounded-lg
-              px-4
-              py-2
-              text-gray-900
-              "
-
+                className="
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                rounded-lg
+                px-4
+                py-2
+                "
             />
-
-
           </div>
-
-
-
-
 
           <div>
 
@@ -431,23 +438,18 @@ export default function AddCustomerPage() {
 
               placeholder="Enter Country"
 
-              className="
-              w-full
-              border
-              rounded-lg
-              px-4
-              py-2
-              text-gray-900
-              "
-
-            />
-
-
-          </div>
-
-
-
-
+            className="
+            w-full
+            border
+            border-theme
+            bg-theme
+            text-theme
+            rounded-lg
+            px-4
+            py-2
+            "
+                />
+         </div>
 
           <div>
 
@@ -463,16 +465,16 @@ export default function AddCustomerPage() {
               onChange={(e)=>
                 setStatus(e.target.value)
               }
-
-              className="
-              w-full
-              border
-              rounded-lg
-              px-4
-              py-2
-              text-gray-900
-              "
-
+                className="
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                rounded-lg
+                px-4
+                py-2
+                "
             >
 
               <option value="Active">

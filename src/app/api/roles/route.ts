@@ -1,104 +1,153 @@
 import { NextResponse } from "next/server";
-import { Role } from "@/types/role";
-
-let roles: Role[] = [
-
-  {
-    RoleId: 1,
-    RoleName: "Administrator",
-    Description: "Full system access",
-    Status: "Active",
-  },
-
-  {
-    RoleId: 2,
-    RoleName: "Manager",
-    Description: "Manage department operations",
-    Status: "Active",
-  },
-
-  {
-    RoleId: 3,
-    RoleName: "Employee",
-    Description: "Limited system access",
-    Status: "Inactive",
-  },
-
-];
+import { supabaseServer } from "@/lib/supabaseServer";
 
 // GET ALL ROLES
-export async function GET() {
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
 
-  return NextResponse.json(roles);
+    const id = searchParams.get("id");
 
+    if (id) {
+      const { data, error } = await supabaseServer
+        .from("roles")
+        .select("*")
+        .eq("roleid", id)
+        .single();
+
+      if (error || !data) {
+        return NextResponse.json(
+          { message: "Role not found" },
+          { status: 404 }
+        );
+      }
+
+      return NextResponse.json({
+        RoleId: data.roleid,
+        RoleName: data.rolename,
+        Description: data.description,
+        Status: data.status,
+      });
+    }
+
+    const { data, error } = await supabaseServer
+      .from("roles")
+      .select("*")
+      .order("roleid");
+
+    if (error) throw error;
+
+    return NextResponse.json(
+      data.map((role) => ({
+        RoleId: role.roleid,
+        RoleName: role.rolename,
+        Description: role.description,
+        Status: role.status,
+      }))
+    );
+  } catch {
+    return NextResponse.json(
+      { message: "Failed to fetch roles" },
+      { status: 500 }
+    );
+  }
 }
 
 // ADD ROLE
 export async function POST(request: Request) {
+  try {
+    const body = await request.json();
 
-  const body = await request.json();
+        // Duplicate role check
+    const { data: existingRole } = await supabaseServer
+      .from("roles")
+      .select("roleid")
+      .ilike("rolename", body.RoleName)
+      .maybeSingle();
 
-  const newRole: Role = {
+    if (existingRole) {
+      return NextResponse.json(
+        { message: "Role name already exists" },
+        { status: 400 }
+      );
+    }
 
-    RoleId:
-      roles.length > 0
-        ? Math.max(...roles.map((r) => r.RoleId)) + 1
-        : 1,
+     // Insert new role
+    const { data, error } = await supabaseServer
+      .from("roles")
+      .insert({
+        rolename: body.RoleName,
+        description: body.Description,
+        status: body.Status,
+      })
+      .select()
+      .single();
 
-    RoleName: body.RoleName,
+    if (error) throw error;
 
-    Description: body.Description,
-
-    Status: body.Status,
-
-  };
-
-  roles.push(newRole);
-
-  return NextResponse.json({
-    message: "Role added successfully",
-    role: newRole,
-  });
-
+    return NextResponse.json({
+      message: "Role added successfully",
+      role: {
+        RoleId: data.roleid,
+        RoleName: data.rolename,
+        Description: data.description,
+        Status: data.status,
+      },
+    });
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Failed to add role" },
+      { status: 500 }
+    );
+  }
 }
 
 // UPDATE ROLE
 export async function PUT(request: Request) {
+  try {
+    const body = await request.json();
 
-  const body = await request.json();
+    const { error } = await supabaseServer
+      .from("roles")
+      .update({
+        rolename: body.RoleName,
+        description: body.Description,
+        status: body.Status,
+      })
+      .eq("roleid", body.RoleId);
 
-  roles = roles.map((role) =>
+    if (error) throw error;
 
-    role.RoleId === body.RoleId
-      ? {
-          ...role,
-          RoleName: body.RoleName,
-          Description: body.Description,
-          Status: body.Status,
-        }
-      : role
-
-  );
-
-  return NextResponse.json({
-    message: "Role updated successfully",
-  });
-
+    return NextResponse.json({
+      message: "Role updated successfully",
+    });
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Failed to update role" },
+      { status: 500 }
+    );
+  }
 }
 
 // DELETE ROLE
 export async function DELETE(request: Request) {
+  try {
+    const body = await request.json();
 
-  const body = await request.json();
+    const { error } = await supabaseServer
+      .from("roles")
+      .delete()
+      .eq("roleid", body.RoleId);
 
-  roles = roles.filter(
+    if (error) throw error;
 
-    (role) => role.RoleId !== body.RoleId
-
-  );
-
-  return NextResponse.json({
-    message: "Role deleted successfully",
-  });
-
+    return NextResponse.json({
+      message: "Role deleted successfully",
+    });
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Failed to delete role" },
+      { status: 500 }
+    );
+  }
 }

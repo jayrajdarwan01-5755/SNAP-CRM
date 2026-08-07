@@ -64,7 +64,7 @@ export default function ViewOpportunityPage() {
 
     return (
 
-      <div className="text-center py-10 text-gray-600">
+      <div className="text-center py-10 text-muted">
 
         Loading Opportunity...
 
@@ -96,7 +96,7 @@ export default function ViewOpportunityPage() {
         <div>
 
 
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-theme">
 
             Opportunity Details
 
@@ -104,7 +104,7 @@ export default function ViewOpportunityPage() {
 
 
 
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted mt-2">
 
             View opportunity information
 
@@ -153,11 +153,11 @@ export default function ViewOpportunityPage() {
 
 
 
-      <div className="bg-white border rounded-xl shadow p-6">
+      <div className="card-theme border border-theme rounded-xl shadow p-6">
 
 
 
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">
+        <h2 className="text-xl font-semibold text-theme mb-6">
 
           Opportunity Information
 
@@ -180,14 +180,14 @@ export default function ViewOpportunityPage() {
 
           <div>
 
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted">
 
               Opportunity Name
 
             </p>
 
 
-            <p className="font-semibold text-gray-900">
+            <p className="font-semibold text-theme">
 
               {opportunity.OpportunityName}
 
@@ -214,7 +214,7 @@ export default function ViewOpportunityPage() {
             </p>
 
 
-            <p className="font-semibold text-gray-900">
+            <p className="font-semibold text-theme">
 
               {opportunity.Customer}
 
@@ -265,7 +265,7 @@ export default function ViewOpportunityPage() {
           <div>
 
 
-            <p className="text-sm text-gray-500 mb-2">
+            <p className="text-sm text-muted mb-2">
 
               Stage
 
@@ -336,7 +336,7 @@ export default function ViewOpportunityPage() {
             </p>
 
 
-            <p className="font-semibold text-gray-900">
+            <p className="font-semibold text-theme">
 
               {opportunity.Probability}
 
@@ -366,7 +366,7 @@ export default function ViewOpportunityPage() {
             </p>
 
 
-            <p className="font-semibold text-gray-900">
+            <p className="font-semibold text-theme">
 
               {opportunity.CloseDate}
 

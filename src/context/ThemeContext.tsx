@@ -81,12 +81,98 @@ export function ThemeProvider({
   }, []);
 
 useEffect(() => {
-  if (themeSettings.theme === "dark") {
-    document.documentElement.classList.add("dark");
-  } else {
-    document.documentElement.classList.remove("dark");
+  const root = document.documentElement;
+
+  // =========================
+  // Primary Color
+  // =========================
+  root.style.setProperty(
+    "--primary-color",
+    themeSettings.primaryColor
+  );
+
+  // =========================
+  // Sidebar Color
+  // =========================
+  root.style.setProperty(
+    "--sidebar-color",
+    themeSettings.sidebarColor
+  );
+
+  // =========================
+  // Font Size
+  // =========================
+  let size = "16px";
+
+  switch (themeSettings.fontSize) {
+    case "small":
+      size = "14px";
+      break;
+
+    case "large":
+      size = "18px";
+      break;
+
+    default:
+      size = "16px";
   }
-}, [themeSettings.theme]);
+
+  root.style.fontSize = size;
+
+  // =========================
+  // Theme Apply
+  // =========================
+  const applyTheme = (isDark: boolean) => {
+    if (isDark) {
+      root.classList.add("dark");
+
+      root.style.setProperty("--background", "#111827");
+      root.style.setProperty("--foreground", "#f9fafb");
+    } else {
+      root.classList.remove("dark");
+
+      root.style.setProperty("--background", "#ffffff");
+      root.style.setProperty("--foreground", "#111827");
+    }
+  };
+
+  // Light
+  if (themeSettings.theme === "light") {
+    applyTheme(false);
+    return;
+  }
+
+  // Dark
+  if (themeSettings.theme === "dark") {
+    applyTheme(true);
+    return;
+  }
+
+  // =========================
+  // System Theme
+  // =========================
+  const media = window.matchMedia(
+    "(prefers-color-scheme: dark)"
+  );
+
+  applyTheme(media.matches);
+
+  const handleChange = (
+    event: MediaQueryListEvent
+  ) => {
+    applyTheme(event.matches);
+  };
+
+  media.addEventListener("change", handleChange);
+
+  return () => {
+    media.removeEventListener(
+      "change",
+      handleChange
+    );
+  };
+
+}, [themeSettings]);
 
   return (
     <ThemeContext.Provider

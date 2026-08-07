@@ -1,9 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "@/context/ThemeContext";
+import { useLoading } from "@/context/LoadingContext";
+import { useAuth } from "@/context/AuthContext";
+
 import {
   LayoutDashboard,
   Users,
@@ -16,37 +18,53 @@ import {
 } from "lucide-react";
 
 export default function Sidebar() {
+  const { user } = useAuth();
+  const role = user?.role ?? "";
+
+  console.log("Logged In Role :", role);
+
   const pathname = usePathname();
+  const router = useRouter();
 
   const { themeSettings } = useTheme();
+  const { setLoading } = useLoading();
 
   const [hrOpen, setHrOpen] = useState(false);
   const [salesOpen, setSalesOpen] = useState(false);
   const [inventoryOpen, setInventoryOpen] = useState(false);
 
   const menuClass = (path: string) =>
-    `flex items-center gap-3 px-4 py-3 rounded-lg transition ${
+    `w-full flex items-center gap-3 px-4 py-3 rounded-lg transition ${
       pathname === path
         ? "text-white"
         : "text-gray-300 hover:text-white"
     }`;
 
   const subMenuClass = (path: string) =>
-    `block ml-10 px-3 py-2 rounded-md transition ${
+    `w-full text-left block ml-10 px-3 py-2 rounded-md transition ${
       pathname === path
         ? "text-white"
         : "text-gray-300 hover:text-white"
     }`;
 
+  const navigate = (path: string) => {
+    setLoading(true);
+
+    router.push(path);
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 700);
+  };
+
   return (
     <aside
-      className="w-64 min-h-screen border-r"
+      className="w-64 h-screen sticky top-0 border-r overflow-y-auto"
       style={{
         backgroundColor: themeSettings.sidebarColor,
         borderColor: "#334155",
       }}
     >
-      {/* Logo */}
       <div
         className="h-16 flex items-center px-6 border-b"
         style={{
@@ -61,8 +79,10 @@ export default function Sidebar() {
       <nav className="p-4 space-y-2">
 
         {/* Dashboard */}
-        <Link
-          href="/dashboard"
+
+        <button
+          type="button"
+          onClick={() => navigate("/dashboard")}
           className={menuClass("/dashboard")}
           style={{
             backgroundColor:
@@ -73,31 +93,35 @@ export default function Sidebar() {
         >
           <LayoutDashboard size={20} />
           <span>Dashboard</span>
-        </Link>
+        </button>
 
         {/* HR */}
 
-        <button
-          onClick={() => setHrOpen(!hrOpen)}
-          className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-gray-300 hover:text-white transition"
-        >
-          <div className="flex items-center gap-3">
-            <Users size={20} />
-            <span>HR</span>
-          </div>
+        {(role === "Admin" || role === "HR") && (
+          <button
+            type="button"
+            onClick={() => setHrOpen(!hrOpen)}
+            className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-gray-300 hover:text-white transition"
+          >
+            <div className="flex items-center gap-3">
+              <Users size={20} />
+              <span>HR</span>
+            </div>
 
-          {hrOpen ? (
-            <ChevronDown size={18} />
-          ) : (
-            <ChevronRight size={18} />
-          )}
-        </button>
+            {hrOpen ? (
+              <ChevronDown size={18} />
+            ) : (
+              <ChevronRight size={18} />
+            )}
+          </button>
+        )}
 
-        {hrOpen && (
+        {(role === "Admin" || role === "HR") && hrOpen && (
           <div className="space-y-1">
 
-            <Link
-              href="/hr/employees"
+            <button
+              type="button"
+              onClick={() => navigate("/hr/employees")}
               className={subMenuClass("/hr/employees")}
               style={{
                 backgroundColor:
@@ -107,10 +131,11 @@ export default function Sidebar() {
               }}
             >
               Employees
-            </Link>
+            </button>
 
-            <Link
-              href="/hr/leave"
+            <button
+              type="button"
+              onClick={() => navigate("/hr/leave")}
               className={subMenuClass("/hr/leave")}
               style={{
                 backgroundColor:
@@ -120,10 +145,11 @@ export default function Sidebar() {
               }}
             >
               Leave
-            </Link>
+            </button>
 
-            <Link
-              href="/hr/payroll"
+            <button
+              type="button"
+              onClick={() => navigate("/hr/payroll")}
               className={subMenuClass("/hr/payroll")}
               style={{
                 backgroundColor:
@@ -133,97 +159,105 @@ export default function Sidebar() {
               }}
             >
               Payroll
-            </Link>
+            </button>
 
           </div>
         )}
 
-        {/* SALES */}
+    {/* SALES */}
 
-        <button
-          onClick={() => setSalesOpen(!salesOpen)}
-          className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-gray-300 hover:text-white transition"
-        >
-          <div className="flex items-center gap-3">
-            <Briefcase size={20} />
-            <span>Sales</span>
-          </div>
+        {(role === "Admin" || role === "Manager") && (
+  <button
+    type="button"
+    onClick={() => setSalesOpen(!salesOpen)}
+    className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-gray-300 hover:text-white transition"
+  >
+    <div className="flex items-center gap-3">
+      <Briefcase size={20} />
+      <span>Sales</span>
+    </div>
 
-          {salesOpen ? (
-            <ChevronDown size={18} />
-          ) : (
-            <ChevronRight size={18} />
-          )}
-        </button>
+    {salesOpen ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+  </button>
+)}    
 
-        {salesOpen && (
-          <div className="space-y-1">
+{(role === "Admin" || role === "Manager") && salesOpen && (
+  <div className="space-y-1">
 
-            <Link
-              href="/sales/leads"
-              className={subMenuClass("/sales/leads")}
-              style={{
-                backgroundColor:
-                  pathname === "/sales/leads"
-                    ? themeSettings.primaryColor
-                    : "transparent",
-              }}
-            >
-              Leads
-            </Link>
+    <button
+      type="button"
+      onClick={() => navigate("/sales/leads")}
+      className={subMenuClass("/sales/leads")}
+      style={{
+        backgroundColor:
+          pathname === "/sales/leads"
+            ? themeSettings.primaryColor
+            : "transparent",
+      }}
+    >
+      Leads
+    </button>
 
-            <Link
-              href="/sales/opportunities"
-              className={subMenuClass("/sales/opportunities")}
-              style={{
-                backgroundColor:
-                  pathname === "/sales/opportunities"
-                    ? themeSettings.primaryColor
-                    : "transparent",
-              }}
-            >
-              Opportunities
-            </Link>
+    <button
+      type="button"
+      onClick={() => navigate("/sales/opportunities")}
+      className={subMenuClass("/sales/opportunities")}
+      style={{
+        backgroundColor:
+          pathname === "/sales/opportunities"
+            ? themeSettings.primaryColor
+            : "transparent",
+      }}
+    >
+      Opportunities
+    </button>
 
-            <Link
-              href="/sales/customers"
-              className={subMenuClass("/sales/customers")}
-              style={{
-                backgroundColor:
-                  pathname === "/sales/customers"
-                    ? themeSettings.primaryColor
-                    : "transparent",
-              }}
-            >
-              Customers
-            </Link>
+    <button
+      type="button"
+      onClick={() => navigate("/sales/customers")}
+      className={subMenuClass("/sales/customers")}
+      style={{
+        backgroundColor:
+          pathname === "/sales/customers"
+            ? themeSettings.primaryColor
+            : "transparent",
+      }}
+    >
+      Customers
+    </button>
 
-          </div>
+  </div>
+)}
+
+
+                {/* INVENTORY */}
+        {(role === "Admin" || role === "Manager") && (
+          <button
+            type="button"
+            onClick={() => setInventoryOpen(!inventoryOpen)}
+            className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-gray-300 hover:text-white transition"
+          >
+            <div className="flex items-center gap-3">
+              <Package size={20} />
+              <span>Inventory</span>
+            </div>
+
+            {inventoryOpen ? (
+              <ChevronDown size={18} />
+            ) : (
+              <ChevronRight size={18} />
+            )}
+          </button>
         )}
 
-        {/* INVENTORY */}
 
-        <button
-          onClick={() => setInventoryOpen(!inventoryOpen)}
-          className="w-full flex items-center justify-between px-4 py-3 rounded-lg text-gray-300 hover:text-white transition"
-        >
-          <div className="flex items-center gap-3">
-            <Package size={20} />
-            <span>Inventory</span>
-          </div>
 
-          {inventoryOpen ? (
-            <ChevronDown size={18} />
-          ) : (
-            <ChevronRight size={18} />
-          )}
-        </button>
-
-        {inventoryOpen && (
+        {(role === "Admin" || role === "Manager") && inventoryOpen && (
           <div className="space-y-1">
 
-            <Link
-              href="/inventory/products"
+            <button
+              type="button"
+              onClick={() => navigate("/inventory/products")}
               className={subMenuClass("/inventory/products")}
               style={{
                 backgroundColor:
@@ -233,10 +267,11 @@ export default function Sidebar() {
               }}
             >
               Products
-            </Link>
+            </button>
 
-            <Link
-              href="/inventory/categories"
+            <button
+              type="button"
+              onClick={() => navigate("/inventory/categories")}
               className={subMenuClass("/inventory/categories")}
               style={{
                 backgroundColor:
@@ -246,10 +281,11 @@ export default function Sidebar() {
               }}
             >
               Categories
-            </Link>
+            </button>
 
-            <Link
-              href="/inventory/suppliers"
+            <button
+              type="button"
+              onClick={() => navigate("/inventory/suppliers")}
               className={subMenuClass("/inventory/suppliers")}
               style={{
                 backgroundColor:
@@ -259,15 +295,15 @@ export default function Sidebar() {
               }}
             >
               Suppliers
-            </Link>
+            </button>
 
           </div>
         )}
 
-        {/* Reports */}
-
-        <Link
-          href="/reports"
+        {/* REPORTS */}
+        <button
+          type="button"
+          onClick={() => navigate("/reports")}
           className={menuClass("/reports")}
           style={{
             backgroundColor:
@@ -278,23 +314,25 @@ export default function Sidebar() {
         >
           <FileBarChart2 size={20} />
           <span>Reports</span>
-        </Link>
+        </button>
 
-        {/* Settings */}
-
-        <Link
-          href="/settings"
-          className={menuClass("/settings")}
-          style={{
-            backgroundColor:
-              pathname === "/settings"
-                ? themeSettings.primaryColor
-                : "transparent",
-          }}
-        >
-          <Settings size={20} />
-          <span>Settings</span>
-        </Link>
+        {/* SETTINGS */}
+        {role === "Admin" && (
+          <button
+            type="button"
+            onClick={() => navigate("/settings")}
+            className={menuClass("/settings")}
+            style={{
+              backgroundColor:
+                pathname === "/settings"
+                  ? themeSettings.primaryColor
+                  : "transparent",
+            }}
+          >
+            <Settings size={20} />
+            <span>Settings</span>
+          </button>
+        )}
 
       </nav>
     </aside>

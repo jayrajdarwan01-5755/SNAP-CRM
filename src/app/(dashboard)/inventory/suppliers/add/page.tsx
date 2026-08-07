@@ -136,6 +136,7 @@ export default function AddSupplierPage() {
 
 
 
+
   return (
 
     <div className="space-y-6">
@@ -151,13 +152,17 @@ export default function AddSupplierPage() {
         <div>
 
 
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-theme">
+
             Add Supplier
+
           </h1>
 
 
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted mt-2">
+
             Create new supplier
+
           </p>
 
 
@@ -194,7 +199,14 @@ export default function AddSupplierPage() {
       {/* Form */}
 
 
-      <div className="bg-white border rounded-xl shadow p-6">
+      <div className="
+        card-theme
+        border
+        border-theme
+        rounded-xl
+        shadow
+        p-6
+      ">
 
 
         <form
@@ -207,12 +219,13 @@ export default function AddSupplierPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
 
+
             {/* Supplier Name */}
 
             <div>
 
 
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
+              <label className="block text-sm font-semibold text-theme mb-2">
 
                 Supplier Name
 
@@ -234,10 +247,10 @@ export default function AddSupplierPage() {
                 className="
                 w-full
                 border
-                border-gray-300
-                bg-white
-                text-gray-900
-                placeholder-gray-400
+                border-theme
+                bg-theme
+                text-theme
+                placeholder:text-muted
                 rounded-lg
                 px-4
                 py-2
@@ -257,7 +270,7 @@ export default function AddSupplierPage() {
             <div>
 
 
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
+              <label className="block text-sm font-semibold text-theme mb-2">
 
                 Email
 
@@ -279,10 +292,10 @@ export default function AddSupplierPage() {
                 className="
                 w-full
                 border
-                border-gray-300
-                bg-white
-                text-gray-900
-                placeholder-gray-400
+                border-theme
+                bg-theme
+                text-theme
+                placeholder:text-muted
                 rounded-lg
                 px-4
                 py-2
@@ -292,12 +305,17 @@ export default function AddSupplierPage() {
 
 
             </div>
-                        {/* Phone */}
+
+
+
+
+
+            {/* Phone */}
 
             <div>
 
 
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
+              <label className="block text-sm font-semibold text-theme mb-2">
 
                 Phone
 
@@ -319,10 +337,10 @@ export default function AddSupplierPage() {
                 className="
                 w-full
                 border
-                border-gray-300
-                bg-white
-                text-gray-900
-                placeholder-gray-400
+                border-theme
+                bg-theme
+                text-theme
+                placeholder:text-muted
                 rounded-lg
                 px-4
                 py-2
@@ -342,7 +360,7 @@ export default function AddSupplierPage() {
             <div>
 
 
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
+              <label className="block text-sm font-semibold text-theme mb-2">
 
                 Address
 
@@ -364,10 +382,10 @@ export default function AddSupplierPage() {
                 className="
                 w-full
                 border
-                border-gray-300
-                bg-white
-                text-gray-900
-                placeholder-gray-400
+                border-theme
+                bg-theme
+                text-theme
+                placeholder:text-muted
                 rounded-lg
                 px-4
                 py-2

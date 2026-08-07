@@ -14,37 +14,44 @@ export async function POST(request: Request) {
     } = body;
 
 
-    if (!username || !password) {
+    if(!username || !password){
 
       return NextResponse.json(
         {
-          message: "Username and password required"
+          message:"Username and password required"
         },
         {
-          status: 400
+          status:400
         }
       );
 
     }
 
 
-    const { data, error } = await supabaseServer
+    const {data,error} = await supabaseServer
       .from("users")
-      .select("*")
-      .eq("username", username)
-      .eq("password", password)
+      .select(`
+        userid,
+        username,
+        fullname,
+        role,
+        status,
+        employeeid
+      `)
+      .eq("username",username)
+      .eq("password",password)
       .single();
 
 
 
-    if (error || !data) {
+    if(error || !data){
 
       return NextResponse.json(
         {
-          message: "Invalid username or password"
+          message:"Invalid username or password"
         },
         {
-          status: 401
+          status:401
         }
       );
 
@@ -78,9 +85,10 @@ export async function POST(request: Request) {
     );
 
 
+  }
+  catch(error){
 
-  } catch(error){
-
+    console.log(error);
 
     return NextResponse.json(
       {

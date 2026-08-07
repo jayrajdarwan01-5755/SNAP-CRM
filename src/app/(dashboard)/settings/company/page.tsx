@@ -78,11 +78,11 @@ export default function CompanyInformationPage() {
 
         <div>
 
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-theme">
             Company Information
           </h1>
 
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted mt-2">
             Manage company details
           </p>
 
@@ -90,7 +90,14 @@ export default function CompanyInformationPage() {
 
         <Link
           href="/settings"
-          className="bg-gray-600 hover:bg-gray-700 text-white px-5 py-2 rounded-lg"
+          className="
+          bg-gray-600
+          hover:bg-gray-700
+          text-white
+          px-5
+          py-2
+          rounded-lg
+          "
         >
           ← Back
         </Link>
@@ -99,7 +106,14 @@ export default function CompanyInformationPage() {
 
       {/* Form */}
 
-      <div className="bg-white border rounded-xl shadow p-6">
+      <div className="
+        card-theme
+        border
+        border-theme
+        rounded-xl
+        shadow
+        p-6
+      ">
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -107,7 +121,7 @@ export default function CompanyInformationPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Company Name
             </label>
 
@@ -116,7 +130,16 @@ export default function CompanyInformationPage() {
               name="CompanyName"
               value={company.CompanyName}
               onChange={handleChange}
-              className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg px-4 py-2"
+              className="
+              w-full
+              border
+              border-theme
+              bg-theme
+              text-theme
+              rounded-lg
+              px-4
+              py-2
+              "
             />
 
           </div>
@@ -125,13 +148,22 @@ export default function CompanyInformationPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Company Logo
             </label>
 
             <input
               type="file"
-              className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg px-4 py-2"
+              className="
+              w-full
+              border
+              border-theme
+              bg-theme
+              text-theme
+              rounded-lg
+              px-4
+              py-2
+              "
             />
 
           </div>
@@ -140,7 +172,7 @@ export default function CompanyInformationPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Email
             </label>
 
@@ -149,7 +181,16 @@ export default function CompanyInformationPage() {
               name="Email"
               value={company.Email}
               onChange={handleChange}
-              className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg px-4 py-2"
+              className="
+              w-full
+              border
+              border-theme
+              bg-theme
+              text-theme
+              rounded-lg
+              px-4
+              py-2
+              "
             />
 
           </div>
@@ -158,7 +199,7 @@ export default function CompanyInformationPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Phone
             </label>
 
@@ -167,7 +208,16 @@ export default function CompanyInformationPage() {
               name="Phone"
               value={company.Phone}
               onChange={handleChange}
-              className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg px-4 py-2"
+              className="
+              w-full
+              border
+              border-theme
+              bg-theme
+              text-theme
+              rounded-lg
+              px-4
+              py-2
+              "
             />
 
           </div>
@@ -176,7 +226,7 @@ export default function CompanyInformationPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Website
             </label>
 
@@ -185,7 +235,16 @@ export default function CompanyInformationPage() {
               name="Website"
               value={company.Website}
               onChange={handleChange}
-              className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg px-4 py-2"
+              className="
+              w-full
+              border
+              border-theme
+              bg-theme
+              text-theme
+              rounded-lg
+              px-4
+              py-2
+              "
             />
 
           </div>
@@ -194,7 +253,7 @@ export default function CompanyInformationPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Address
             </label>
 
@@ -203,15 +262,25 @@ export default function CompanyInformationPage() {
               name="Address"
               value={company.Address}
               onChange={handleChange}
-              className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg px-4 py-2"
+              className="
+              w-full
+              border
+              border-theme
+              bg-theme
+              text-theme
+              rounded-lg
+              px-4
+              py-2
+              "
             />
 
           </div>
-                    {/* City */}
+
+          {/* City */}
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               City
             </label>
 
@@ -220,7 +289,16 @@ export default function CompanyInformationPage() {
               name="City"
               value={company.City}
               onChange={handleChange}
-              className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg px-4 py-2"
+              className="
+              w-full
+              border
+              border-theme
+              bg-theme
+              text-theme
+              rounded-lg
+              px-4
+              py-2
+              "
             />
 
           </div>
@@ -229,7 +307,7 @@ export default function CompanyInformationPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               State
             </label>
 
@@ -238,7 +316,16 @@ export default function CompanyInformationPage() {
               name="State"
               value={company.State}
               onChange={handleChange}
-              className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg px-4 py-2"
+              className="
+              w-full
+              border
+              border-theme
+              bg-theme
+              text-theme
+              rounded-lg
+              px-4
+              py-2
+              "
             />
 
           </div>
@@ -247,7 +334,7 @@ export default function CompanyInformationPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
               Country
             </label>
 
@@ -256,7 +343,16 @@ export default function CompanyInformationPage() {
               name="Country"
               value={company.Country}
               onChange={handleChange}
-              className="w-full border border-gray-300 bg-white text-gray-900 rounded-lg px-4 py-2"
+              className="
+              w-full
+              border
+              border-theme
+              bg-theme
+              text-theme
+              rounded-lg
+              px-4
+              py-2
+              "
             />
 
           </div>

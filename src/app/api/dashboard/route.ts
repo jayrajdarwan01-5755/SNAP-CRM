@@ -1,74 +1,295 @@
 import { NextResponse } from "next/server";
+import { supabaseServer } from "@/lib/supabaseServer";
 
+async function getCount(table: string) {
+  const { count, error } = await supabaseServer
+    .from(table)
+    .select("*", { count: "exact", head: true });
 
-// Dashboard Dummy Data
-let dashboardData = {
-  employees: 120,
-  leads: 350,
-  products: 800,
-  customers: 95,
+  if (error) {
+    console.log(`${table} Error:`, error.message);
+    return 0;
+  }
 
-  activities: [
-    {
-      id: 1,
-      title: "New employee added",
-      module: "HR",
-      date: "27-Jul-2026 10:30 AM",
-    },
-    {
-      id: 2,
-      title: "New lead created",
-      module: "Sales",
-      date: "27-Jul-2026 11:15 AM",
-    },
-    {
-      id: 3,
-      title: "Product updated",
-      module: "Inventory",
-      date: "27-Jul-2026 12:20 PM",
-    },
-    {
-      id: 4,
-      title: "Customer registered",
-      module: "Sales",
-      date: "27-Jul-2026 01:10 PM",
-    },
-  ],
-};
+  return count ?? 0;
+}
 
-
-
-// GET Dashboard Data
-
-export async function GET() {
-
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
 
-    return NextResponse.json(
-      {
-        success: true,
-        data: dashboardData,
-      },
-      {
-        status: 200,
+    const role = searchParams.get("role");
+
+    // ===========================
+    // COMMON COUNTS
+    // ===========================
+
+    const employeeCount = await getCount("employees");
+    const leadCount = await getCount("leads");
+    const productCount = await getCount("products");
+    const customerCount = await getCount("customers");
+    const opportunityCount = await getCount("opportunities");
+    const leaveCount = await getCount("leaves");
+    const payrollCount = await getCount("payrolls");
+
+
+let recentActivities = [];
+
+if (role === "Employee") {
+  const employeeId = searchParams.get("employeeId");
+
+  const { data } = await supabaseServer
+    .from("activities")
+    .select("*")
+    .eq("role", "Employee")
+    .eq("employeeid", employeeId)
+    .order("created_at", { ascending: false })
+    .limit(5);
+
+  recentActivities = data || [];
+} else {
+  const { data } = await supabaseServer
+    .from("activities")
+    .select("*")
+    .eq("role", role)
+    .order("created_at", { ascending: false })
+    .limit(5);
+
+  recentActivities = data || [];
+}
+
+    let dashboardData: {
+      cards: any[];
+      activities: any[];
+    };
+
+        // ===========================
+    // ADMIN
+    // ===========================
+
+    if (role === "Admin") {
+      dashboardData = {
+        cards: [
+          {
+            title: "Total Employees",
+            value: employeeCount,
+            module: "HR",
+          },
+          {
+            title: "Total Leads",
+            value: leadCount,
+            module: "Sales",
+          },
+          {
+            title: "Total Products",
+            value: productCount,
+            module: "Inventory",
+          },
+          {
+            title: "Total Customers",
+            value: customerCount,
+            module: "Sales",
+          },
+        ],
+
+activities: recentActivities.map((item) => ({
+  id: item.id,
+  title: item.title,
+  description: item.description,
+  module: item.module,
+  date: new Date(item.created_at).toLocaleDateString(),
+})),
+      };
+    }
+
+    // ===========================
+    // HR
+    // ===========================
+
+    else if (role === "HR") {
+      const { count: activeEmployees } = await supabaseServer
+        .from("employees")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "Active");
+
+      const { count: pendingLeaves } = await supabaseServer
+        .from("leaves")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "Pending");
+
+      dashboardData = {
+        cards: [
+          {
+            title: "Total Employees",
+            value: employeeCount,
+            module: "HR",
+          },
+          {
+            title: "Active Employees",
+            value: activeEmployees ?? 0,
+            module: "HR",
+          },
+          {
+            title: "Pending Leaves",
+            value: pendingLeaves ?? 0,
+            module: "Leave",
+          },
+          {
+            title: "Payroll Processed",
+            value: payrollCount,
+            module: "Payroll",
+          },
+        ],
+
+      activities: recentActivities?.map((item) => ({
+  id: item.id,
+  title: item.title,
+  description: item.description,
+  module: item.module,
+  date: new Date(item.created_at).toLocaleDateString(),
+})) || [],
+      };
+    }
+
+        // ===========================
+    // MANAGER
+    // ===========================
+
+    else if (role === "Manager") {
+      dashboardData = {
+        cards: [
+          {
+            title: "Total Leads",
+            value: leadCount,
+            module: "Sales",
+          },
+          {
+            title: "Opportunities",
+            value: opportunityCount,
+            module: "Sales",
+          },
+          {
+            title: "Customers",
+            value: customerCount,
+            module: "Sales",
+          },
+          {
+            title: "Products",
+            value: productCount,
+            module: "Inventory",
+          },
+        ],
+
+       activities: recentActivities?.map((item) => ({
+  id: item.id,
+  title: item.title,
+  description: item.description,
+  module: item.module,
+  date: new Date(item.created_at).toLocaleDateString(),
+})) || [],
+      };
+    }
+
+    // ===========================
+    // EMPLOYEE
+    // ===========================
+
+    else {
+      const employeeId = searchParams.get("employeeId");
+      const fullName = searchParams.get("fullname");
+
+      console.log("EMPLOYEE DASHBOARD");
+      console.log("employeeId:", employeeId);
+      console.log("fullname:", fullName);
+
+      const employeeName = fullName || "Employee";
+
+      let leaveBalance = 0;
+      let payrollStatus = "Pending";
+
+      if (employeeId) {
+        // Leave Balance
+        const { count: leaves } = await supabaseServer
+          .from("leaves")
+          .select("*", { count: "exact", head: true })
+          .eq("employeeid", employeeId);
+
+        leaveBalance = leaves ?? 0;
+
+        // Latest Payroll
+        const { data: payroll } = await supabaseServer
+          .from("payrolls")
+          .select("month")
+          .eq("employeeid", employeeId)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        payrollStatus = payroll ? "Paid" : "Pending";
       }
-    );
 
+      dashboardData = {
+        cards: [
+          {
+            title: "My Profile",
+            value: employeeName,
+            module: "Employee",
+          },
+          {
+            title: "Leave Balance",
+            value: `${leaveBalance} Records`,
+            module: "Leave",
+          },
+          {
+            title: "Attendance",
+            value: "95%",
+            module: "Attendance",
+          },
+          {
+            title: "Payroll Status",
+            value: payrollStatus,
+            module: "Payroll",
+          },
+        ],
 
-  } catch(error) {
+     activities: recentActivities?.map((item) => ({
+  id: item.id,
+  title: item.title,
+  description: item.description,
+  module: item.module,
+  date: new Date(item.created_at).toLocaleDateString(),
+})) || [],
+      };
+    }
 
+    // ===========================
+    // COMMON RESPONSE
+    // ===========================
+
+    return NextResponse.json({
+      success: true,
+      data: dashboardData,
+    });
+
+  } catch (error: any) {
+    console.error("Dashboard API Error:", error);
 
     return NextResponse.json(
       {
         success: false,
-        message: "Failed to load dashboard data",
+        message: error?.message || "Failed to load dashboard data",
+        error:
+          process.env.NODE_ENV === "development"
+            ? String(error)
+            : undefined,
+        stack:
+          process.env.NODE_ENV === "development"
+            ? error?.stack
+            : undefined,
       },
       {
         status: 500,
       }
     );
-
-
   }
-
 }

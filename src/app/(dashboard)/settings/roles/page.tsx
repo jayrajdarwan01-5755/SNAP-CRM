@@ -125,7 +125,7 @@ export default function RolesPage() {
 
   return (
 
-    <div className="space-y-6">
+    <div className="space-y-6 bg-theme text-theme min-h-screen">
 
       {/* Header */}
 
@@ -133,13 +133,13 @@ export default function RolesPage() {
 
         <div>
 
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-theme">
 
             Roles
 
           </h1>
 
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted mt-2">
 
             Manage user roles and permissions
 
@@ -183,7 +183,7 @@ export default function RolesPage() {
 
       {/* Search */}
 
-      <div className="bg-white border rounded-xl shadow p-6">
+      <div className="card-theme border-theme rounded-xl shadow p-6">
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
@@ -195,9 +195,9 @@ export default function RolesPage() {
             className="
             w-full
             border
-            border-gray-300
-            bg-white
-            text-gray-900
+            border-theme
+            bg-theme
+            text-theme
             rounded-lg
             px-4
             py-2
@@ -233,27 +233,27 @@ export default function RolesPage() {
 
       {/* Roles Table */}
 
-      <div className="bg-white border rounded-xl shadow overflow-hidden">
+      <div className="card-theme border-theme rounded-xl shadow overflow-hidden">
 
         <table className="w-full">
 
-          <thead className="bg-gray-100">
+          <thead className="bg-theme border-b border-theme">
 
             <tr>
 
-              <th className="px-4 py-3 text-left text-gray-900">
+              <th className="px-4 py-3 text-left text-theme">
                 Role Name
               </th>
 
-              <th className="px-4 py-3 text-left text-gray-900">
+              <th className="px-4 py-3 text-left text-theme">
                 Description
               </th>
 
-              <th className="px-4 py-3 text-left text-gray-900">
+              <th className="px-4 py-3 text-left text-theme">
                 Status
               </th>
 
-              <th className="px-4 py-3 text-center text-gray-900">
+              <th className="px-4 py-3 text-center text-theme">
                 Action
               </th>
 
@@ -262,7 +262,8 @@ export default function RolesPage() {
           </thead>
 
           <tbody>
-                        {
+            
+            {
 
               loading ? (
 
@@ -270,7 +271,7 @@ export default function RolesPage() {
 
                   <td
                     colSpan={4}
-                    className="text-center py-10 text-gray-600"
+                    className="text-center py-10 text-muted"
                   >
 
                     Loading roles...
@@ -287,7 +288,7 @@ export default function RolesPage() {
 
                   <td
                     colSpan={4}
-                    className="text-center py-10 text-gray-600"
+                    className="text-center py-10 text-muted"
                   >
 
                     No roles found
@@ -302,16 +303,16 @@ export default function RolesPage() {
 
                 <tr
                   key={role.RoleId}
-                  className="border-t hover:bg-gray-50"
+                  className="border-t border-theme hover:bg-black/5 dark:hover:bg-white/5"
                 >
 
-                  <td className="px-4 py-4 text-gray-900 font-medium">
+                  <td className="px-4 py-4 text-theme font-medium">
 
                     {role.RoleName}
 
                   </td>
 
-                  <td className="px-4 py-4 text-gray-700">
+                  <td className="px-4 py-4 text-muted">
 
                     {role.Description}
 

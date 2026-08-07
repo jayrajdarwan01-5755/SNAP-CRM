@@ -16,7 +16,7 @@ export default function EditUserPage() {
 
   const [username, setUsername] = useState("");
 
-  const [fullname, setFullname] = useState("");
+  const [fullname, setFullname,] = useState("");
 
   const [role, setRole] = useState("");
 
@@ -36,6 +36,7 @@ export default function EditUserPage() {
     loadUser();
 
   }, []);
+
 
 
 
@@ -238,11 +239,12 @@ export default function EditUserPage() {
 
     return (
 
-      <div className="p-6">
+      <div className="p-6 bg-theme text-theme min-h-screen">
 
         Loading...
 
       </div>
+
 
     );
 
@@ -258,7 +260,7 @@ export default function EditUserPage() {
   return (
 
 
-    <div className="space-y-6">
+    <div className="space-y-6 bg-theme text-theme min-h-screen">
 
 
 
@@ -274,7 +276,7 @@ export default function EditUserPage() {
         <div>
 
 
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-theme">
 
             Edit User
 
@@ -282,7 +284,7 @@ export default function EditUserPage() {
 
 
 
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted mt-2">
 
             Update user information
 
@@ -324,11 +326,13 @@ export default function EditUserPage() {
 
 
 
+
+
       {/* Form */}
 
 
 
-      <div className="bg-white border rounded-xl shadow p-6">
+      <div className="card-theme border-theme rounded-xl shadow p-6">
 
 
 
@@ -347,7 +351,7 @@ export default function EditUserPage() {
           <div>
 
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Username
 
@@ -366,9 +370,9 @@ export default function EditUserPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2
@@ -394,7 +398,7 @@ export default function EditUserPage() {
           <div>
 
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Full Name
 
@@ -413,9 +417,9 @@ export default function EditUserPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2
@@ -441,7 +445,7 @@ export default function EditUserPage() {
           <div>
 
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Role
 
@@ -458,9 +462,9 @@ export default function EditUserPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2
@@ -483,6 +487,7 @@ export default function EditUserPage() {
                 Manager
 
               </option>
+
 
 
 
@@ -523,7 +528,7 @@ export default function EditUserPage() {
           <div>
 
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Status
 
@@ -545,9 +550,9 @@ export default function EditUserPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2
@@ -596,6 +601,7 @@ export default function EditUserPage() {
 
 
 
+
         {/* Button */}
 
 
@@ -632,8 +638,14 @@ export default function EditUserPage() {
             {saving ? "Updating..." : "Update User"}
 
           </button>
+
+
         </div>
+
+
       </div>
+
+
     </div>
 
 

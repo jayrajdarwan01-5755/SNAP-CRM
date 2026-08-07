@@ -18,11 +18,13 @@ export default function AddRolePage() {
   const handleSave = async () => {
 
     if (!roleName.trim()) {
-
       alert("Role Name is required");
-
       return;
+    }
 
+    if (roleName.trim().length < 3) {
+      alert("Role Name must be at least 3 characters");
+      return;
     }
 
     try {
@@ -47,11 +49,15 @@ export default function AddRolePage() {
 
       });
 
+      const result = await response.json();
+
       if (!response.ok) {
-
-        throw new Error("Failed to save role");
-
+        alert(result.message || "Failed to save role");
+        return;
       }
+
+      alert(result.message);
+      router.push("/settings/roles");
 
       alert("Role Added Successfully");
 
@@ -77,7 +83,7 @@ export default function AddRolePage() {
 
   return (
 
-    <div className="space-y-6">
+    <div className="space-y-6 bg-theme text-theme min-h-screen">
 
       {/* Header */}
 
@@ -85,13 +91,13 @@ export default function AddRolePage() {
 
         <div>
 
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-theme">
 
             Add Role
 
           </h1>
 
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted mt-2">
 
             Create new user role
 
@@ -119,7 +125,7 @@ export default function AddRolePage() {
 
       {/* Form */}
 
-      <div className="bg-white border rounded-xl shadow p-6">
+      <div className="card-theme border-theme rounded-xl shadow p-6">
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -127,7 +133,7 @@ export default function AddRolePage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Role Name
 
@@ -141,9 +147,9 @@ export default function AddRolePage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2
@@ -156,7 +162,7 @@ export default function AddRolePage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Status
 
@@ -168,9 +174,9 @@ export default function AddRolePage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2
@@ -197,7 +203,7 @@ export default function AddRolePage() {
 
           <div className="md:col-span-2">
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Description
 
@@ -211,9 +217,9 @@ export default function AddRolePage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2

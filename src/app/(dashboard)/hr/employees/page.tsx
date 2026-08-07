@@ -4,7 +4,13 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Employee } from "@/types/employee";
 
+import { useAuth } from "@/context/AuthContext";
+
 export default function EmployeesPage() {
+
+const { user } = useAuth();
+
+const role = user?.role ?? "";
 
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [searchText, setSearchText] = useState("");
@@ -159,164 +165,85 @@ export default function EmployeesPage() {
 
     <div>
 
-      <h1 className="text-3xl font-bold text-gray-900">
+      <h1 className="text-3xl font-bold text-theme">
         Employees
       </h1>
 
-      <p className="text-gray-600 mt-2">
+    <p className="text-muted mt-2">
         Manage all employee records
       </p>
 
     </div>
 
-    <Link
-      href="/hr/employees/add"
-      className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg"
-    >
-      + Add Employee
-    </Link>
+    {(role === "Admin" || role === "HR") && (
+  <Link
+    href="/hr/employees/add"
+    className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg"
+  >
+    + Add Employee
+  </Link>
+)}
 
   </div>
 
   {/* Search Section */}
 
-  <div className="bg-white border rounded-xl shadow p-6">
+<div className="card-theme rounded-xl shadow p-6">
 
-    <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+  <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
 
-      <input
+    <input
+      value={searchText}
+      onChange={(e) => setSearchText(e.target.value)}
+      placeholder="Search Employee"
+      className="input-theme"
+    />
 
-        value={searchText}
+    <select
+      value={selectedDepartment}
+      onChange={(e) => setSelectedDepartment(e.target.value)}
+      className="input-theme"
+    >
+      <option value="">All Departments</option>
+      <option value="HR">HR</option>
+      <option value="Sales">Sales</option>
+      <option value="IT">IT</option>
+    </select>
 
-        onChange={(e) =>
-          setSearchText(e.target.value)
-        }
+    <select
+      value={selectedStatus}
+      onChange={(e) => setSelectedStatus(e.target.value)}
+      className="input-theme"
+    >
+      <option value="">All Status</option>
+      <option value="Active">Active</option>
+      <option value="Inactive">Inactive</option>
+    </select>
 
-        placeholder="Search Employee"
+    <button className="bg-green-600 hover:bg-green-700 text-white rounded-lg">
+      Search
+    </button>
 
-        className="
-        border
-        border-gray-300
-        bg-white
-        text-gray-900
-        rounded-lg
-        px-4
-        py-2
-        "
-
-      />
-
-      <select
-
-        value={selectedDepartment}
-
-        onChange={(e) =>
-          setSelectedDepartment(e.target.value)
-        }
-
-        className="
-        border
-        border-gray-300
-        bg-white
-        text-gray-900
-        rounded-lg
-        px-4
-        py-2
-        "
-
-      >
-
-        <option value="">
-          All Departments
-        </option>
-
-        <option value="HR">
-          HR
-        </option>
-
-        <option value="Sales">
-          Sales
-        </option>
-
-        <option value="IT">
-          IT
-        </option>
-
-      </select>
-
-      <select
-
-        value={selectedStatus}
-
-        onChange={(e) =>
-          setSelectedStatus(e.target.value)
-        }
-
-        className="
-        border
-        border-gray-300
-        bg-white
-        text-gray-900
-        rounded-lg
-        px-4
-        py-2
-        "
-
-      >
-
-        <option value="">
-          All Status
-        </option>
-
-        <option value="Active">
-          Active
-        </option>
-
-        <option value="Inactive">
-          Inactive
-        </option>
-
-      </select>
-
-      <button
-        className="
-        bg-green-600
-        hover:bg-green-700
-        text-white
-        rounded-lg
-        "
-      >
-        Search
-      </button>
-
-      <button
-
-        onClick={handleClearFilter}
-
-        className="
-        bg-gray-600
-        hover:bg-gray-700
-        text-white
-        rounded-lg
-        "
-
-      >
-        Clear
-      </button>
-
-    </div>
+    <button
+      onClick={handleClearFilter}
+      className="button-secondary"
+    >
+      Clear
+    </button>
 
   </div>
 
+</div>
+
   {/* Employee Table */}
 
-  <div className="bg-white border rounded-xl shadow overflow-hidden">
+  <div className="card-theme rounded-xl shadow overflow-hidden">
 
-    <table className="w-full">
+  <table className="table-theme">
 
-      <thead className="bg-gray-100">
+    <thead className="table-header-theme">
 
-        <tr className="text-gray-900">
+      <tr className="text-theme">
 
           <th className="p-4 text-left">
             Employee ID
@@ -367,7 +294,7 @@ loading ? (
 
 <td
 colSpan={9}
-className="text-center py-10 text-gray-600"
+className="text-center py-10 text-muted"
 >
 
 Loading employees...
@@ -386,7 +313,7 @@ filteredEmployees.length === 0 ? (
 
 <td
 colSpan={9}
-className="text-center py-10 text-gray-600"
+className="text-center py-10 text-muted"
 >
 
 No employees found
@@ -402,80 +329,84 @@ No employees found
 currentEmployees.map((employee) => (
 
 <tr
-key={employee.EmployeeId}
-className="border-t hover:bg-gray-50"
+  key={employee.EmployeeId}
+  className="border-t border-theme table-row-theme"
 >
 
-<td className="p-4 text-gray-800">
-{employee.EmployeeId}
-</td>
+  <td className="p-4 text-theme">
+    {employee.EmployeeId}
+  </td>
 
-<td className="p-4 text-gray-800">
-{employee.EmployeeCode}
-</td>
+  <td className="p-4 text-theme">
+    {employee.EmployeeCode}
+  </td>
 
-<td className="p-4 font-medium text-gray-900">
-{employee.FirstName} {employee.LastName}
-</td>
+  <td className="p-4 font-medium text-theme">
+    {employee.FirstName} {employee.LastName}
+  </td>
 
-<td className="p-4 text-gray-700">
-{employee.Email}
-</td>
+  <td className="p-4 text-theme">
+    {employee.Email}
+  </td>
 
-<td className="p-4 text-gray-700">
-{employee.Department}
-</td>
+  <td className="p-4 text-theme">
+    {employee.Department}
+  </td>
 
-<td className="p-4 text-gray-700">
-{employee.Designation}
-</td>
+  <td className="p-4 text-theme">
+    {employee.Designation}
+  </td>
 
-<td className="p-4 text-gray-700">
-₹{employee.Salary.toLocaleString()}
-</td>
+  <td className="p-4 text-theme">
+    ₹{employee.Salary.toLocaleString()}
+  </td>
 
-<td className="p-4">
+  <td className="p-4">
 
-<span
-className={
-employee.Status === "Active"
-? "bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
-: "bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm"
-}
->
-{employee.Status}
-</span>
+    <span
+      className={
+        employee.Status === "Active"
+          ? "bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
+          : "bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm"
+      }
+    >
+      {employee.Status}
+    </span>
 
-</td>
+  </td>
 
-<td className="p-4">
+  <td className="p-4">
 
-<div className="flex justify-center gap-2">
+    <div className="flex justify-center gap-2">
 
-<Link
-href={`/hr/employees/${employee.EmployeeId}`}
-className="bg-green-600 text-white px-3 py-1 rounded text-sm"
->
-View
-</Link>
+      <Link
+        href={`/hr/employees/${employee.EmployeeId}`}
+        className="bg-green-600 text-white px-3 py-1 rounded text-sm"
+      >
+        View
+      </Link>
 
-<Link
-href={`/hr/employees/edit/${employee.EmployeeId}`}
-className="bg-blue-600 text-white px-3 py-1 rounded text-sm"
->
-Edit
-</Link>
+      {(role === "Admin" || role === "HR") && (
+        <Link
+          href={`/hr/employees/edit/${employee.EmployeeId}`}
+          className="bg-blue-600 text-white px-3 py-1 rounded text-sm"
+        >
+          Edit
+        </Link>
+      )}
 
-<button
-onClick={() => handleDelete(employee.EmployeeId)}
-className="bg-red-600 text-white px-3 py-1 rounded text-sm"
->
-Delete
-</button>
+      {(role === "Admin" || role === "HR") && (
+        <button
+          onClick={() => handleDelete(employee.EmployeeId)}
+          className="bg-red-600 text-white px-3 py-1 rounded text-sm"
+        >
+          Delete
+        </button>
+      )}
 
-</div>
+    </div>
 
-</td>
+  </td>
 
 </tr>
 
@@ -487,54 +418,36 @@ Delete
 
 </table>
 
-<div className="flex justify-between items-center p-4 border-t">
+<div className="flex justify-between items-center p-4 border-t border-theme">
 
-<p className="text-sm text-gray-600">
+  <p className="text-sm text-muted">
 
-Showing {filteredEmployees.length === 0 ? 0 : firstEmployeeIndex + 1}
--
-{Math.min(lastEmployeeIndex, filteredEmployees.length)}
-of {filteredEmployees.length} employees
+    Showing {filteredEmployees.length === 0 ? 0 : firstEmployeeIndex + 1}
+    -
+    {Math.min(lastEmployeeIndex, filteredEmployees.length)}
+    of {filteredEmployees.length} employees
 
-</p>
+  </p>
 
-<div className="flex gap-2">
+  <div className="flex gap-2">
 
-<button
+    <button
+      disabled={currentPage === 1}
+      onClick={() => setCurrentPage(currentPage - 1)}
+      className="input-theme disabled:opacity-50"
+    >
+      Previous
+    </button>
 
-disabled={currentPage === 1}
+    <button
+      disabled={lastEmployeeIndex >= filteredEmployees.length}
+      onClick={() => setCurrentPage(currentPage + 1)}
+      className="input-theme disabled:opacity-50"
+    >
+      Next
+    </button>
 
-onClick={() =>
-setCurrentPage(currentPage - 1)
-}
-
-className="px-4 py-2 border rounded disabled:opacity-50"
-
->
-
-Previous
-
-</button>
-
-<button
-
-disabled={
-lastEmployeeIndex >= filteredEmployees.length
-}
-
-onClick={() =>
-setCurrentPage(currentPage + 1)
-}
-
-className="px-4 py-2 border rounded disabled:opacity-50"
-
->
-
-Next
-
-</button>
-
-</div>
+  </div>
 
 </div>
 

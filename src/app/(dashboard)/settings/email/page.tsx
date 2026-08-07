@@ -128,17 +128,50 @@ export default function EmailSettingsPage() {
 
   };
 
-  const handleTest = () => {
+ const handleTest = async () => {
 
-    alert("Test Email Sent Successfully");
+  try {
 
-  };
+
+    const response = await fetch(
+      "/api/email/test",
+      {
+        method:"POST"
+      }
+    );
+
+
+    const data = await response.json();
+
+
+    if(response.ok){
+
+      alert(data.message);
+
+    }
+    else{
+
+      alert(data.message);
+
+    }
+
+
+  }
+  catch(error){
+
+    console.log(error);
+
+    alert("Something went wrong");
+
+  }
+
+};
 
   if (loading) {
 
     return (
 
-      <div className="p-6 text-center">
+      <div className="p-6 text-center bg-theme text-theme min-h-screen">
 
         Loading...
 
@@ -150,7 +183,7 @@ export default function EmailSettingsPage() {
 
   return (
 
-    <div className="space-y-6">
+    <div className="space-y-6 bg-theme text-theme min-h-screen">
 
       {/* Header */}
 
@@ -158,13 +191,13 @@ export default function EmailSettingsPage() {
 
         <div>
 
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-theme">
 
             Email Settings
 
           </h1>
 
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted mt-2">
 
             Configure SMTP email settings
 
@@ -192,14 +225,15 @@ export default function EmailSettingsPage() {
 
       {/* Form */}
 
-      <div className="bg-white border rounded-xl shadow p-6">
+      <div className="card-theme border-theme rounded-xl shadow p-6">
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {/* SMTP Host */}
+
+          {/* SMTP Host */}
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               SMTP Host
 
@@ -213,9 +247,9 @@ export default function EmailSettingsPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2
@@ -228,7 +262,7 @@ export default function EmailSettingsPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               SMTP Port
 
@@ -242,9 +276,9 @@ export default function EmailSettingsPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2
@@ -257,7 +291,7 @@ export default function EmailSettingsPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Email Address
 
@@ -271,9 +305,9 @@ export default function EmailSettingsPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2
@@ -286,7 +320,7 @@ export default function EmailSettingsPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Password
 
@@ -300,9 +334,9 @@ export default function EmailSettingsPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2
@@ -315,7 +349,7 @@ export default function EmailSettingsPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Sender Name
 
@@ -329,9 +363,9 @@ export default function EmailSettingsPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2
@@ -344,7 +378,7 @@ export default function EmailSettingsPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Encryption
 
@@ -360,9 +394,9 @@ export default function EmailSettingsPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2

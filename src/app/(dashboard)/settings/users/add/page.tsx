@@ -162,9 +162,10 @@ export default function AddUserPage() {
 
 
 
+
   return (
 
-    <div className="space-y-6">
+    <div className="space-y-6 bg-theme text-theme min-h-screen">
 
 
 
@@ -176,14 +177,14 @@ export default function AddUserPage() {
 
         <div>
 
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-theme">
 
             Add User
 
           </h1>
 
 
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted mt-2">
 
             Create new system user
 
@@ -223,7 +224,7 @@ export default function AddUserPage() {
       {/* Form */}
 
 
-      <div className="bg-white border rounded-xl shadow p-6">
+      <div className="card-theme border-theme rounded-xl shadow p-6">
 
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -237,7 +238,7 @@ export default function AddUserPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Username
 
@@ -257,9 +258,9 @@ export default function AddUserPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2
@@ -276,13 +277,14 @@ export default function AddUserPage() {
 
 
 
+
           {/* Full Name */}
 
 
           <div>
 
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Full Name
 
@@ -302,9 +304,9 @@ export default function AddUserPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2
@@ -321,13 +323,14 @@ export default function AddUserPage() {
 
 
 
+
           {/* Role */}
 
 
           <div>
 
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Role
 
@@ -344,9 +347,9 @@ export default function AddUserPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2
@@ -398,7 +401,7 @@ export default function AddUserPage() {
           <div>
 
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Status
 
@@ -414,9 +417,9 @@ export default function AddUserPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2
@@ -437,13 +440,17 @@ export default function AddUserPage() {
             </select>
           </div>
 
+
+
+
+
           {/* Password */}
 
 
           <div>
 
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Password
 
@@ -463,9 +470,9 @@ export default function AddUserPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2
@@ -476,13 +483,17 @@ export default function AddUserPage() {
 
           </div>
 
+
+
+
+
           {/* Confirm Password */}
 
 
           <div>
 
 
-            <label className="block text-sm font-semibold text-gray-900 mb-2">
+            <label className="block text-sm font-semibold text-theme mb-2">
 
               Confirm Password
 
@@ -502,9 +513,9 @@ export default function AddUserPage() {
               className="
               w-full
               border
-              border-gray-300
-              bg-white
-              text-gray-900
+              border-theme
+              bg-theme
+              text-theme
               rounded-lg
               px-4
               py-2
@@ -514,7 +525,13 @@ export default function AddUserPage() {
 
 
           </div>
+
+
         </div>
+
+
+
+
 
         {/* Save Button */}
 
@@ -542,9 +559,16 @@ export default function AddUserPage() {
 
 
             {loading ? "Saving..." : "Save User"}
+
           </button>
+
+
         </div>
+
+
       </div>
+
+
     </div>
 
   );

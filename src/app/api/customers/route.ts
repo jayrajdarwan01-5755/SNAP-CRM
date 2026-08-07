@@ -2,6 +2,20 @@ import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
 
 // ========================
+// ACTIVITY LOGGER
+// ========================
+
+async function addActivity(title: string, type: string) {
+  await supabaseServer.from("activities").insert([
+    {
+      title,
+      type,
+      created_at: new Date().toISOString(),
+    },
+  ]);
+}
+
+// ========================
 // GET CUSTOMERS
 // ========================
 
@@ -11,61 +25,48 @@ export async function GET(request: Request) {
     const id = searchParams.get("id");
 
     // Get Single Customer
-if (id) {
+    if (id) {
+      const { data, error } = await supabaseServer
+        .from("customers")
+        .select("*")
+        .eq("id", Number(id))
+        .maybeSingle();
 
-  const { data, error } = await supabaseServer
-    .from("customers")
-    .select("*")
-    .eq("id", Number(id))
-    .maybeSingle();
-
-
-  if (error) {
-
-    return NextResponse.json(
-      {
-        message: error.message,
-      },
-      {
-        status: 404,
+      if (error) {
+        return NextResponse.json(
+          {
+            message: error.message,
+          },
+          {
+            status: 404,
+          }
+        );
       }
-    );
 
-  }
-
-
-
-  if (!data) {
-
-    return NextResponse.json(
-      {
-        message: "Customer not found",
-      },
-      {
-        status: 404,
+      if (!data) {
+        return NextResponse.json(
+          {
+            message: "Customer not found",
+          },
+          {
+            status: 404,
+          }
+        );
       }
-    );
 
-  }
-
-
-
-  return NextResponse.json({
-
-    CustomerId: data.id,
-    CustomerCode: data.customer_code,
-    CustomerName: data.customer_name,
-    Phone: data.phone,
-    Email: data.email,
-    Address: data.address,
-    City: data.city,
-    State: data.state,
-    Country: data.country,
-    Status: data.status,
-
-  });
-
-}
+      return NextResponse.json({
+        CustomerId: data.id,
+        CustomerCode: data.customer_code,
+        CustomerName: data.customer_name,
+        Phone: data.phone,
+        Email: data.email,
+        Address: data.address,
+        City: data.city,
+        State: data.state,
+        Country: data.country,
+        Status: data.status,
+      });
+    }
 
     // Get All Customers
     const { data, error } = await supabaseServer
@@ -107,7 +108,6 @@ if (id) {
   }
 }
 
-
 // ========================
 // ADD CUSTOMER
 // ========================
@@ -141,6 +141,12 @@ export async function POST(request: Request) {
       );
     }
 
+    // Activity Log
+    await addActivity(
+      `Customer added: ${data.customer_name}`,
+      "Customer"
+    );
+
     return NextResponse.json({
       message: "Customer added successfully",
       customer: {
@@ -168,8 +174,6 @@ export async function POST(request: Request) {
     );
   }
 }
-
-
 // ========================
 // UPDATE CUSTOMER
 // ========================
@@ -197,10 +201,23 @@ export async function PUT(request: Request) {
 
     if (error) {
       return NextResponse.json(
-        { message: error.message },
-        { status: 400 }
+        {
+          message: error.message,
+        },
+        {
+          status: 400,
+        }
       );
     }
+
+    // ========================
+    // ACTIVITY LOG
+    // ========================
+
+    await addActivity(
+      `Customer updated: ${data.customer_name}`,
+      "Customer"
+    );
 
     return NextResponse.json({
       message: "Customer updated successfully",
@@ -217,7 +234,9 @@ export async function PUT(request: Request) {
         Status: data.status,
       },
     });
+
   } catch (error) {
+
     return NextResponse.json(
       {
         message: "Failed to update customer",
@@ -227,6 +246,7 @@ export async function PUT(request: Request) {
         status: 500,
       }
     );
+
   }
 }
 
@@ -239,13 +259,19 @@ export async function DELETE(request: Request) {
   try {
     const body = await request.json();
 
+    // Get customer before delete
+    const { data: oldCustomer } = await supabaseServer
+      .from("customers")
+      .select("customer_name")
+      .eq("id", body.CustomerId)
+      .maybeSingle();
+
     const { data, error } = await supabaseServer
       .from("customers")
       .delete()
       .eq("id", body.CustomerId)
       .select()
       .single();
-
 
     if (error) {
       return NextResponse.json(
@@ -258,6 +284,14 @@ export async function DELETE(request: Request) {
       );
     }
 
+    // ========================
+    // ACTIVITY LOG
+    // ========================
+
+    await addActivity(
+      `Customer deleted: ${oldCustomer?.customer_name ?? "Customer"}`,
+      "Customer"
+    );
 
     return NextResponse.json({
       message: "Customer deleted successfully",
@@ -274,7 +308,6 @@ export async function DELETE(request: Request) {
         Status: data.status,
       },
     });
-
 
   } catch (error) {
 

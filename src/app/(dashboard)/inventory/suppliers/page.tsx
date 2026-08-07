@@ -15,6 +15,7 @@ export default function SuppliersPage() {
   const [searchText, setSearchText] = useState("");
 
 
+
   useEffect(() => {
 
 
@@ -24,31 +25,39 @@ export default function SuppliersPage() {
   }, []);
 
 
-const handleClearFilter = () => {
 
-  setSearchText("");
 
-};
+  const handleClearFilter = () => {
 
-const filteredSuppliers = suppliers.filter((supplier) =>
+    setSearchText("");
 
-  supplier.SupplierName
-    .toLowerCase()
-    .includes(searchText.toLowerCase())
+  };
 
-  ||
 
-  supplier.Email
-    .toLowerCase()
-    .includes(searchText.toLowerCase())
 
-  ||
 
-  supplier.Phone
-    .toLowerCase()
-    .includes(searchText.toLowerCase())
+  const filteredSuppliers = suppliers.filter((supplier) =>
 
-);
+    supplier.SupplierName
+      .toLowerCase()
+      .includes(searchText.toLowerCase())
+
+    ||
+
+    supplier.Email
+      .toLowerCase()
+      .includes(searchText.toLowerCase())
+
+    ||
+
+    supplier.Phone
+      .toLowerCase()
+      .includes(searchText.toLowerCase())
+
+  );
+
+
+
 
 
   const loadSuppliers = async () => {
@@ -95,6 +104,7 @@ const filteredSuppliers = suppliers.filter((supplier) =>
 
 
 
+
   const handleDelete = async (
     SupplierId:number
   ) => {
@@ -112,6 +122,7 @@ const filteredSuppliers = suppliers.filter((supplier) =>
       return;
 
     }
+
 
 
 
@@ -142,6 +153,7 @@ const filteredSuppliers = suppliers.filter((supplier) =>
 
 
 
+
     if(response.ok){
 
 
@@ -166,10 +178,14 @@ const filteredSuppliers = suppliers.filter((supplier) =>
 
 
 
+
+
   return (
 
 
     <div className="space-y-6">
+
+
 
 
 
@@ -182,14 +198,14 @@ const filteredSuppliers = suppliers.filter((supplier) =>
         <div>
 
 
-          <h1 className="text-3xl font-bold text-gray-900">
+          <h1 className="text-3xl font-bold text-theme">
 
             Supplier Management
 
           </h1>
 
 
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted mt-2">
 
             Manage suppliers
 
@@ -197,6 +213,7 @@ const filteredSuppliers = suppliers.filter((supplier) =>
 
 
         </div>
+
 
 
 
@@ -229,100 +246,155 @@ const filteredSuppliers = suppliers.filter((supplier) =>
 
 
 
+
+
       {/* Search Section */}
 
 
 
-      <div className="bg-white border rounded-xl shadow p-6">
+
+      <div className="card-theme border border-theme rounded-xl shadow p-6">
 
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-  <input
-    type="text"
-    value={searchText}
-    onChange={(e) => setSearchText(e.target.value)}
-    placeholder="Search Supplier"
-    className="
-    w-full
-    border
-    border-gray-300
-    bg-white
-    text-gray-900
-    rounded-lg
-    px-4
-    py-2
-    "
-  />
 
-  <button
-    className="
-    bg-green-600
-    hover:bg-green-700
-    text-white
-    rounded-lg
-    "
-  >
-    Search
-  </button>
+          <input
 
-  <button
-    onClick={handleClearFilter}
-    className="
-    bg-gray-600
-    hover:bg-gray-700
-    text-white
-    rounded-lg
-    "
-  >
-    Clear
-  </button>
+            type="text"
 
-</div>
+            value={searchText}
+
+            onChange={(e) => setSearchText(e.target.value)}
+
+            placeholder="Search Supplier"
+
+            className="
+            w-full
+            border
+            border-theme
+            bg-theme
+            text-theme
+            placeholder:text-muted
+            rounded-lg
+            px-4
+            py-2
+            "
+
+          />
+
+
+
+          <button
+
+            className="
+            bg-green-600
+            hover:bg-green-700
+            text-white
+            rounded-lg
+            "
+
+          >
+
+            Search
+
+          </button>
+
+
+
+          <button
+
+            onClick={handleClearFilter}
+
+            className="
+            bg-gray-600
+            hover:bg-gray-700
+            text-white
+            rounded-lg
+            "
+
+          >
+
+            Clear
+
+          </button>
+
+
+
+        </div>
 
 
       </div>
-            {/* Supplier Table */}
 
 
-      <div className="bg-white border rounded-xl shadow overflow-hidden">
+
+
+
+
+
+
+      {/* Supplier Table */}
+
+
+
+      <div className="card-theme border border-theme rounded-xl shadow overflow-hidden">
+
 
 
         <table className="w-full">
 
 
-          <thead className="bg-gray-100">
+
+          <thead className="bg-theme">
 
 
-            <tr className="text-gray-900">
+
+            <tr className="text-theme">
+
 
 
               <th className="px-4 py-3 text-left">
+
                 Supplier Name
+
               </th>
 
 
+
               <th className="px-4 py-3 text-left">
+
                 Email
+
               </th>
 
 
+
               <th className="px-4 py-3 text-left">
+
                 Phone
+
               </th>
+
 
 
               <th className="px-4 py-3 text-left">
+
                 Address
+
               </th>
+
 
 
               <th className="px-4 py-3 text-center">
+
                 Action
+
               </th>
 
 
+
             </tr>
+
 
 
           </thead>
@@ -330,37 +402,52 @@ const filteredSuppliers = suppliers.filter((supplier) =>
 
 
 
+
+
           <tbody>
 
 
+
           {
+
             loading ? (
+
 
 
               <tr>
 
 
+
                 <td
+
                   colSpan={5}
-                  className="text-center py-10 text-gray-600"
+
+                  className="text-center py-10 text-muted"
+
                 >
 
                   Loading suppliers...
 
 
+
                 </td>
+
 
 
               </tr>
 
 
+
             )
+
 
 
             :
 
 
-         filteredSuppliers.length === 0 ? (
+
+            filteredSuppliers.length === 0 ? (
+
 
               <tr>
 
@@ -369,90 +456,113 @@ const filteredSuppliers = suppliers.filter((supplier) =>
 
                   colSpan={5}
 
-                  className="text-center py-10 text-gray-600"
+                  className="text-center py-10 text-muted"
 
                 >
 
                   No suppliers found
 
 
+
                 </td>
+
 
 
               </tr>
 
 
+
             )
+
 
 
             :
 
 
-      filteredSuppliers.map((supplier) => (
+
+            filteredSuppliers.map((supplier) => (
+
+
 
               <tr
 
+
                 key={supplier.SupplierId}
 
-                className="border-t hover:bg-gray-50"
+
+                className="
+                border-t
+                border-theme
+                hover:bg-theme
+                table-row-theme
+                "
+
 
               >
 
 
 
-                {/* Supplier Name */}
 
 
-                <td className="px-4 py-4 font-medium text-gray-900">
+
+                <td className="px-4 py-4 font-medium text-theme">
+
 
                   {supplier.SupplierName}
 
+
                 </td>
 
 
 
 
 
-                {/* Email */}
 
 
-                <td className="px-4 py-4 text-gray-700">
+
+                <td className="px-4 py-4 text-muted">
+
 
                   {supplier.Email}
 
+
                 </td>
 
 
 
 
 
-                {/* Phone */}
 
 
-                <td className="px-4 py-4 text-gray-700">
+
+                <td className="px-4 py-4 text-muted">
+
 
                   {supplier.Phone}
 
+
                 </td>
 
 
 
 
 
-                {/* Address */}
 
 
-                <td className="px-4 py-4 text-gray-700">
+
+                <td className="px-4 py-4 text-muted">
+
 
                   {supplier.Address}
 
+
                 </td>
 
 
 
 
 
-                {/* Action */}
+
 
 
                 <td className="px-4 py-4">
@@ -462,12 +572,16 @@ const filteredSuppliers = suppliers.filter((supplier) =>
 
 
 
+
+
+
                     <Link
 
                       href={`/inventory/suppliers/${supplier.SupplierId}`}
 
                       className="
                       bg-green-600
+                      hover:bg-green-700
                       text-white
                       px-3
                       py-1
@@ -479,7 +593,11 @@ const filteredSuppliers = suppliers.filter((supplier) =>
 
                       View
 
+
                     </Link>
+
+
+
 
 
 
@@ -491,6 +609,7 @@ const filteredSuppliers = suppliers.filter((supplier) =>
 
                       className="
                       bg-blue-600
+                      hover:bg-blue-700
                       text-white
                       px-3
                       py-1
@@ -502,7 +621,11 @@ const filteredSuppliers = suppliers.filter((supplier) =>
 
                       Edit
 
+
                     </Link>
+
+
+
 
 
 
@@ -510,12 +633,15 @@ const filteredSuppliers = suppliers.filter((supplier) =>
 
                     <button
 
+
                       onClick={() =>
                         handleDelete(supplier.SupplierId)
                       }
 
+
                       className="
                       bg-red-600
+                      hover:bg-red-700
                       text-white
                       px-3
                       py-1
@@ -523,11 +649,15 @@ const filteredSuppliers = suppliers.filter((supplier) =>
                       text-sm
                       "
 
+
                     >
 
                       Delete
 
+
                     </button>
+
+
 
 
 
@@ -539,21 +669,30 @@ const filteredSuppliers = suppliers.filter((supplier) =>
 
 
 
+
               </tr>
+
 
 
             ))
 
 
+
           }
 
+
+
           </tbody>
+
 
 
         </table>
 
 
+
       </div>
+
+
 
 
 
