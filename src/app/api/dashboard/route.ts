@@ -35,10 +35,25 @@ export async function GET(request: Request) {
 
 let recentActivities = [];
 
-if (role === "Employee") {
+if (role === "Admin") {
+  // Admin can see all recent activities
+  const { data, error } = await supabaseServer
+    .from("activities")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(5);
+
+  if (error) {
+    console.error("Admin Activities Error:", error.message);
+  }
+
+  recentActivities = data || [];
+
+} else if (role === "Employee") {
+
   const employeeId = searchParams.get("employeeId");
 
-  const { data } = await supabaseServer
+  const { data, error } = await supabaseServer
     .from("activities")
     .select("*")
     .eq("role", "Employee")
@@ -46,14 +61,24 @@ if (role === "Employee") {
     .order("created_at", { ascending: false })
     .limit(5);
 
+  if (error) {
+    console.error("Employee Activities Error:", error.message);
+  }
+
   recentActivities = data || [];
+
 } else {
-  const { data } = await supabaseServer
+
+  const { data, error } = await supabaseServer
     .from("activities")
     .select("*")
     .eq("role", role)
     .order("created_at", { ascending: false })
     .limit(5);
+
+  if (error) {
+    console.error(`${role} Activities Error:`, error.message);
+  }
 
   recentActivities = data || [];
 }
