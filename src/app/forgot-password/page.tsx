@@ -3,80 +3,80 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { useAuth } from "@/context/AuthContext";
-
-export default function LoginPage() {
-
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+export default function ForgotPasswordPage() {
 
   const router = useRouter();
 
-  const { setUser } = useAuth();
+  const [identifier, setIdentifier] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleForgotPassword = async (
+    e: React.FormEvent
+  ) => {
 
     e.preventDefault();
 
-    if (!username || !password) {
+    setMessage("");
+    setError("");
 
-      alert("Please enter username and password");
+    if (!identifier.trim()) {
+
+      setError("Please enter email or username");
 
       return;
-
     }
 
     try {
 
-      const response = await fetch("/api/login", {
+      setLoading(true);
 
-        method: "POST",
+      const response = await fetch(
+        "/api/forgot-password",
+        {
+          method: "POST",
 
-        headers: {
-          "Content-Type": "application/json",
-        },
+          headers: {
+            "Content-Type": "application/json"
+          },
 
-        body: JSON.stringify({
-          username,
-          password,
-        }),
-
-      });
+          body: JSON.stringify({
+            identifier: identifier.trim()
+          })
+        }
+      );
 
       const result = await response.json();
 
       if (!response.ok) {
 
-        alert(result.message);
+        setError(
+          result.message ||
+          "Failed to send reset link"
+        );
 
         return;
-
       }
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify(result.user)
+      setMessage(
+        result.message ||
+        "If the account exists, a reset link has been sent to the registered email."
       );
 
-      setUser(result.user);
-
-      console.log(
-        "Logged User:",
-        result.user
-      );
-
-      console.log(
-        "Employee ID:",
-        result.user.employeeid
-      );
-
-      router.push("/dashboard");
-
-    } catch (error) {
+    }
+    catch (error) {
 
       console.log(error);
 
-      alert("Login failed");
+      setError(
+        "Something went wrong. Please try again."
+      );
+
+    }
+    finally {
+
+      setLoading(false);
 
     }
 
@@ -110,7 +110,7 @@ export default function LoginPage() {
 
           {/* Heading */}
 
-          <div className="mb-10">
+          <div className="mb-8">
 
             <h1 className="
               text-3xl
@@ -120,25 +120,33 @@ export default function LoginPage() {
               leading-snug
             ">
 
-              Smart CRM Platform
-
-              <br />
-
-              Manage Your Business Effortlessly.
+              Forgot Password?
 
             </h1>
+
+            <p className="
+              mt-3
+              text-muted
+              text-sm
+              sm:text-base
+            ">
+
+              Enter your registered email or username
+              and we will send you a password reset link.
+
+            </p>
 
           </div>
 
 
-          {/* ================= LOGIN FORM ================= */}
+          {/* ================= FORM ================= */}
 
           <form
-            onSubmit={handleLogin}
+            onSubmit={handleForgotPassword}
             className="space-y-5"
           >
 
-            {/* Username */}
+            {/* Email / Username */}
 
             <div>
 
@@ -150,7 +158,7 @@ export default function LoginPage() {
                 mb-2
               ">
 
-                User Name
+                Email or Username
 
               </label>
 
@@ -158,13 +166,13 @@ export default function LoginPage() {
 
                 type="text"
 
-                value={username}
+                value={identifier}
 
                 onChange={(e) =>
-                  setUsername(e.target.value)
+                  setIdentifier(e.target.value)
                 }
 
-                placeholder="Enter username"
+                placeholder="Enter email or username"
 
                 className="
                   w-full
@@ -186,79 +194,57 @@ export default function LoginPage() {
             </div>
 
 
-            {/* Password */}
+            {/* Error */}
 
-            <div>
+            {error && (
 
               <div className="
-                flex
-                justify-between
-                items-center
-                mb-2
+                text-sm
+                text-red-500
+                border
+                border-red-300
+                rounded-md
+                px-4
+                py-3
               ">
 
-                <label className="
-                  text-sm
-                  font-semibold
-                  text-theme
-                ">
-
-                  Password
-
-                </label>
-
-                <button
-                type="button"
-                onClick={() => router.push("/forgot-password")}
-                className="
-                    text-sm
-                    text-blue-600
-                    hover:text-blue-700
-                    font-medium
-                "
-                >
-                Forgot password?
-                </button>
+                {error}
 
               </div>
 
-              <input
-
-                type="password"
-
-                value={password}
-
-                onChange={(e) =>
-                  setPassword(e.target.value)
-                }
-
-                placeholder="Enter password"
-
-                className="
-                  w-full
-                  h-12
-                  border
-                  border-theme
-                  bg-theme
-                  text-theme
-                  placeholder:text-muted
-                  rounded-md
-                  px-4
-                  focus:outline-none
-                  focus:ring-2
-                  focus:ring-blue-500
-                "
-
-              />
-
-            </div>
+            )}
 
 
-            {/* Login Button */}
+            {/* Success */}
+
+            {message && (
+
+              <div className="
+                text-sm
+                text-green-600
+                dark:text-green-400
+                border
+                border-green-300
+                dark:border-green-700
+                rounded-md
+                px-4
+                py-3
+              ">
+
+                {message}
+
+              </div>
+
+            )}
+
+
+            {/* Send Reset Link */}
 
             <button
 
               type="submit"
+
+              disabled={loading}
 
               className="
                 w-full
@@ -269,43 +255,48 @@ export default function LoginPage() {
                 rounded-md
                 font-semibold
                 transition
+                disabled:opacity-50
+                disabled:cursor-not-allowed
               "
 
             >
 
-              Login
+              {loading
+                ? "Sending..."
+                : "Send Reset Link"
+              }
 
             </button>
 
           </form>
 
 
-          {/* Register */}
+          {/* Back to Login */}
 
           <div className="
             text-center
-            mt-5
-            text-sm
-            text-muted
+            mt-6
           ">
 
-            First time here?
-
             <button
+
               type="button"
+
               onClick={() =>
-                router.push("/register")
+                router.push("/login")
               }
+
               className="
                 text-blue-600
                 hover:text-blue-700
-                cursor-pointer
-                ml-1
                 font-semibold
+                text-sm
+                cursor-pointer
               "
+
             >
 
-              Create account
+              ← Back to Login
 
             </button>
 
@@ -345,7 +336,7 @@ export default function LoginPage() {
             dark:text-white
           ">
 
-            Welcome to SNAP CRM
+            Reset Your Password
 
           </h2>
 
@@ -356,9 +347,9 @@ export default function LoginPage() {
             max-w-md
           ">
 
-            Manage your customers, sales,
-            employees and business operations
-            from one powerful platform.
+            Securely reset your SNAP CRM password
+            using the reset link sent to your
+            registered email address.
 
           </p>
 
