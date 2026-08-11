@@ -9,7 +9,6 @@ export default function EditEmployeePage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-
   const { id } = use(params);
 
   const router = useRouter();
@@ -74,9 +73,7 @@ export default function EditEmployeePage({
     });
   };
 
-  const handleUpdate = async (
-    e: React.FormEvent
-  ) => {
+  const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const response = await fetch("/api/employees", {
@@ -111,34 +108,32 @@ export default function EditEmployeePage({
 
   if (loading) {
     return (
-      <div className="p-10 text-center text-theme">
+      <div className="p-6 sm:p-10 text-center text-theme">
         Loading Employee...
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 sm:space-y-6 min-w-0">
 
-              {/* Header */}
-
-      <div className="flex justify-between items-center">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 
         <div>
-
-          <h1 className="text-3xl font-bold text-theme">
+          <h1 className="text-2xl sm:text-3xl font-bold text-theme">
             Edit Employee
           </h1>
 
-          <p className="text-muted mt-2">
+          <p className="text-muted mt-1 sm:mt-2 text-sm sm:text-base">
             Update employee information
           </p>
-
         </div>
 
         <button
+          type="button"
           onClick={() => router.back()}
-          className="bg-gray-600 hover:bg-gray-700 text-white px-5 py-2 rounded-lg"
+          className="bg-gray-600 hover:bg-gray-700 text-white px-5 py-2 rounded-lg w-full sm:w-auto transition"
         >
           Back
         </button>
@@ -146,31 +141,30 @@ export default function EditEmployeePage({
       </div>
 
       {/* Form */}
-
-      <div className="card-theme rounded-xl shadow p-6">
+      <div className="card-theme rounded-xl shadow p-4 sm:p-6">
 
         <form
           onSubmit={handleUpdate}
-          className="space-y-8"
+          className="space-y-6 sm:space-y-8"
         >
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-8">
 
             {/* Employee Information */}
-
             <div
-              className="rounded-xl border p-6"
+              className="rounded-xl border p-4 sm:p-6"
               style={{
                 background: "rgba(128,128,128,0.08)",
               }}
             >
 
-              <h2 className="text-2xl font-bold text-theme mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold text-theme mb-5 sm:mb-6">
                 Employee Information
               </h2>
 
               <div className="space-y-4">
 
+                {/* Employee Code */}
                 <div>
                   <label className="block text-sm font-semibold text-theme mb-2">
                     Employee Code
@@ -181,10 +175,11 @@ export default function EditEmployeePage({
                     name="employeeCode"
                     value={employee.employeeCode}
                     onChange={handleChange}
-                    className="w-full border rounded-lg px-4 py-2 bg-transparent text-theme placeholder:text-muted"
+                    className="input-theme w-full"
                   />
                 </div>
 
+                {/* First Name */}
                 <div>
                   <label className="block text-sm font-semibold text-theme mb-2">
                     First Name
@@ -195,10 +190,11 @@ export default function EditEmployeePage({
                     name="firstName"
                     value={employee.firstName}
                     onChange={handleChange}
-                    className="w-full border rounded-lg px-4 py-2 bg-transparent text-theme placeholder:text-muted"
+                    className="input-theme w-full"
                   />
                 </div>
 
+                {/* Last Name */}
                 <div>
                   <label className="block text-sm font-semibold text-theme mb-2">
                     Last Name
@@ -209,10 +205,11 @@ export default function EditEmployeePage({
                     name="lastName"
                     value={employee.lastName}
                     onChange={handleChange}
-                    className="w-full border rounded-lg px-4 py-2 bg-transparent text-theme placeholder:text-muted"
+                    className="input-theme w-full"
                   />
                 </div>
 
+                {/* Email */}
                 <div>
                   <label className="block text-sm font-semibold text-theme mb-2">
                     Email
@@ -223,10 +220,11 @@ export default function EditEmployeePage({
                     name="email"
                     value={employee.email}
                     onChange={handleChange}
-                    className="w-full border rounded-lg px-4 py-2 bg-transparent text-theme placeholder:text-muted"
+                    className="input-theme w-full"
                   />
                 </div>
 
+                {/* Phone */}
                 <div>
                   <label className="block text-sm font-semibold text-theme mb-2">
                     Phone
@@ -237,10 +235,11 @@ export default function EditEmployeePage({
                     name="phone"
                     value={employee.phone}
                     onChange={handleChange}
-                    className="w-full border rounded-lg px-4 py-2 bg-transparent text-theme placeholder:text-muted"
+                    className="input-theme w-full"
                   />
                 </div>
 
+                {/* Gender */}
                 <div>
                   <label className="block text-sm font-semibold text-theme mb-2">
                     Gender
@@ -250,7 +249,7 @@ export default function EditEmployeePage({
                     name="gender"
                     value={employee.gender}
                     onChange={handleChange}
-                    className="w-full border rounded-lg px-4 py-2 bg-transparent text-theme placeholder:text-muted"
+                    className="input-theme w-full"
                   >
                     <option value="">Select Gender</option>
                     <option value="Male">Male</option>
@@ -259,6 +258,7 @@ export default function EditEmployeePage({
                   </select>
                 </div>
 
+                {/* Date of Birth */}
                 <div>
                   <label className="block text-sm font-semibold text-theme mb-2">
                     Date of Birth
@@ -269,28 +269,29 @@ export default function EditEmployeePage({
                     name="dob"
                     value={employee.dob}
                     onChange={handleChange}
-                    className="w-full border rounded-lg px-4 py-2 bg-transparent text-theme placeholder:text-muted"
+                    className="input-theme w-full"
                   />
                 </div>
 
               </div>
 
             </div>
-                        {/* Job Information */}
 
+            {/* Job Information */}
             <div
-              className="rounded-xl border p-6"
+              className="rounded-xl border p-4 sm:p-6"
               style={{
                 background: "rgba(128,128,128,0.08)",
               }}
             >
 
-              <h2 className="text-2xl font-bold text-theme mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold text-theme mb-5 sm:mb-6">
                 Job Information
               </h2>
 
               <div className="space-y-4">
 
+                {/* Joining Date */}
                 <div>
                   <label className="block text-sm font-semibold text-theme mb-2">
                     Joining Date
@@ -301,10 +302,11 @@ export default function EditEmployeePage({
                     name="joiningDate"
                     value={employee.joiningDate}
                     onChange={handleChange}
-                    className="w-full border rounded-lg px-4 py-2 bg-transparent text-theme placeholder:text-muted"
+                    className="input-theme w-full"
                   />
                 </div>
 
+                {/* Department */}
                 <div>
                   <label className="block text-sm font-semibold text-theme mb-2">
                     Department
@@ -314,7 +316,7 @@ export default function EditEmployeePage({
                     name="department"
                     value={employee.department}
                     onChange={handleChange}
-                    className="w-full border rounded-lg px-4 py-2 bg-transparent text-theme placeholder:text-muted"
+                    className="input-theme w-full"
                   >
                     <option value="">Select Department</option>
                     <option value="HR">HR</option>
@@ -323,6 +325,7 @@ export default function EditEmployeePage({
                   </select>
                 </div>
 
+                {/* Designation */}
                 <div>
                   <label className="block text-sm font-semibold text-theme mb-2">
                     Designation
@@ -333,10 +336,11 @@ export default function EditEmployeePage({
                     name="designation"
                     value={employee.designation}
                     onChange={handleChange}
-                    className="w-full border rounded-lg px-4 py-2 bg-transparent text-theme placeholder:text-muted"
+                    className="input-theme w-full"
                   />
                 </div>
 
+                {/* Salary */}
                 <div>
                   <label className="block text-sm font-semibold text-theme mb-2">
                     Salary
@@ -347,10 +351,11 @@ export default function EditEmployeePage({
                     name="salary"
                     value={employee.salary}
                     onChange={handleChange}
-                    className="w-full border rounded-lg px-4 py-2 bg-transparent text-theme placeholder:text-muted"
+                    className="input-theme w-full"
                   />
                 </div>
 
+                {/* Status */}
                 <div>
                   <label className="block text-sm font-semibold text-theme mb-2">
                     Status
@@ -360,7 +365,7 @@ export default function EditEmployeePage({
                     name="status"
                     value={employee.status}
                     onChange={handleChange}
-                    className="w-full border rounded-lg px-4 py-2 bg-transparent text-theme placeholder:text-muted"
+                    className="input-theme w-full"
                   >
                     <option value="Active">Active</option>
                     <option value="Inactive">Inactive</option>
@@ -372,13 +377,13 @@ export default function EditEmployeePage({
             </div>
 
           </div>
-                    {/* Buttons */}
 
-          <div className="flex gap-3 pt-4">
+          {/* Buttons */}
+          <div className="flex flex-col sm:flex-row gap-3 pt-2 sm:pt-4">
 
             <button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg w-full sm:w-auto transition"
             >
               Update Employee
             </button>
@@ -386,7 +391,7 @@ export default function EditEmployeePage({
             <button
               type="button"
               onClick={() => router.back()}
-              className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg"
+              className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2.5 rounded-lg w-full sm:w-auto transition"
             >
               Cancel
             </button>

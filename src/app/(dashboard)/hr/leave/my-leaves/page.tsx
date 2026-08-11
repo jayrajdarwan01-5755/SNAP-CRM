@@ -7,7 +7,6 @@ import { useTheme } from "@/context/ThemeContext";
 import Link from "next/link";
 
 export default function MyLeavesPage() {
-
   const { user } = useAuth();
   const { themeSettings } = useTheme();
 
@@ -15,17 +14,13 @@ export default function MyLeavesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-
     if (user?.employeeid) {
       loadMyLeaves();
     }
-
   }, [user]);
 
   const loadMyLeaves = async () => {
-
     try {
-
       setLoading(true);
 
       const response = await fetch(
@@ -35,210 +30,229 @@ export default function MyLeavesPage() {
       const data: Leave[] = await response.json();
 
       setLeaves(data);
-
     } catch (error) {
-
       console.log(error);
-
     } finally {
-
       setLoading(false);
-
     }
-
   };
 
   return (
-
-    <div className="space-y-6">
+    <div className="space-y-5 sm:space-y-6 min-w-0">
 
       {/* Header */}
-
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
 
         <div>
-
-          <h1 className="text-3xl font-bold text-theme">
+          <h1 className="text-2xl sm:text-3xl font-bold text-theme">
             My Leaves
           </h1>
 
-          <p className="text-muted mt-2">
+          <p className="text-muted mt-1 sm:mt-2 text-sm sm:text-base">
             View your leave requests
           </p>
-
         </div>
 
         <Link
           href="/hr/leave/add"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg"
+          className="
+            bg-blue-600
+            hover:bg-blue-700
+            text-white
+            px-4 sm:px-5
+            py-2
+            rounded-lg
+            text-sm sm:text-base
+            text-center
+            w-full sm:w-auto
+          "
         >
           + Apply Leave
         </Link>
 
       </div>
 
-
       {/* Employee Information */}
-
       <div
-        className="rounded-xl shadow border p-6"
+        className="
+          rounded-xl
+          shadow
+          border
+          p-4 sm:p-6
+        "
         style={{
           backgroundColor: themeSettings.backgroundColor,
           borderColor: themeSettings.primaryColor,
         }}
       >
 
-        <h2 className="text-xl font-bold text-theme mb-2">
+        <h2 className="text-lg sm:text-xl font-bold text-theme mb-2">
           Employee
         </h2>
 
-        <p className="text-muted">
+        <p className="text-muted text-sm sm:text-base break-words">
           {user?.fullname}
         </p>
 
       </div>
 
-
       {/* Leave Table */}
-
       <div className="card-theme rounded-xl shadow overflow-hidden">
 
-        <table className="w-full">
+        {/* Responsive horizontal scroll */}
+        <div className="w-full overflow-x-auto">
 
-          <thead className="table-header-theme">
+          <table className="w-full min-w-[900px]">
 
-            <tr className="text-theme">
+            <thead className="table-header-theme">
 
-              <th className="p-4 text-left">
-                ID
-              </th>
+              <tr className="text-theme">
 
-              <th className="p-4 text-left">
-                Leave Type
-              </th>
+                <th className="p-3 sm:p-4 text-left whitespace-nowrap">
+                  ID
+                </th>
 
-              <th className="p-4 text-left">
-                From Date
-              </th>
+                <th className="p-3 sm:p-4 text-left whitespace-nowrap">
+                  Leave Type
+                </th>
 
-              <th className="p-4 text-left">
-                To Date
-              </th>
+                <th className="p-3 sm:p-4 text-left whitespace-nowrap">
+                  From Date
+                </th>
 
-              <th className="p-4 text-left">
-                Reason
-              </th>
+                <th className="p-3 sm:p-4 text-left whitespace-nowrap">
+                  To Date
+                </th>
 
-              <th className="p-4 text-left">
-                Status
-              </th>
+                <th className="p-3 sm:p-4 text-left whitespace-nowrap">
+                  Reason
+                </th>
 
-              <th className="p-4 text-center">
-                Action
-              </th>
+                <th className="p-3 sm:p-4 text-left whitespace-nowrap">
+                  Status
+                </th>
 
-            </tr>
-
-          </thead>
-
-          <tbody>
-
-            {loading ? (
-
-              <tr>
-
-                <td
-                  colSpan={7}
-                  className="text-center py-10 text-muted"
-                >
-                  Loading Leaves...
-                </td>
+                <th className="p-3 sm:p-4 text-center whitespace-nowrap">
+                  Action
+                </th>
 
               </tr>
 
-            ) : leaves.length === 0 ? (
+            </thead>
 
-              <tr>
+            <tbody>
 
-                <td
-                  colSpan={7}
-                  className="text-center py-10 text-muted"
-                >
-                  No Leave Found
-                </td>
+              {loading ? (
 
-              </tr>
+                <tr>
 
-            ) : (
-
-              leaves.map((leave) => (
-
-                <tr
-                  key={leave.LeaveId}
-                  className="border-t hover:bg-black/5 dark:hover:bg-white/10"
-                >
-
-                  <td className="p-4 text-theme">
-                    {leave.LeaveId}
-                  </td>
-
-                  <td className="p-4 text-theme">
-                    {leave.LeaveType}
-                  </td>
-
-                  <td className="p-4 text-muted">
-                    {leave.FromDate}
-                  </td>
-
-                  <td className="p-4 text-muted">
-                    {leave.ToDate}
-                  </td>
-
-                  <td className="p-4 text-muted">
-                    {leave.Reason}
-                  </td>
-
-                  <td className="p-4">
-
-                    <span
-                      className={
-                        leave.Status === "Approved"
-                          ? "bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
-                          : leave.Status === "Rejected"
-                          ? "bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm"
-                          : "bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm"
-                      }
-                    >
-                      {leave.Status}
-                    </span>
-
-                  </td>
-
-                  <td className="p-4 text-center">
-
-                    <Link
-                      href={`/hr/leave/${leave.LeaveId}`}
-                      className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm"
-                    >
-                      View
-                    </Link>
-
+                  <td
+                    colSpan={7}
+                    className="text-center py-10 text-muted"
+                  >
+                    Loading Leaves...
                   </td>
 
                 </tr>
 
-              ))
+              ) : leaves.length === 0 ? (
 
-            )}
+                <tr>
 
-          </tbody>
+                  <td
+                    colSpan={7}
+                    className="text-center py-10 text-muted"
+                  >
+                    No Leave Found
+                  </td>
 
-        </table>
+                </tr>
+
+              ) : (
+
+                leaves.map((leave) => (
+
+                  <tr
+                    key={leave.LeaveId}
+                    className="
+                      border-t
+                      border-theme
+                      hover:bg-black/5
+                      dark:hover:bg-white/10
+                    "
+                  >
+
+                    <td className="p-3 sm:p-4 text-theme whitespace-nowrap">
+                      {leave.LeaveId}
+                    </td>
+
+                    <td className="p-3 sm:p-4 text-theme whitespace-nowrap">
+                      {leave.LeaveType}
+                    </td>
+
+                    <td className="p-3 sm:p-4 text-muted whitespace-nowrap">
+                      {leave.FromDate}
+                    </td>
+
+                    <td className="p-3 sm:p-4 text-muted whitespace-nowrap">
+                      {leave.ToDate}
+                    </td>
+
+                    <td className="p-3 sm:p-4 text-muted max-w-[250px]">
+                      <div className="truncate">
+                        {leave.Reason}
+                      </div>
+                    </td>
+
+                    <td className="p-3 sm:p-4 whitespace-nowrap">
+
+                      <span
+                        className={
+                          leave.Status === "Approved"
+                            ? "bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs sm:text-sm"
+                            : leave.Status === "Rejected"
+                            ? "bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs sm:text-sm"
+                            : "bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs sm:text-sm"
+                        }
+                      >
+                        {leave.Status}
+                      </span>
+
+                    </td>
+
+                    <td className="p-3 sm:p-4 text-center whitespace-nowrap">
+
+                      <Link
+                        href={`/hr/leave/${leave.LeaveId}`}
+                        className="
+                          bg-green-600
+                          hover:bg-green-700
+                          text-white
+                          px-3
+                          py-1.5
+                          rounded
+                          text-xs sm:text-sm
+                        "
+                      >
+                        View
+                      </Link>
+
+                    </td>
+
+                  </tr>
+
+                ))
+
+              )}
+
+            </tbody>
+
+          </table>
+
+        </div>
 
       </div>
 
     </div>
-
   );
-
 }

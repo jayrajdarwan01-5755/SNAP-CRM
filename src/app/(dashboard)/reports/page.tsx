@@ -15,7 +15,6 @@ import autoTable from "jspdf-autotable";
 import "jspdf-autotable";
 
 export default function ReportsPage() {
-
   const { user } = useAuth();
 
   const [reports, setReports] = useState<Report[]>([]);
@@ -32,11 +31,9 @@ export default function ReportsPage() {
   const [reportData, setReportData] = useState<any[]>([]);
 
   useEffect(() => {
-
     if (user) {
       loadReports();
     }
-
   }, [user]);
 
   // ======================================
@@ -44,9 +41,7 @@ export default function ReportsPage() {
   // ======================================
 
   const loadReports = async () => {
-
     try {
-
       const response = await fetch("/api/reports");
 
       const data: Report[] = await response.json();
@@ -56,7 +51,6 @@ export default function ReportsPage() {
       let filteredReports: Report[] = [];
 
       switch (user?.role) {
-
         case "Admin":
           filteredReports = data;
           break;
@@ -101,13 +95,9 @@ export default function ReportsPage() {
       console.log("Filtered Reports:", filteredReports);
 
       setReports(filteredReports);
-
     } catch (error) {
-
       console.log(error);
-
     }
-
   };
 
   // ======================================
@@ -115,21 +105,15 @@ export default function ReportsPage() {
   // ======================================
 
   const loadEmployees = async () => {
-
     try {
-
       const response = await fetch("/api/employees");
 
       const data: Employee[] = await response.json();
 
       setEmployees(data);
-
     } catch (error) {
-
       console.log(error);
-
     }
-
   };
 
   // ======================================
@@ -137,31 +121,23 @@ export default function ReportsPage() {
   // ======================================
 
   const loadLeaves = async () => {
-
     try {
-
-      const response = await fetch("/api/reports?type=leave");
+      const response = await fetch(
+        "/api/reports?type=leave"
+      );
 
       const data = await response.json();
 
       if (Array.isArray(data)) {
-
         setLeaves(data);
-
       } else {
-
         setLeaves([]);
-
       }
-
     } catch (error) {
-
       console.log(error);
 
       setLeaves([]);
-
     }
-
   };
 
   // ======================================
@@ -169,27 +145,19 @@ export default function ReportsPage() {
   // ======================================
 
   const handleGenerate = async () => {
-
     if (!selectedReport) {
-
       alert("Please select report");
-
       return;
-
     }
 
     if (!fromDate || !toDate) {
-
       alert("Please select From Date and To Date");
-
       return;
-
     }
 
     let type = "";
 
     switch (selectedReport) {
-
       case "Employee Report":
         type = "employee";
         break;
@@ -234,13 +202,15 @@ export default function ReportsPage() {
         type = "";
     }
 
-    let url = `/api/reports?type=${type}&fromDate=${fromDate}&toDate=${toDate}`;
+    let url =
+      `/api/reports?type=${type}` +
+      `&fromDate=${fromDate}` +
+      `&toDate=${toDate}`;
 
     // Employee sirf apna data dekhega
+
     if (user?.role === "Employee") {
-
       url += `&employeeId=${(user as any).employeeid}`;
-
     }
 
     console.log("Request URL:", url);
@@ -252,33 +222,48 @@ export default function ReportsPage() {
     console.log("API Response:", data);
 
     if (!Array.isArray(data)) {
-
       console.error("API Error:", data);
 
-      alert(data.message || "Failed to generate report");
+      alert(
+        data.message ||
+        "Failed to generate report"
+      );
 
       setReportData([]);
 
       return;
-
     }
 
     setReportData(data);
 
     setGenerated(true);
-
   };
 
-  const handleExportExcel = () => {
+  // ======================================
+  // FILTER DATA
+  // ======================================
 
+  const filteredData = reportData.filter((row) =>
+    JSON.stringify(row)
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  );
+
+  // ======================================
+  // EXPORT EXCEL
+  // ======================================
+
+  const handleExportExcel = () => {
     if (reportData.length === 0) {
       alert("No data available");
       return;
     }
 
-    const worksheet = XLSX.utils.json_to_sheet(filteredData);
+    const worksheet =
+      XLSX.utils.json_to_sheet(filteredData);
 
-    const workbook = XLSX.utils.book_new();
+    const workbook =
+      XLSX.utils.book_new();
 
     XLSX.utils.book_append_sheet(
       workbook,
@@ -286,10 +271,13 @@ export default function ReportsPage() {
       "Report"
     );
 
-    const excelBuffer = XLSX.write(workbook, {
-      bookType: "xlsx",
-      type: "array",
-    });
+    const excelBuffer = XLSX.write(
+      workbook,
+      {
+        bookType: "xlsx",
+        type: "array",
+      }
+    );
 
     const file = new Blob(
       [excelBuffer],
@@ -299,10 +287,11 @@ export default function ReportsPage() {
       }
     );
 
-    const fileName = `${selectedReport.replace(/\s+/g, "_")}_${fromDate}_to_${toDate}.xlsx`;
+    const fileName =
+      `${selectedReport.replace(/\s+/g, "_")}` +
+      `_${fromDate}_to_${toDate}.xlsx`;
 
     saveAs(file, fileName);
-
   };
 
   // ======================================
@@ -310,7 +299,6 @@ export default function ReportsPage() {
   // ======================================
 
   const handleExportPDF = () => {
-
     if (reportData.length === 0) {
       alert("No data available");
       return;
@@ -319,18 +307,40 @@ export default function ReportsPage() {
     const doc = new jsPDF();
 
     doc.setFontSize(18);
-    doc.text(selectedReport, 14, 15);
+
+    doc.text(
+      selectedReport,
+      14,
+      15
+    );
 
     doc.setFontSize(11);
-    doc.text(`From : ${fromDate}`, 14, 24);
-    doc.text(`To : ${toDate}`, 14, 31);
 
-    const headers = [Object.keys(reportData[0])];
+    doc.text(
+      `From : ${fromDate}`,
+      14,
+      24
+    );
 
-    const rows = filteredData.map((item) =>
-      Object.values(item).map((value) =>
-        value === null || value === undefined ? "" : String(value)
-      )
+    doc.text(
+      `To : ${toDate}`,
+      14,
+      31
+    );
+
+    const headers = [
+      Object.keys(reportData[0]),
+    ];
+
+    const rows = filteredData.map(
+      (item) =>
+        Object.values(item).map(
+          (value) =>
+            value === null ||
+            value === undefined
+              ? ""
+              : String(value)
+        )
     );
 
     autoTable(doc, {
@@ -347,9 +357,9 @@ export default function ReportsPage() {
     });
 
     doc.save(
-      `${selectedReport.replace(/\s+/g, "_")}_${fromDate}_to_${toDate}.pdf`
+      `${selectedReport.replace(/\s+/g, "_")}` +
+      `_${fromDate}_to_${toDate}.pdf`
     );
-
   };
 
   // ======================================
@@ -357,15 +367,18 @@ export default function ReportsPage() {
   // ======================================
 
   const handlePrint = () => {
-
-    const printContents = document.getElementById("print-area")?.innerHTML;
+    const printContents =
+      document.getElementById(
+        "print-area"
+      )?.innerHTML;
 
     if (!printContents) {
       alert("Nothing to print");
       return;
     }
 
-    const printWindow = window.open("", "_blank");
+    const printWindow =
+      window.open("", "_blank");
 
     if (!printWindow) {
       alert("Unable to open print window");
@@ -378,26 +391,26 @@ export default function ReportsPage() {
           <title>${selectedReport}</title>
 
           <style>
-            body{
+            body {
               font-family: Arial, sans-serif;
-              padding:30px;
-              color:#000;
+              padding: 30px;
+              color: #000;
             }
 
-            table{
-              width:100%;
-              border-collapse:collapse;
+            table {
+              width: 100%;
+              border-collapse: collapse;
             }
 
-            th,td{
-              border:1px solid #000;
-              padding:8px;
-              text-align:left;
-              font-size:13px;
+            th, td {
+              border: 1px solid #000;
+              padding: 8px;
+              text-align: left;
+              font-size: 13px;
             }
 
-            th{
-              background:#f3f3f3;
+            th {
+              background: #f3f3f3;
             }
           </style>
 
@@ -405,8 +418,8 @@ export default function ReportsPage() {
 
         <body>
           ${printContents}
-
         </body>
+
       </html>
     `);
 
@@ -417,145 +430,124 @@ export default function ReportsPage() {
     printWindow.print();
 
     printWindow.close();
-
   };
 
-  const reportTitle = `${selectedReport} (${fromDate} To ${toDate})`;
-
-  const generatedOn = new Date().toLocaleString("en-IN");
-
-  const filteredData = reportData.filter((row) =>
-    JSON.stringify(row)
-      .toLowerCase()
-      .includes(search.toLowerCase())
-  );
+  const generatedOn =
+    new Date().toLocaleString("en-IN");
 
   return (
-
-    <div className="space-y-6">
+    <div className="w-full min-w-0 space-y-5 sm:space-y-6">
 
       {/* Header */}
 
       <div>
-
-        <h1 className="text-3xl font-bold text-theme">
+        <h1 className="text-2xl sm:text-3xl font-bold text-theme">
           Reports
         </h1>
 
-        <p className="mt-2 text-muted">
+        <p className="mt-1 sm:mt-2 text-sm sm:text-base text-muted">
           Generate and export business reports
         </p>
-
       </div>
 
       {/* Logged In User */}
 
-      <div className="
-        card-theme
-        border
-        border-theme
-        rounded-lg
-        p-4
-      ">
-
-        <p className="text-sm text-muted">
-
-          Logged in as :
-
-          <span className="font-semibold ml-2 text-theme">
-
-            {user?.fullname}
-
-          </span>
-
-        </p>
-
-        <p className="text-sm text-theme font-semibold">
-
-          Role : {user?.role}
-
-        </p>
-
-      </div>
-
-      {/* Report Selection */}
-
-      <div className="
-        card-theme
-        border
-        border-theme
-        rounded-xl
-        shadow
-        p-6
-      ">
-
-        <label className="block text-sm font-semibold text-theme mb-2">
-
-          Report Name
-
-        </label>
-
-        <select
-
-          value={selectedReport}
-
-          onChange={(e) => {
-
-            setSelectedReport(e.target.value);
-
-            setGenerated(false);
-
-            setReportData([]);
-
-          }}
-
-          className="
-            w-full
-            border
-            border-theme
-            bg-theme
-            text-theme
-            rounded-lg
-            px-4
-            py-2
-          "
-
-        >
-
-          <option key="select-report" value="">
-            Select Report
-          </option>
-
-          {reports.map((report, index) => (
-
-            <option
-              key={`${report.ReportId}-${index}`}
-              value={report.ReportName}
-            >
-              {report.ReportName}
-            </option>
-
-          ))}
-
-        </select>
-
-      </div>
-
-      {selectedReport && (
-
-        <div className="
+      <div
+        className="
           card-theme
           border
           border-theme
           rounded-xl
-          shadow
-          p-6
-        ">
+          shadow-sm
+          p-4
+        "
+      >
+        <div className="space-y-1">
+          <p className="text-sm text-muted">
+            Logged in as :
+            <span className="font-semibold ml-2 text-theme">
+              {user?.fullname}
+            </span>
+          </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <p className="text-sm text-theme font-semibold">
+            Role : {user?.role}
+          </p>
+        </div>
+      </div>
+
+      {/* Report Selection */}
+
+      <div
+        className="
+          card-theme
+          border
+          border-theme
+          rounded-xl
+          shadow-sm
+          p-4
+          sm:p-6
+        "
+      >
+        <label className="block text-sm font-semibold text-theme mb-2">
+          Report Name
+        </label>
+
+        <select
+          value={selectedReport}
+          onChange={(e) => {
+            setSelectedReport(
+              e.target.value
+            );
+
+            setGenerated(false);
+            setReportData([]);
+          }}
+          className="
+            input-theme
+            w-full
+            min-w-0
+          "
+        >
+          <option
+            key="select-report"
+            value=""
+          >
+            Select Report
+          </option>
+
+          {reports.map(
+            (report, index) => (
+              <option
+                key={`${report.ReportId}-${index}`}
+                value={report.ReportName}
+              >
+                {report.ReportName}
+              </option>
+            )
+          )}
+        </select>
+      </div>
+
+      {/* Date & Search */}
+
+      {selectedReport && (
+        <div
+          className="
+            card-theme
+            border
+            border-theme
+            rounded-xl
+            shadow-sm
+            p-4
+            sm:p-6
+          "
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+
+            {/* From Date */}
 
             <div>
-
               <label className="block text-sm font-semibold text-theme mb-2">
                 Date From
               </label>
@@ -564,27 +556,25 @@ export default function ReportsPage() {
                 type="date"
                 value={fromDate}
                 onChange={(e) => {
-                  setFromDate(e.target.value);
+                  setFromDate(
+                    e.target.value
+                  );
+
                   setGenerated(false);
                   setReportData([]);
                 }}
                 className="
+                  input-theme
                   w-full
-                  border
-                  border-theme
-                  bg-theme
-                  text-theme
-                  rounded-lg
-                  px-4
-                  py-2
+                  min-w-0
                   appearance-auto
                 "
               />
-
             </div>
 
-            <div>
+            {/* To Date */}
 
+            <div>
               <label className="block text-sm font-semibold text-theme mb-2">
                 Date To
               </label>
@@ -593,29 +583,27 @@ export default function ReportsPage() {
                 type="date"
                 value={toDate}
                 onChange={(e) => {
-                  setToDate(e.target.value);
+                  setToDate(
+                    e.target.value
+                  );
+
                   setGenerated(false);
                   setReportData([]);
                 }}
                 className="
+                  input-theme
                   w-full
-                  border
-                  border-theme
-                  bg-theme
-                  text-theme
-                  rounded-lg
-                  px-4
-                  py-2
+                  min-w-0
                   appearance-auto
                 "
               />
-
             </div>
 
           </div>
 
-          <div className="mt-6">
+          {/* Search */}
 
+          <div className="mt-5 sm:mt-6">
             <label className="block text-sm font-semibold text-theme mb-2">
               Search
             </label>
@@ -624,694 +612,723 @@ export default function ReportsPage() {
               type="text"
               placeholder="Search..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) =>
+                setSearch(
+                  e.target.value
+                )
+              }
               className="
+                input-theme
                 w-full
-                border
-                border-theme
-                bg-theme
-                text-theme
-                placeholder:text-muted
-                rounded-lg
-                px-4
-                py-2
+                min-w-0
               "
             />
-
           </div>
-                    <div className="mt-6 flex flex-wrap gap-3">
+
+          {/* Buttons */}
+
+          <div className="mt-5 sm:mt-6 flex flex-wrap gap-3">
 
             <button
+              type="button"
               onClick={handleGenerate}
               className="
                 bg-blue-600
                 hover:bg-blue-700
                 text-white
                 px-5
-                py-2
+                py-2.5
                 rounded-lg
+                transition
+                w-full
+                sm:w-auto
               "
             >
               Generate Report
             </button>
 
             {generated && (
-
               <>
-
                 <button
-                  onClick={handleExportExcel}
+                  type="button"
+                  onClick={
+                    handleExportExcel
+                  }
                   className="
                     bg-green-600
                     hover:bg-green-700
                     text-white
                     px-5
-                    py-2
+                    py-2.5
                     rounded-lg
+                    transition
+                    w-full
+                    sm:w-auto
                   "
                 >
                   Export Excel
                 </button>
 
                 <button
-                  onClick={handleExportPDF}
+                  type="button"
+                  onClick={
+                    handleExportPDF
+                  }
                   className="
                     bg-red-600
                     hover:bg-red-700
                     text-white
                     px-5
-                    py-2
+                    py-2.5
                     rounded-lg
+                    transition
+                    w-full
+                    sm:w-auto
                   "
                 >
                   Export PDF
                 </button>
 
                 <button
+                  type="button"
                   onClick={handlePrint}
                   className="
-                    bg-gray-700
-                    hover:bg-gray-800
-                    text-white
+                    button-secondary
                     px-5
-                    py-2
+                    py-2.5
                     rounded-lg
+                    transition
+                    w-full
+                    sm:w-auto
                   "
                 >
                   Print
                 </button>
-
               </>
-
             )}
 
           </div>
-
         </div>
-
       )}
 
-      {generated && selectedReport && (
+      {/* Generated Report */}
 
-        <div
-          id="print-area"
-          className="
-            card-theme
-            border
-            border-theme
-            rounded-xl
-            shadow
-            overflow-hidden
-            print:shadow-none
-            print:border-0
-          "
-        >
+      {generated &&
+        selectedReport && (
+          <div
+            id="print-area"
+            className="
+              card-theme
+              border
+              border-theme
+              rounded-xl
+              shadow-sm
+              overflow-hidden
+              print:shadow-none
+              print:border-0
+            "
+          >
 
-          <div className="p-6 border-b border-theme print:border-b">
+            {/* Report Header */}
 
-            <div className="text-center mb-6">
+            <div className="p-4 sm:p-6 border-b border-theme">
 
-              <h1 className="text-3xl font-bold text-theme">
-                SNAP CRM
-              </h1>
+              <div className="text-center mb-6">
 
-              <h2 className="text-xl font-semibold mt-2 text-theme">
-                {selectedReport}
-              </h2>
+                <h1 className="text-2xl sm:text-3xl font-bold text-theme">
+                  SNAP CRM
+                </h1>
 
-              <p className="text-muted">
-                {fromDate} To {toDate}
-              </p>
+                <h2 className="text-lg sm:text-xl font-semibold mt-2 text-theme">
+                  {selectedReport}
+                </h2>
 
-              <p className="text-sm text-muted mt-2">
-                Generated By : {user?.fullname}
-              </p>
+                <p className="text-sm sm:text-base text-muted">
+                  {fromDate} To {toDate}
+                </p>
 
-              <p className="text-sm text-muted">
-                Role : {user?.role}
-              </p>
+                <p className="text-sm text-muted mt-2">
+                  Generated By :{" "}
+                  {user?.fullname}
+                </p>
+
+                <p className="text-sm text-muted">
+                  Role : {user?.role}
+                </p>
+
+              </div>
 
             </div>
 
-          </div>
-
-          <div className="overflow-x-auto">
-
-            <table className="
-              w-full
-              border-collapse
-              text-theme
-              print:text-sm
-            ">
-
-              <thead className="bg-theme">
-
-                <tr className="text-theme">
-
-                  {selectedReport === "Employee Report" && (
-                    <>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Employee Code
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Name
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Department
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Salary
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Status
-                      </th>
-
-                    </>
-                  )}
-
-                  {selectedReport === "Leave Report" && (
-                    <>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Employee
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Leave Type
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        From Date
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        To Date
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Status
-                      </th>
-
-                    </>
-                  )}
-
-                  {selectedReport === "Payroll Report" && (
-                    <>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Employee
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Employee ID
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Month
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Allowance
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Deduction
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Net Salary
-                      </th>
-
-                    </>
-                  )}
-
-                  {selectedReport === "Customer Report" && (
-                    <>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Customer Code
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Customer Name
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Phone
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Email
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        City
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Status
-                      </th>
-
-                    </>
-                  )}
-
-                  {selectedReport === "Lead Report" && (
-                    <>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Lead Name
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Company
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Phone
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Email
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Lead Source
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Status
-                      </th>
-
-                    </>
-                  )}
-
-                  {selectedReport === "Supplier Report" && (
-                    <>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Supplier Name
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Email
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Phone
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Address
-                      </th>
-
-                    </>
-                  )}
-
-                  {selectedReport === "Category Report" && (
-                    <>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Category Name
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Description
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Status
-                      </th>
-
-                    </>
-                  )}
-
-                  {selectedReport === "Opportunity Report" && (
-                    <>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Customer
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Opportunity Name
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Amount
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Stage
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Probability
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Close Date
-                      </th>
-
-                    </>
-                  )}
-
-                  {selectedReport === "Product Report" && (
-                    <>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Product Code
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Product Name
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Category
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Price
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Quantity
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Status
-                      </th>
-
-                      <th className="border border-theme px-4 py-3 text-left">
-                        Created Date
-                      </th>
-
-                    </>
-                  )}
-
-                </tr>
-
-              </thead>
-
-              <tbody>
-                                {filteredData.map((row, index) => (
-
-                  <tr
-                    key={index}
-                    className="border-t border-theme"
-                  >
-
-                    {selectedReport === "Employee Report" && (
+            {/* Report Table */}
+
+            <div className="w-full overflow-x-auto">
+
+              <table
+                className="
+                  w-full
+                  min-w-[900px]
+                  border-collapse
+                  text-theme
+                  print:text-sm
+                "
+              >
+                <thead className="table-header-theme">
+
+                  <tr className="text-theme">
+
+                    {selectedReport ===
+                      "Employee Report" && (
                       <>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Employee Code
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.EmployeeCode}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Name
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.FirstName} {row.LastName}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Department
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.Department}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Salary
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          ₹{row.Salary?.toLocaleString("en-IN")}
-                        </td>
-
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.Status}
-                        </td>
-
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Status
+                        </th>
                       </>
                     )}
 
-                    {selectedReport === "Leave Report" && (
+                    {selectedReport ===
+                      "Leave Report" && (
                       <>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Employee
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.EmployeeName}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Leave Type
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.LeaveType}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          From Date
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.FromDate}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          To Date
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.ToDate}
-                        </td>
-
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.Status}
-                        </td>
-
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Status
+                        </th>
                       </>
                     )}
 
-                    {selectedReport === "Payroll Report" && (
+                    {selectedReport ===
+                      "Payroll Report" && (
                       <>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Employee
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.EmployeeName}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Employee ID
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.EmployeeId}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Month
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.Month}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Allowance
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          ₹{row.Allowance?.toLocaleString("en-IN")}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Deduction
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          ₹{row.Deduction?.toLocaleString("en-IN")}
-                        </td>
-
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          ₹{row.NetSalary?.toLocaleString("en-IN")}
-                        </td>
-
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Net Salary
+                        </th>
                       </>
                     )}
 
-                    {selectedReport === "Customer Report" && (
+                    {selectedReport ===
+                      "Customer Report" && (
                       <>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Customer Code
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.CustomerCode}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Customer Name
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.CustomerName}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Phone
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.Phone}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Email
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.Email}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          City
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.City}
-                        </td>
-
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.Status}
-                        </td>
-
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Status
+                        </th>
                       </>
                     )}
 
-                    {selectedReport === "Lead Report" && (
+                    {selectedReport ===
+                      "Lead Report" && (
                       <>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Lead Name
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.LeadName}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Company
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.Company}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Phone
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.Phone}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Email
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.Email}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Lead Source
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.LeadSource}
-                        </td>
-
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.Status}
-                        </td>
-
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Status
+                        </th>
                       </>
                     )}
 
-                    {selectedReport === "Supplier Report" && (
+                    {selectedReport ===
+                      "Supplier Report" && (
                       <>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Supplier Name
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.SupplierName}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Email
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.Email}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Phone
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.Phone}
-                        </td>
-
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.Address}
-                        </td>
-
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Address
+                        </th>
                       </>
                     )}
 
-                    {selectedReport === "Category Report" && (
+                    {selectedReport ===
+                      "Category Report" && (
                       <>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Category Name
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.CategoryName}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Description
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.Description}
-                        </td>
-
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.Status}
-                        </td>
-
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Status
+                        </th>
                       </>
                     )}
 
-                    {selectedReport === "Opportunity Report" && (
+                    {selectedReport ===
+                      "Opportunity Report" && (
                       <>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Customer
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.Customer}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Opportunity Name
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.OpportunityName}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Amount
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          ₹{row.Amount?.toLocaleString("en-IN")}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Stage
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.Stage}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Probability
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.Probability}%
-                        </td>
-
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.CloseDate}
-                        </td>
-
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Close Date
+                        </th>
                       </>
                     )}
 
-                    {selectedReport === "Product Report" && (
+                    {selectedReport ===
+                      "Product Report" && (
                       <>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Product Code
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.ProductCode}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Product Name
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.ProductName}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Category
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.Category}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Price
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          ₹{row.Price?.toLocaleString("en-IN")}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Quantity
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.Quantity}
-                        </td>
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Status
+                        </th>
 
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.Status}
-                        </td>
-
-                        <td className="border border-theme px-4 py-3 text-theme">
-                          {row.CreatedDate}
-                        </td>
-
+                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
+                          Created Date
+                        </th>
                       </>
                     )}
 
                   </tr>
 
-                ))}
+                </thead>
 
-              </tbody>
+                <tbody>
 
-            </table>
+                  {filteredData.map(
+                    (row, index) => (
+                      <tr
+                        key={index}
+                        className="
+                          border-t
+                          border-theme
+                          text-theme
+                          table-row-theme
+                        "
+                      >
+
+                        {selectedReport ===
+                          "Employee Report" && (
+                          <>
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.EmployeeCode}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.FirstName}{" "}
+                              {row.LastName}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.Department}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              ₹
+                              {row.Salary?.toLocaleString(
+                                "en-IN"
+                              )}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.Status}
+                            </td>
+                          </>
+                        )}
+
+                        {selectedReport ===
+                          "Leave Report" && (
+                          <>
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.EmployeeName}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.LeaveType}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.FromDate}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.ToDate}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.Status}
+                            </td>
+                          </>
+                        )}
+
+                        {selectedReport ===
+                          "Payroll Report" && (
+                          <>
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.EmployeeName}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.EmployeeId}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.Month}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              ₹
+                              {row.Allowance?.toLocaleString(
+                                "en-IN"
+                              )}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              ₹
+                              {row.Deduction?.toLocaleString(
+                                "en-IN"
+                              )}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              ₹
+                              {row.NetSalary?.toLocaleString(
+                                "en-IN"
+                              )}
+                            </td>
+                          </>
+                        )}
+
+                        {selectedReport ===
+                          "Customer Report" && (
+                          <>
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.CustomerCode}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.CustomerName}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.Phone}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.Email}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.City}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.Status}
+                            </td>
+                          </>
+                        )}
+
+                        {selectedReport ===
+                          "Lead Report" && (
+                          <>
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.LeadName}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.Company}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.Phone}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.Email}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.LeadSource}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.Status}
+                            </td>
+                          </>
+                        )}
+
+                        {selectedReport ===
+                          "Supplier Report" && (
+                          <>
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.SupplierName}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.Email}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.Phone}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme">
+                              {row.Address}
+                            </td>
+                          </>
+                        )}
+
+                        {selectedReport ===
+                          "Category Report" && (
+                          <>
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.CategoryName}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme">
+                              {row.Description}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.Status}
+                            </td>
+                          </>
+                        )}
+
+                        {selectedReport ===
+                          "Opportunity Report" && (
+                          <>
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.Customer}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.OpportunityName}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              ₹
+                              {row.Amount?.toLocaleString(
+                                "en-IN"
+                              )}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.Stage}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.Probability}%
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.CloseDate}
+                            </td>
+                          </>
+                        )}
+
+                        {selectedReport ===
+                          "Product Report" && (
+                          <>
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.ProductCode}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.ProductName}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.Category}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              ₹
+                              {row.Price?.toLocaleString(
+                                "en-IN"
+                              )}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.Quantity}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.Status}
+                            </td>
+
+                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
+                              {row.CreatedDate}
+                            </td>
+                          </>
+                        )}
+
+                      </tr>
+                    )
+                  )}
+
+                </tbody>
+              </table>
+
+            </div>
+
+            {/* Footer */}
+
+            <div
+              className="
+                border-t
+                border-theme
+                px-4
+                sm:px-6
+                py-4
+                flex
+                flex-col
+                sm:flex-row
+                justify-between
+                items-center
+                gap-2
+                text-sm
+                text-muted
+                print:text-xs
+              "
+            >
+              <span>
+                Generated On : {generatedOn}
+              </span>
+
+              <span>
+                SNAP CRM Report
+              </span>
+            </div>
 
           </div>
-                    <div
-            className="
-              border-t
-              border-theme
-              px-6
-              py-4
-              flex
-              justify-between
-              items-center
-              text-sm
-              text-muted
-              print:text-xs
-            "
-          >
-
-            <span>
-              Generated On : {generatedOn}
-            </span>
-
-            <span>
-              SNAP CRM Report
-            </span>
-
-          </div>
-
-        </div>
-
-      )}
+        )}
 
     </div>
-
   );
-
 }

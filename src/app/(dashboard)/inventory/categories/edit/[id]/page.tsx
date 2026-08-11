@@ -20,17 +20,21 @@ export default function EditCategoryPage() {
 
   useEffect(() => {
     const loadCategory = async () => {
-      const response = await fetch("/api/categories");
+      try {
+        const response = await fetch("/api/categories");
 
-      const data: Category[] = await response.json();
+        const data: Category[] = await response.json();
 
-      const foundCategory = data.find(
-        (item) => item.CategoryId === id
-      );
+        const foundCategory = data.find(
+          (item) => item.CategoryId === id
+        );
 
-      if (foundCategory) {
-        setCategoryName(foundCategory.CategoryName);
-        setDescription(foundCategory.Description);
+        if (foundCategory) {
+          setCategoryName(foundCategory.CategoryName);
+          setDescription(foundCategory.Description);
+        }
+      } catch (error) {
+        console.log(error);
       }
     };
 
@@ -38,58 +42,94 @@ export default function EditCategoryPage() {
   }, [id]);
 
   const handleUpdate = async () => {
-    const response = await fetch("/api/categories", {
-      method: "PUT",
+    try {
+      const response = await fetch("/api/categories", {
+        method: "PUT",
 
-      headers: {
-        "Content-Type": "application/json",
-      },
+        headers: {
+          "Content-Type": "application/json",
+        },
 
-      body: JSON.stringify({
-        CategoryId: id,
-        CategoryName: categoryName,
-        Description: description,
-      }),
-    });
+        body: JSON.stringify({
+          CategoryId: id,
+          CategoryName: categoryName,
+          Description: description,
+        }),
+      });
 
-    if (response.ok) {
-      alert("Category Updated Successfully");
+      if (response.ok) {
+        alert("Category Updated Successfully");
 
-      router.push("/inventory/categories");
-    } else {
-      alert("Failed to update category");
+        router.push("/inventory/categories");
+      } else {
+        alert("Failed to update category");
+      }
+    } catch (error) {
+      console.log(error);
+
+      alert("Something went wrong");
     }
   };
 
   return (
-    <div className="space-y-6 bg-theme text-theme">
+    <div className="w-full min-w-0 space-y-5 sm:space-y-6">
 
       {/* Header */}
 
-      <div className="flex justify-between items-center">
+      <div
+        className="
+          flex
+          flex-col
+          sm:flex-row
+          sm:items-center
+          sm:justify-between
+          gap-4
+        "
+      >
 
-        <div>
+        <div className="min-w-0">
 
-          <h1 className="text-3xl font-bold text-theme">
+          <h1
+            className="
+              text-2xl
+              sm:text-3xl
+              font-bold
+              text-theme
+            "
+          >
             Edit Category
           </h1>
 
-          <p className="text-muted mt-2">
+          <p
+            className="
+              text-muted
+              mt-1
+              sm:mt-2
+              text-sm
+              sm:text-base
+            "
+          >
             Update category information
           </p>
 
         </div>
 
+        {/* Back Button */}
+
         <button
+          type="button"
           onClick={() => router.back()}
           className="
-          bg-gray-600
-          hover:bg-gray-700
-          text-white
-          px-5
-          py-2
-          rounded-lg
-          transition
+            bg-gray-600
+            hover:bg-gray-700
+            text-white
+            px-5
+            py-2.5
+            rounded-lg
+            transition
+            w-full
+            sm:w-auto
+            whitespace-nowrap
           "
         >
           Back
@@ -97,17 +137,36 @@ export default function EditCategoryPage() {
 
       </div>
 
+
       {/* Form */}
 
-      <div className="card-theme border-theme border rounded-xl shadow p-6">
+      <div
+        className="
+          card-theme
+          border
+          border-theme
+          rounded-xl
+          shadow-sm
+          p-4
+          sm:p-6
+        "
+      >
 
-        <div className="grid grid-cols-1 gap-6">
+        <div className="space-y-5">
 
           {/* Category Name */}
 
           <div>
 
-            <label className="block text-sm font-semibold text-theme mb-2">
+            <label
+              className="
+                block
+                text-sm
+                font-semibold
+                text-theme
+                mb-2
+              "
+            >
               Category Name
             </label>
 
@@ -118,73 +177,96 @@ export default function EditCategoryPage() {
                 setCategoryName(e.target.value)
               }
               className="
-              w-full
-              bg-theme
-              text-theme
-              border-theme
-              border
-              rounded-lg
-              px-4
-              py-2
-              focus:outline-none
-              focus:ring-2
-              focus:ring-blue-500
+                input-theme
+                w-full
               "
             />
 
           </div>
+
 
           {/* Description */}
 
           <div>
 
-            <label className="block text-sm font-semibold text-theme mb-2">
+            <label
+              className="
+                block
+                text-sm
+                font-semibold
+                text-theme
+                mb-2
+              "
+            >
               Description
             </label>
 
             <textarea
-              rows={4}
+              rows={5}
               value={description}
               onChange={(e) =>
                 setDescription(e.target.value)
               }
               className="
-              w-full
-              bg-theme
-              text-theme
-              border-theme
-              border
-              rounded-lg
-              px-4
-              py-2
-              focus:outline-none
-              focus:ring-2
-              focus:ring-blue-500
+                input-theme
+                w-full
+                resize-none
               "
             />
 
           </div>
 
-        </div>
 
-        {/* Update Button */}
+          {/* Buttons */}
 
-        <div className="mt-8 flex justify-end">
-
-          <button
-            onClick={handleUpdate}
+          <div
             className="
-            bg-blue-600
-            hover:bg-blue-700
-            text-white
-            px-6
-            py-2
-            rounded-lg
-            transition
+              flex
+              flex-col-reverse
+              sm:flex-row
+              sm:justify-end
+              gap-3
+              pt-3
             "
           >
-            Update Category
-          </button>
+
+            <button
+              type="button"
+              onClick={() => router.back()}
+              className="
+                bg-gray-600
+                hover:bg-gray-700
+                text-white
+                px-6
+                py-2.5
+                rounded-lg
+                transition
+                w-full
+                sm:w-auto
+              "
+            >
+              Cancel
+            </button>
+
+            <button
+              type="button"
+              onClick={handleUpdate}
+              className="
+                bg-blue-600
+                hover:bg-blue-700
+                text-white
+                px-6
+                py-2.5
+                rounded-lg
+                transition
+                w-full
+                sm:w-auto
+              "
+            >
+              Update Category
+            </button>
+
+          </div>
 
         </div>
 

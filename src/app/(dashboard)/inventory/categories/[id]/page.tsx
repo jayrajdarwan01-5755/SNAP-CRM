@@ -46,34 +46,64 @@ export default function ViewCategoryPage() {
   }
 
   return (
-    <div className="space-y-6 bg-theme text-theme">
+    <div className="w-full min-w-0 space-y-5 sm:space-y-6">
 
       {/* Header */}
 
-      <div className="flex justify-between items-center">
+      <div
+        className="
+          flex
+          flex-col
+          sm:flex-row
+          sm:items-center
+          sm:justify-between
+          gap-4
+        "
+      >
 
-        <div>
+        <div className="min-w-0">
 
-          <h1 className="text-3xl font-bold text-theme">
+          <h1
+            className="
+              text-2xl
+              sm:text-3xl
+              font-bold
+              text-theme
+            "
+          >
             Category Details
           </h1>
 
-          <p className="text-muted mt-2">
+          <p
+            className="
+              text-muted
+              mt-1
+              sm:mt-2
+              text-sm
+              sm:text-base
+            "
+          >
             View category information
           </p>
 
         </div>
 
+        {/* Back Button */}
+
         <button
+          type="button"
           onClick={() => router.back()}
           className="
-          bg-gray-600
-          hover:bg-gray-700
-          text-white
-          px-5
-          py-2
-          rounded-lg
-          transition
+            bg-gray-600
+            hover:bg-gray-700
+            text-white
+            px-5
+            py-2.5
+            rounded-lg
+            transition
+            w-full
+            sm:w-auto
+            whitespace-nowrap
           "
         >
           Back
@@ -81,21 +111,41 @@ export default function ViewCategoryPage() {
 
       </div>
 
+
       {/* Category Information */}
 
-      <div className="card-theme border-theme border rounded-xl shadow p-6">
+      <div
+        className="
+          card-theme
+          border
+          border-theme
+          rounded-xl
+          shadow-sm
+          p-4
+          sm:p-6
+        "
+      >
 
-        <h2 className="text-xl font-semibold text-theme mb-6">
+        <h2
+          className="
+            text-xl
+            sm:text-2xl
+            font-semibold
+            text-theme
+            mb-6
+          "
+        >
           Category Information
         </h2>
 
-        <div className="grid grid-cols-1 gap-6">
+
+        <div className="space-y-6">
 
           {/* Category Name */}
 
           <div>
 
-            <p className="text-sm text-muted">
+            <p className="text-sm text-muted mb-1">
               Category Name
             </p>
 
@@ -105,15 +155,23 @@ export default function ViewCategoryPage() {
 
           </div>
 
+
           {/* Description */}
 
           <div>
 
-            <p className="text-sm text-muted">
+            <p className="text-sm text-muted mb-1">
               Description
             </p>
 
-            <p className="font-semibold text-theme whitespace-pre-line">
+            <p
+              className="
+                font-semibold
+                text-theme
+                whitespace-pre-line
+                break-words
+              "
+            >
               {category.Description}
             </p>
 

@@ -21,14 +21,21 @@ export default function CompanyInformationPage() {
   }, []);
 
   const loadCompany = async () => {
+
     try {
+
       const response = await fetch("/api/company");
+
       const data = await response.json();
 
       setCompany(data);
+
     } catch (error) {
+
       console.log(error);
+
     }
+
   };
 
   const handleChange = (
@@ -74,11 +81,23 @@ export default function CompanyInformationPage() {
 
       {/* Header */}
 
-      <div className="flex justify-between items-center">
+      <div className="
+        flex
+        flex-col
+        sm:flex-row
+        sm:justify-between
+        sm:items-center
+        gap-4
+      ">
 
         <div>
 
-          <h1 className="text-3xl font-bold text-theme">
+          <h1 className="
+            text-2xl
+            sm:text-3xl
+            font-bold
+            text-theme
+          ">
             Company Information
           </h1>
 
@@ -91,12 +110,16 @@ export default function CompanyInformationPage() {
         <Link
           href="/settings"
           className="
-          bg-gray-600
-          hover:bg-gray-700
-          text-white
-          px-5
-          py-2
-          rounded-lg
+            w-full
+            sm:w-auto
+            text-center
+            bg-gray-600
+            hover:bg-gray-700
+            text-white
+            px-5
+            py-2
+            rounded-lg
+            transition
           "
         >
           ← Back
@@ -112,16 +135,29 @@ export default function CompanyInformationPage() {
         border-theme
         rounded-xl
         shadow
-        p-6
+        p-4
+        sm:p-6
       ">
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="
+          grid
+          grid-cols-1
+          md:grid-cols-2
+          gap-5
+          sm:gap-6
+        ">
 
           {/* Company Name */}
 
           <div>
 
-            <label className="block text-sm font-semibold text-theme mb-2">
+            <label className="
+              block
+              text-sm
+              font-semibold
+              text-theme
+              mb-2
+            ">
               Company Name
             </label>
 
@@ -131,14 +167,18 @@ export default function CompanyInformationPage() {
               value={company.CompanyName}
               onChange={handleChange}
               className="
-              w-full
-              border
-              border-theme
-              bg-theme
-              text-theme
-              rounded-lg
-              px-4
-              py-2
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                placeholder:text-muted
+                rounded-lg
+                px-4
+                py-2
+                focus:outline-none
+                focus:ring-2
+                focus:ring-blue-500
               "
             />
 
@@ -148,21 +188,29 @@ export default function CompanyInformationPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-theme mb-2">
+            <label className="
+              block
+              text-sm
+              font-semibold
+              text-theme
+              mb-2
+            ">
               Company Logo
             </label>
 
             <input
               type="file"
               className="
-              w-full
-              border
-              border-theme
-              bg-theme
-              text-theme
-              rounded-lg
-              px-4
-              py-2
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                rounded-lg
+                px-3
+                py-2
+                text-sm
+                cursor-pointer
               "
             />
 
@@ -172,7 +220,13 @@ export default function CompanyInformationPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-theme mb-2">
+            <label className="
+              block
+              text-sm
+              font-semibold
+              text-theme
+              mb-2
+            ">
               Email
             </label>
 
@@ -182,14 +236,18 @@ export default function CompanyInformationPage() {
               value={company.Email}
               onChange={handleChange}
               className="
-              w-full
-              border
-              border-theme
-              bg-theme
-              text-theme
-              rounded-lg
-              px-4
-              py-2
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                placeholder:text-muted
+                rounded-lg
+                px-4
+                py-2
+                focus:outline-none
+                focus:ring-2
+                focus:ring-blue-500
               "
             />
 
@@ -199,7 +257,13 @@ export default function CompanyInformationPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-theme mb-2">
+            <label className="
+              block
+              text-sm
+              font-semibold
+              text-theme
+              mb-2
+            ">
               Phone
             </label>
 
@@ -209,14 +273,18 @@ export default function CompanyInformationPage() {
               value={company.Phone}
               onChange={handleChange}
               className="
-              w-full
-              border
-              border-theme
-              bg-theme
-              text-theme
-              rounded-lg
-              px-4
-              py-2
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                placeholder:text-muted
+                rounded-lg
+                px-4
+                py-2
+                focus:outline-none
+                focus:ring-2
+                focus:ring-blue-500
               "
             />
 
@@ -226,7 +294,13 @@ export default function CompanyInformationPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-theme mb-2">
+            <label className="
+              block
+              text-sm
+              font-semibold
+              text-theme
+              mb-2
+            ">
               Website
             </label>
 
@@ -236,14 +310,18 @@ export default function CompanyInformationPage() {
               value={company.Website}
               onChange={handleChange}
               className="
-              w-full
-              border
-              border-theme
-              bg-theme
-              text-theme
-              rounded-lg
-              px-4
-              py-2
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                placeholder:text-muted
+                rounded-lg
+                px-4
+                py-2
+                focus:outline-none
+                focus:ring-2
+                focus:ring-blue-500
               "
             />
 
@@ -253,7 +331,13 @@ export default function CompanyInformationPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-theme mb-2">
+            <label className="
+              block
+              text-sm
+              font-semibold
+              text-theme
+              mb-2
+            ">
               Address
             </label>
 
@@ -263,14 +347,18 @@ export default function CompanyInformationPage() {
               value={company.Address}
               onChange={handleChange}
               className="
-              w-full
-              border
-              border-theme
-              bg-theme
-              text-theme
-              rounded-lg
-              px-4
-              py-2
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                placeholder:text-muted
+                rounded-lg
+                px-4
+                py-2
+                focus:outline-none
+                focus:ring-2
+                focus:ring-blue-500
               "
             />
 
@@ -280,7 +368,13 @@ export default function CompanyInformationPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-theme mb-2">
+            <label className="
+              block
+              text-sm
+              font-semibold
+              text-theme
+              mb-2
+            ">
               City
             </label>
 
@@ -290,14 +384,18 @@ export default function CompanyInformationPage() {
               value={company.City}
               onChange={handleChange}
               className="
-              w-full
-              border
-              border-theme
-              bg-theme
-              text-theme
-              rounded-lg
-              px-4
-              py-2
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                placeholder:text-muted
+                rounded-lg
+                px-4
+                py-2
+                focus:outline-none
+                focus:ring-2
+                focus:ring-blue-500
               "
             />
 
@@ -307,7 +405,13 @@ export default function CompanyInformationPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-theme mb-2">
+            <label className="
+              block
+              text-sm
+              font-semibold
+              text-theme
+              mb-2
+            ">
               State
             </label>
 
@@ -317,14 +421,18 @@ export default function CompanyInformationPage() {
               value={company.State}
               onChange={handleChange}
               className="
-              w-full
-              border
-              border-theme
-              bg-theme
-              text-theme
-              rounded-lg
-              px-4
-              py-2
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                placeholder:text-muted
+                rounded-lg
+                px-4
+                py-2
+                focus:outline-none
+                focus:ring-2
+                focus:ring-blue-500
               "
             />
 
@@ -334,7 +442,13 @@ export default function CompanyInformationPage() {
 
           <div>
 
-            <label className="block text-sm font-semibold text-theme mb-2">
+            <label className="
+              block
+              text-sm
+              font-semibold
+              text-theme
+              mb-2
+            ">
               Country
             </label>
 
@@ -344,14 +458,18 @@ export default function CompanyInformationPage() {
               value={company.Country}
               onChange={handleChange}
               className="
-              w-full
-              border
-              border-theme
-              bg-theme
-              text-theme
-              rounded-lg
-              px-4
-              py-2
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                placeholder:text-muted
+                rounded-lg
+                px-4
+                py-2
+                focus:outline-none
+                focus:ring-2
+                focus:ring-blue-500
               "
             />
 
@@ -361,17 +479,25 @@ export default function CompanyInformationPage() {
 
         {/* Save Button */}
 
-        <div className="flex justify-end mt-8">
+        <div className="
+          flex
+          justify-end
+          mt-6
+          sm:mt-8
+        ">
 
           <button
             onClick={handleSave}
             className="
-            bg-blue-600
-            hover:bg-blue-700
-            text-white
-            px-6
-            py-2
-            rounded-lg
+              w-full
+              sm:w-auto
+              bg-blue-600
+              hover:bg-blue-700
+              text-white
+              px-6
+              py-2
+              rounded-lg
+              transition
             "
           >
             Save Information

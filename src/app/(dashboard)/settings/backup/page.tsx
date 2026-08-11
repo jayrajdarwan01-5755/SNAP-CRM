@@ -6,81 +6,57 @@ import { Backup } from "@/types/backup";
 
 export default function BackupPage() {
 
-
-const [backupName, setBackupName] = useState("");
-
-
+  const [backupName, setBackupName] = useState("");
   const [lastBackup, setLastBackup] = useState("");
-
   const [status, setStatus] = useState("");
-
   const [message, setMessage] = useState("");
-
-
 
   // ==========================
   // LOAD BACKUP DETAILS
   // ==========================
 
   useEffect(() => {
-
     loadBackup();
-
   }, []);
 
+  const loadBackup = async () => {
 
+    try {
 
-const loadBackup = async () => {
+      const response = await fetch("/api/backup");
 
-try {
+      const result = await response.json();
 
+      const data: Backup = result.data;
 
-const response = await fetch("/api/backup");
+      setBackupName(
+        data.backupname
+      );
 
+      setLastBackup(
+        new Date(data.lastbackup).toLocaleString(
+          "en-IN",
+          {
+            timeZone: "Asia/Kolkata",
+          }
+        )
+      );
 
-const result = await response.json();
+      setStatus(
+        data.status
+      );
 
+    }
+    catch (error) {
 
+      console.log(
+        "Backup Load Error",
+        error
+      );
 
-const data:Backup = result.data;
+    }
 
-
-
-setBackupName(
-data.backupname
-);
-
-
-setLastBackup(
-  new Date(data.lastbackup).toLocaleString("en-IN", {
-    timeZone: "Asia/Kolkata",
-  })
-);
-
-
-
-setStatus(
-data.status
-);
-
-
-
-}
-catch(error){
-
-console.log(
-"Backup Load Error",
-error
-);
-
-
-}
-
-};
-
-
-
-
+  };
 
   // ==========================
   // CREATE BACKUP
@@ -88,444 +64,418 @@ error
 
   const handleCreateBackup = async () => {
 
+    try {
 
-try{
+      const response = await fetch(
+        "/api/backup",
+        {
+          method: "POST",
 
+          headers: {
+            "Content-Type": "application/json",
+          },
 
-const response = await fetch(
-"/api/backup",
-{
-method:"POST",
+          body: JSON.stringify({
+            action: "create",
+          }),
+        }
+      );
 
-headers:{
-"Content-Type":"application/json"
-},
+      const result = await response.json();
 
-body:JSON.stringify({
+      setLastBackup(
+        new Date(
+          result.data.lastbackup
+        ).toLocaleString()
+      );
 
-action:"create"
+      setStatus(
+        result.data.status
+      );
 
-})
+      setMessage(
+        result.message
+      );
 
-}
-);
+    }
+    catch (error) {
 
+      console.log(error);
 
+      setMessage(
+        "Backup creation failed"
+      );
 
-const result = await response.json();
+    }
 
-
-
-setLastBackup(
-new Date(
-result.data.lastbackup
-).toLocaleString()
-);
-
-
-
-setStatus(
-result.data.status
-);
-
-
-
-setMessage(
-result.message
-);
-
-
-
-}
-catch(error){
-
-
-console.log(error);
-
-
-setMessage(
-"Backup creation failed"
-);
-
-
-}
-
-
-};
-
-
-
-
-
+  };
 
   // ==========================
   // RESTORE BACKUP
   // ==========================
 
-const handleRestoreBackup = async () => {
+  const handleRestoreBackup = async () => {
 
+    try {
 
-try{
+      const response = await fetch(
+        "/api/backup",
+        {
+          method: "POST",
 
+          headers: {
+            "Content-Type": "application/json",
+          },
 
-const response = await fetch(
-"/api/backup",
-{
-method:"POST",
+          body: JSON.stringify({
+            action: "restore",
+          }),
+        }
+      );
 
-headers:{
-"Content-Type":"application/json"
-},
+      const result = await response.json();
 
+      setStatus(
+        result.data.status
+      );
 
-body:JSON.stringify({
+      setMessage(
+        result.message
+      );
 
-action:"restore"
+    }
+    catch (error) {
 
-})
+      console.log(error);
 
-}
-);
+      setMessage(
+        "Restore failed"
+      );
 
+    }
 
+  };
 
-const result = await response.json();
+  // ==========================
+  // DOWNLOAD BACKUP
+  // ==========================
 
+  const handleDownloadBackup = async () => {
 
+    const response = await fetch(
+      "/api/backup/download"
+    );
 
-setStatus(
-result.data.status
-);
+    const blob =
+      await response.blob();
 
+    const url =
+      window.URL.createObjectURL(blob);
 
+    const link =
+      document.createElement("a");
 
-setMessage(
-result.message
-);
+    link.href = url;
 
+    link.download = "backup.json";
 
+    link.click();
 
-}
-catch(error){
-
-console.log(error);
-
-
-setMessage(
-"Restore failed"
-);
-
-
-}
-
-
-};
-
-
-
-
-
-
-const handleDownloadBackup = async () => {
-
-  const response = await fetch("/api/backup/download");
-
-  const blob = await response.blob();
-
-  const url = window.URL.createObjectURL(blob);
-
-  const link = document.createElement("a");
-
-  link.href = url;
-
-  link.download = "backup.json";
-
-  link.click();
-
-};
-
-
-
+  };
 
   return (
 
-    <div className="space-y-6 bg-theme text-theme min-h-screen">
+    <div className="
+      space-y-6
+      bg-theme
+      text-theme
+      min-h-screen
+    ">
 
+      {/* ======================================
+          HEADER
+      ====================================== */}
 
-      {/* Header */}
-
-      <div className="flex justify-between items-center">
-
+      <div className="
+        flex
+        flex-col
+        sm:flex-row
+        sm:justify-between
+        sm:items-center
+        gap-4
+      ">
 
         <div>
 
-          <h1 className="text-3xl font-bold text-theme">
+          <h1 className="
+            text-2xl
+            sm:text-3xl
+            font-bold
+            text-theme
+          ">
             Backup
           </h1>
-
 
           <p className="text-muted mt-2">
             Manage system backups
           </p>
 
-
         </div>
 
-
-
         <Link
-
           href="/settings"
-
           className="
-          bg-gray-600
-          hover:bg-gray-700
-          text-white
-          px-5
-          py-2
-          rounded-lg
+            w-full
+            sm:w-auto
+            text-center
+            bg-gray-600
+            hover:bg-gray-700
+            text-white
+            px-5
+            py-2
+            rounded-lg
+            transition
           "
-
         >
-
           ← Back
-
         </Link>
 
-
       </div>
-      
-      {/* Backup Card */}
 
-      <div className="card-theme border-theme rounded-xl shadow p-6">
+      {/* ======================================
+          BACKUP CARD
+      ====================================== */}
 
+      <div className="
+        card-theme
+        border
+        border-theme
+        rounded-xl
+        shadow
+        p-4
+        sm:p-6
+      ">
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-
+        <div className="
+          grid
+          grid-cols-1
+          md:grid-cols-2
+          gap-6
+        ">
 
           {/* Backup Name */}
 
           <div>
 
-            <label className="block text-sm font-semibold text-theme mb-2">
+            <label className="
+              block
+              text-sm
+              font-semibold
+              text-theme
+              mb-2
+            ">
               Backup Name
             </label>
 
-
             <input
-
               type="text"
-
               value={backupName}
-
-              onChange={(e)=>setBackupName(e.target.value)}
-
+              onChange={(e) =>
+                setBackupName(e.target.value)
+              }
               className="
-              w-full
-              border
-              border-theme
-              bg-theme
-              text-theme
-              rounded-lg
-              px-4
-              py-2
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                placeholder:text-muted
+                rounded-lg
+                px-4
+                py-2
+                focus:outline-none
+                focus:ring-2
+                focus:ring-blue-500
               "
-
             />
 
           </div>
-
-
-
-
 
           {/* Last Backup */}
 
           <div>
 
-            <label className="block text-sm font-semibold text-theme mb-2">
+            <label className="
+              block
+              text-sm
+              font-semibold
+              text-theme
+              mb-2
+            ">
               Last Backup
             </label>
 
-
             <input
-
               type="text"
-
               value={lastBackup}
-
               readOnly
-
               className="
-              w-full
-              border
-              border-theme
-              bg-theme
-              text-theme
-              rounded-lg
-              px-4
-              py-2
+                w-full
+                border
+                border-theme
+                bg-theme
+                text-theme
+                rounded-lg
+                px-4
+                py-2
+                focus:outline-none
               "
-
             />
 
           </div>
-
-
-
-
 
           {/* Backup Status */}
 
           <div>
 
-            <label className="block text-sm font-semibold text-theme mb-2">
+            <label className="
+              block
+              text-sm
+              font-semibold
+              text-theme
+              mb-2
+            ">
               Backup Status
             </label>
 
-
-<input
-
-  type="text"
-
-  value={status}
-
-  readOnly
-
-  className={`
-  w-full
-  border
-  border-theme
-  bg-theme
-  rounded-lg
-  px-4
-  py-2
-  ${
-    status === "Completed"
-      ? "text-green-600 font-semibold"
-      : "text-red-600 font-semibold"
-  }
-  `}
-
-/>
+            <input
+              type="text"
+              value={status}
+              readOnly
+              className={`
+                w-full
+                border
+                border-theme
+                bg-theme
+                rounded-lg
+                px-4
+                py-2
+                focus:outline-none
+                ${
+                  status === "Completed"
+                    ? "text-green-600 font-semibold"
+                    : "text-red-600 font-semibold"
+                }
+              `}
+            />
 
           </div>
-
-
-
-
 
           {/* Message */}
 
-          {
-            message && (
+          {message && (
 
-              <div className="md:col-span-2">
+            <div className="
+              md:col-span-2
+            ">
 
-                <div className="text-green-600 font-semibold">
-                  {message}
-                </div>
+              <div className="
+                border
+                border-theme
+                rounded-lg
+                px-4
+                py-3
+                text-green-600
+                font-semibold
+              ">
+
+                {message}
 
               </div>
 
-            )
-          }
+            </div>
 
-
-
-
-
+          )}
 
           {/* Action Buttons */}
 
-          <div className="md:col-span-2">
+          <div className="
+            md:col-span-2
+          ">
 
+            <div className="
+              flex
+              flex-col
+              sm:flex-row
+              flex-wrap
+              gap-3
+              mt-4
+            ">
 
-            <div className="flex flex-wrap gap-3 mt-4">
-
-
+              {/* Create Backup */}
 
               <button
-
                 onClick={handleCreateBackup}
-
                 className="
-                bg-blue-600
-                hover:bg-blue-700
-                text-white
-                px-6
-                py-2
-                rounded-lg
+                  w-full
+                  sm:w-auto
+                  bg-blue-600
+                  hover:bg-blue-700
+                  text-white
+                  px-6
+                  py-2
+                  rounded-lg
+                  transition
                 "
-
               >
-
                 Create Backup
-
               </button>
 
-
-
-
+              {/* Restore Backup */}
 
               <button
-
                 onClick={handleRestoreBackup}
-
                 className="
-                bg-yellow-500
-                hover:bg-yellow-600
-                text-white
-                px-6
-                py-2
-                rounded-lg
+                  w-full
+                  sm:w-auto
+                  bg-yellow-500
+                  hover:bg-yellow-600
+                  text-white
+                  px-6
+                  py-2
+                  rounded-lg
+                  transition
                 "
-
               >
-
                 Restore Backup
-
               </button>
 
-
-
-
+              {/* Download Backup */}
 
               <button
-
                 onClick={handleDownloadBackup}
-
                 className="
-                bg-green-600
-                hover:bg-green-700
-                text-white
-                px-6
-                py-2
-                rounded-lg
+                  w-full
+                  sm:w-auto
+                  bg-green-600
+                  hover:bg-green-700
+                  text-white
+                  px-6
+                  py-2
+                  rounded-lg
+                  transition
                 "
-
               >
-
                 Download Backup
-
               </button>
-
-
 
             </div>
 
-
           </div>
-
-
 
         </div>
 
-
       </div>
-
-
 
     </div>
 
