@@ -2,28 +2,28 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { User } from "@/types/user";
+import { Product } from "@/types/product";
 
-export default function UsersPage() {
-  const [users, setUsers] = useState<User[]>([]);
+export default function ProductsPage() {
+  const [products, setProducts] = useState<Product[]>([]);
   const [searchText, setSearchText] = useState("");
-  const [selectedRole, setSelectedRole] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [loading, setLoading] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 5;
+  const productsPerPage = 5;
 
   useEffect(() => {
-    const loadUsers = async () => {
+    const loadProducts = async () => {
       try {
         setLoading(true);
 
-        const response = await fetch("/api/users");
+        const response = await fetch("/api/products");
 
-        const data: User[] = await response.json();
+        const data: Product[] = await response.json();
 
-        setUsers(data);
+        setProducts(data);
       } catch (error) {
         console.log(error);
       } finally {
@@ -31,17 +31,17 @@ export default function UsersPage() {
       }
     };
 
-    loadUsers();
+    loadProducts();
   }, []);
 
-  const handleDelete = async (userid: number) => {
+  const handleDelete = async (ProductId: number) => {
     const confirmDelete = confirm(
-      "Are you sure you want to delete this user?"
+      "Are you sure you want to delete this product?"
     );
 
     if (!confirmDelete) return;
 
-    const response = await fetch("/api/users", {
+    const response = await fetch("/api/products", {
       method: "DELETE",
 
       headers: {
@@ -49,72 +49,73 @@ export default function UsersPage() {
       },
 
       body: JSON.stringify({
-        userid,
+        ProductId,
       }),
     });
 
     if (response.ok) {
-      setUsers((prev) =>
-        prev.filter((user) => user.userid !== userid)
+      setProducts((prev) =>
+        prev.filter(
+          (product) => product.ProductId !== ProductId
+        )
       );
     }
   };
 
   const handleClearFilter = () => {
     setSearchText("");
-    setSelectedRole("");
+    setSelectedCategory("");
     setSelectedStatus("");
     setCurrentPage(1);
   };
 
-  const filteredUsers = users.filter((user) => {
+  const filteredProducts = products.filter((product) => {
     const searchMatch =
-      user.username
+      product.ProductName
         .toLowerCase()
         .includes(searchText.toLowerCase()) ||
-      user.fullname
+      product.ProductCode
         .toLowerCase()
         .includes(searchText.toLowerCase());
 
-    const roleMatch =
-      selectedRole === "" ||
-      user.role === selectedRole;
+    const categoryMatch =
+      selectedCategory === "" ||
+      product.Category === selectedCategory;
 
     const statusMatch =
       selectedStatus === "" ||
-      (selectedStatus === "Active" && user.status === true) ||
-      (selectedStatus === "Inactive" && user.status === false);
+      product.Status === selectedStatus;
 
-    return searchMatch && roleMatch && statusMatch;
+    return searchMatch && categoryMatch && statusMatch;
   });
 
   const totalPages = Math.max(
     1,
     Math.ceil(
-      filteredUsers.length / usersPerPage
+      filteredProducts.length / productsPerPage
     )
   );
 
-  const lastUserIndex =
-    currentPage * usersPerPage;
+  const lastProductIndex =
+    currentPage * productsPerPage;
 
-  const firstUserIndex =
-    lastUserIndex - usersPerPage;
+  const firstProductIndex =
+    lastProductIndex - productsPerPage;
 
-  const currentUsers =
-    filteredUsers.slice(
-      firstUserIndex,
-      lastUserIndex
+  const currentProducts =
+    filteredProducts.slice(
+      firstProductIndex,
+      lastProductIndex
     );
 
   const showingFrom =
-    filteredUsers.length === 0
+    filteredProducts.length === 0
       ? 0
-      : firstUserIndex + 1;
+      : firstProductIndex + 1;
 
   const showingTo = Math.min(
-    lastUserIndex,
-    filteredUsers.length
+    lastProductIndex,
+    filteredProducts.length
   );
 
   return (
@@ -125,19 +126,17 @@ export default function UsersPage() {
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
 
         <div>
-
           <h1 className="text-3xl font-bold text-theme">
-            User Management
+            Product Management
           </h1>
 
           <p className="text-muted mt-2">
-            Manage system users
+            Manage product inventory
           </p>
-
         </div>
 
         <Link
-          href="/settings/users/add"
+          href="/inventory/products/add"
           className="
           bg-blue-600
           hover:bg-blue-700
@@ -148,7 +147,7 @@ export default function UsersPage() {
           text-center
           "
         >
-          + Add User
+          + Add Product
         </Link>
 
       </div>
@@ -180,13 +179,12 @@ export default function UsersPage() {
           {/* Search */}
 
           <input
-            type="text"
             value={searchText}
             onChange={(e) => {
               setSearchText(e.target.value);
               setCurrentPage(1);
             }}
-            placeholder="Search Username / Name"
+            placeholder="Search Product"
             className="
             w-full
             border
@@ -201,12 +199,12 @@ export default function UsersPage() {
           />
 
 
-          {/* Role */}
+          {/* Category */}
 
           <select
-            value={selectedRole}
+            value={selectedCategory}
             onChange={(e) => {
-              setSelectedRole(e.target.value);
+              setSelectedCategory(e.target.value);
               setCurrentPage(1);
             }}
             className="
@@ -222,23 +220,19 @@ export default function UsersPage() {
           >
 
             <option value="">
-              All Roles
+              All Categories
             </option>
 
-            <option value="Admin">
-              Admin
+            <option value="Electronics">
+              Electronics
             </option>
 
-            <option value="HR">
-              HR
+            <option value="Furniture">
+              Furniture
             </option>
 
-            <option value="Manager">
-              Manager
-            </option>
-
-            <option value="Employee">
-              Employee
+            <option value="Office Supplies">
+              Office Supplies
             </option>
 
           </select>
@@ -345,15 +339,23 @@ export default function UsersPage() {
               <tr className="text-theme">
 
                 <th className="px-4 py-4 text-left">
-                  Username
+                  Product Code
                 </th>
 
                 <th className="px-4 py-4 text-left">
-                  Full Name
+                  Product Name
                 </th>
 
                 <th className="px-4 py-4 text-left">
-                  Role
+                  Category
+                </th>
+
+                <th className="px-4 py-4 text-left">
+                  Price
+                </th>
+
+                <th className="px-4 py-4 text-left">
+                  Quantity
                 </th>
 
                 <th className="px-4 py-4 text-left">
@@ -376,41 +378,41 @@ export default function UsersPage() {
                 <tr>
 
                   <td
-                    colSpan={5}
+                    colSpan={7}
                     className="
                     text-center
                     py-10
                     text-muted
                     "
                   >
-                    Loading users...
+                    Loading products...
                   </td>
 
                 </tr>
 
-              ) : filteredUsers.length === 0 ? (
+              ) : filteredProducts.length === 0 ? (
 
                 <tr>
 
                   <td
-                    colSpan={5}
+                    colSpan={7}
                     className="
                     text-center
                     py-10
                     text-muted
                     "
                   >
-                    No users found
+                    No products found
                   </td>
 
                 </tr>
 
               ) : (
 
-                currentUsers.map((user) => (
+                currentProducts.map((product) => (
 
                   <tr
-                    key={user.userid}
+                    key={product.ProductId}
                     className="
                     border-t
                     border-theme
@@ -419,30 +421,37 @@ export default function UsersPage() {
                     "
                   >
 
+                    <td className="px-4 py-4 text-theme">
+                      {product.ProductCode}
+                    </td>
+
                     <td className="px-4 py-4 font-medium text-theme">
-                      {user.username}
+                      {product.ProductName}
                     </td>
 
                     <td className="px-4 py-4 text-muted">
-                      {user.fullname}
+                      {product.Category}
                     </td>
 
                     <td className="px-4 py-4 text-muted">
-                      {user.role}
+                      ₹
+                      {product.Price.toLocaleString("en-IN")}
+                    </td>
+
+                    <td className="px-4 py-4 text-muted">
+                      {product.Quantity}
                     </td>
 
                     <td className="px-4 py-4">
 
                       <span
                         className={
-                          user.status
+                          product.Status === "Active"
                             ? "bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
                             : "bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm"
                         }
                       >
-                        {user.status
-                          ? "Active"
-                          : "Inactive"}
+                        {product.Status}
                       </span>
 
                     </td>
@@ -452,7 +461,7 @@ export default function UsersPage() {
                       <div className="flex justify-center gap-2">
 
                         <Link
-                          href={`/settings/users/${user.userid}`}
+                          href={`/inventory/products/${product.ProductId}`}
                           className="
                           bg-green-600
                           hover:bg-green-700
@@ -467,7 +476,7 @@ export default function UsersPage() {
                         </Link>
 
                         <Link
-                          href={`/settings/users/edit/${user.userid}`}
+                          href={`/inventory/products/edit/${product.ProductId}`}
                           className="
                           bg-blue-600
                           hover:bg-blue-700
@@ -484,7 +493,7 @@ export default function UsersPage() {
                         <button
                           type="button"
                           onClick={() =>
-                            handleDelete(user.userid)
+                            handleDelete(product.ProductId)
                           }
                           className="
                           bg-red-600
@@ -523,72 +532,66 @@ export default function UsersPage() {
           {loading ? (
 
             <div className="text-center py-10 text-muted">
-              Loading users...
+              Loading products...
             </div>
 
-          ) : filteredUsers.length === 0 ? (
+          ) : filteredProducts.length === 0 ? (
 
             <div className="text-center py-10 text-muted">
-              No users found
+              No products found
             </div>
 
           ) : (
 
             <div className="divide-y divide-gray-200 dark:divide-gray-700">
 
-              {currentUsers.map((user) => (
+              {currentProducts.map((product) => (
 
                 <div
-                  key={user.userid}
+                  key={product.ProductId}
                   className="
                   p-5
                   table-row-theme
                   "
                 >
 
-                  {/* User Header */}
-
                   <div className="flex justify-between items-start gap-3 mb-4">
 
                     <div>
 
                       <h3 className="font-semibold text-lg text-theme">
-                        {user.fullname}
+                        {product.ProductName}
                       </h3>
 
                       <p className="text-sm text-muted mt-1">
-                        {user.username}
+                        {product.ProductCode}
                       </p>
 
                     </div>
 
                     <span
                       className={
-                        user.status
+                        product.Status === "Active"
                           ? "bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs"
                           : "bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs"
                       }
                     >
-                      {user.status
-                        ? "Active"
-                        : "Inactive"}
+                      {product.Status}
                     </span>
 
                   </div>
 
-
-                  {/* User Information */}
 
                   <div className="space-y-3">
 
                     <div className="flex justify-between gap-4">
 
                       <span className="text-sm text-muted">
-                        Username
+                        Category
                       </span>
 
                       <span className="text-sm font-medium text-theme text-right">
-                        {user.username}
+                        {product.Category}
                       </span>
 
                     </div>
@@ -597,11 +600,12 @@ export default function UsersPage() {
                     <div className="flex justify-between gap-4">
 
                       <span className="text-sm text-muted">
-                        Full Name
+                        Price
                       </span>
 
                       <span className="text-sm font-medium text-theme text-right">
-                        {user.fullname}
+                        ₹
+                        {product.Price.toLocaleString("en-IN")}
                       </span>
 
                     </div>
@@ -610,11 +614,11 @@ export default function UsersPage() {
                     <div className="flex justify-between gap-4">
 
                       <span className="text-sm text-muted">
-                        Role
+                        Quantity
                       </span>
 
                       <span className="text-sm font-medium text-theme text-right">
-                        {user.role}
+                        {product.Quantity}
                       </span>
 
                     </div>
@@ -627,7 +631,7 @@ export default function UsersPage() {
                   <div className="flex gap-2 mt-5">
 
                     <Link
-                      href={`/settings/users/${user.userid}`}
+                      href={`/inventory/products/${product.ProductId}`}
                       className="
                       flex-1
                       text-center
@@ -644,7 +648,7 @@ export default function UsersPage() {
                     </Link>
 
                     <Link
-                      href={`/settings/users/edit/${user.userid}`}
+                      href={`/inventory/products/edit/${product.ProductId}`}
                       className="
                       flex-1
                       text-center
@@ -663,7 +667,7 @@ export default function UsersPage() {
                     <button
                       type="button"
                       onClick={() =>
-                        handleDelete(user.userid)
+                        handleDelete(product.ProductId)
                       }
                       className="
                       flex-1
@@ -723,24 +727,18 @@ export default function UsersPage() {
           <p className="text-sm text-muted">
 
             Showing{" "}
-
             <span className="font-semibold text-theme">
               {showingFrom}
             </span>{" "}
-
             to{" "}
-
             <span className="font-semibold text-theme">
               {showingTo}
             </span>{" "}
-
             of{" "}
-
             <span className="font-semibold text-theme">
-              {filteredUsers.length}
+              {filteredProducts.length}
             </span>{" "}
-
-            users
+            products
 
           </p>
 
