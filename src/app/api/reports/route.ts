@@ -377,7 +377,6 @@ if (toDate) {
         CategoryId: category.categoryid,
         CategoryName: category.categoryname,
         Description: category.description,
-        Status: category.status,
       }));
 
       return NextResponse.json(categoryReport);

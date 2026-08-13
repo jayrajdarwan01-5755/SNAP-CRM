@@ -946,9 +946,6 @@ export default function ReportsPage() {
                           Description
                         </th>
 
-                        <th className="border border-theme px-4 py-3 text-left whitespace-nowrap">
-                          Status
-                        </th>
                       </>
                     )}
 
@@ -1212,10 +1209,6 @@ export default function ReportsPage() {
 
                             <td className="border border-theme px-4 py-3 text-theme">
                               {row.Description}
-                            </td>
-
-                            <td className="border border-theme px-4 py-3 text-theme whitespace-nowrap">
-                              {row.Status}
                             </td>
                           </>
                         )}
